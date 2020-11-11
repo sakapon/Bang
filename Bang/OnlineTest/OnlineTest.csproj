@@ -5,4 +5,9 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\AlgorithmLab\AlgorithmLab.csproj" />
+    <ProjectReference Include="..\Bang\Bang.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -13,4 +13,9 @@
     <PackageReference Include="coverlet.collector" Version="1.3.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\AlgorithmLab\AlgorithmLab.csproj" />
+    <ProjectReference Include="..\Bang\Bang.csproj" />
+  </ItemGroup>
+
 </Project>

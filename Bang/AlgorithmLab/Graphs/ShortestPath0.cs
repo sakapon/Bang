@@ -20,7 +20,10 @@ namespace AlgorithmLab.Graphs
 		/// <param name="directed">有向グラフかどうかを示す値。</param>
 		/// <param name="startVertexId">始点の ID。</param>
 		/// <param name="endVertexId">終点の ID。終点を指定しない場合、-1。</param>
-		/// <returns>最小コストおよび入辺。到達不可能の場合、最小コストは <see cref="long.MaxValue"/>、入辺は <see langword="null"/>。</returns>
+		/// <returns>
+		/// 最小コストおよび入辺。<br/>
+		/// ある頂点に到達不可能の場合、最小コストは <see cref="long.MaxValue"/>、入辺は <see langword="null"/>。
+		/// </returns>
 		/// <remarks>
 		/// グラフの有向性、連結性、多重性、開閉を問いません。したがって、1-indexed でも利用できます。<br/>
 		/// 辺のコストは非負でなければなりません。
@@ -94,6 +97,22 @@ namespace AlgorithmLab.Graphs
 			return (costs, inEdges);
 		}
 
+		/// <summary>
+		/// Bellman-Ford 法により、始点からの最短経路を求めます。
+		/// </summary>
+		/// <param name="vertexesCount">頂点の個数。これ未満の値を ID として使用できます。</param>
+		/// <param name="directedEdges">有向辺のリスト。edge: { from, to, cost }</param>
+		/// <param name="startVertexId">始点の ID。</param>
+		/// <returns>
+		/// 最小コストおよび入辺。<br/>
+		/// 負閉路が存在するとき、ともに <see langword="null"/>。<br/>
+		/// ある頂点に到達不可能の場合、最小コストは <see cref="long.MaxValue"/>、入辺は <see langword="null"/>。
+		/// </returns>
+		/// <remarks>
+		/// 通常、負値を含む有向グラフに対して使われます。連結性、多重性、開閉を問いません。したがって、1-indexed でも利用できます。<br/>
+		/// 負閉路が存在するときは検出されます。<br/>
+		/// 計算量: O(VE)
+		/// </remarks>
 		public static (long[] minCosts, int[][] inEdges) BellmanFord(int vertexesCount, int[][] directedEdges, int startVertexId)
 		{
 			if (directedEdges == null) throw new ArgumentNullException(nameof(directedEdges));

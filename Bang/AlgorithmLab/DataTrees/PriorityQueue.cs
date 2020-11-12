@@ -11,32 +11,32 @@ namespace AlgorithmLab.DataTrees
 	/// 内部では 1-indexed のため、raw array (直接のソートなど) では使われません。
 	/// したがって、実質的に priority queue として使われます。
 	/// </remarks>
-	public class Heap<T>
+	public class PriorityQueue<T>
 	{
-		public static Heap<T> Create(bool descending = false)
+		public static PriorityQueue<T> Create(bool descending = false)
 		{
 			var c = Comparer<T>.Default;
 			return descending ?
-				new Heap<T>((x, y) => c.Compare(y, x)) :
-				new Heap<T>(c.Compare);
+				new PriorityQueue<T>((x, y) => c.Compare(y, x)) :
+				new PriorityQueue<T>(c.Compare);
 		}
 
-		public static Heap<T> Create<TKey>(Func<T, TKey> keySelector, bool descending = false)
+		public static PriorityQueue<T> Create<TKey>(Func<T, TKey> keySelector, bool descending = false)
 		{
 			if (keySelector == null) throw new ArgumentNullException(nameof(keySelector));
 
 			var c = Comparer<TKey>.Default;
 			return descending ?
-				new Heap<T>((x, y) => c.Compare(keySelector(y), keySelector(x))) :
-				new Heap<T>((x, y) => c.Compare(keySelector(x), keySelector(y)));
+				new PriorityQueue<T>((x, y) => c.Compare(keySelector(y), keySelector(x))) :
+				new PriorityQueue<T>((x, y) => c.Compare(keySelector(x), keySelector(y)));
 		}
 
-		public static Heap<T, TKey> CreateWithKey<TKey>(Func<T, TKey> keySelector, bool descending = false)
+		public static PriorityQueue<T, TKey> CreateWithKey<TKey>(Func<T, TKey> keySelector, bool descending = false)
 		{
 			var c = Comparer<TKey>.Default;
 			return descending ?
-				new Heap<T, TKey>(keySelector, (x, y) => c.Compare(y.key, x.key)) :
-				new Heap<T, TKey>(keySelector, (x, y) => c.Compare(x.key, y.key));
+				new PriorityQueue<T, TKey>(keySelector, (x, y) => c.Compare(y.key, x.key)) :
+				new PriorityQueue<T, TKey>(keySelector, (x, y) => c.Compare(x.key, y.key));
 		}
 
 		List<T> l = new List<T> { default };
@@ -54,7 +54,7 @@ namespace AlgorithmLab.DataTrees
 		public int Count => l.Count - 1;
 		public bool Any => l.Count > 1;
 
-		internal Heap(Comparison<T> comparison)
+		internal PriorityQueue(Comparison<T> comparison)
 		{
 			c = comparison ?? throw new ArgumentNullException(nameof(comparison));
 		}
@@ -100,11 +100,11 @@ namespace AlgorithmLab.DataTrees
 	}
 
 	// キーをキャッシュすることにより、キーが不変であることを保証します。
-	public class Heap<T, TKey> : Heap<(T value, TKey key)>
+	public class PriorityQueue<T, TKey> : PriorityQueue<(T value, TKey key)>
 	{
 		Func<T, TKey> KeySelector;
 
-		internal Heap(Func<T, TKey> keySelector, Comparison<(T value, TKey key)> comparison) : base(comparison)
+		internal PriorityQueue(Func<T, TKey> keySelector, Comparison<(T value, TKey key)> comparison) : base(comparison)
 		{
 			KeySelector = keySelector ?? throw new ArgumentNullException(nameof(keySelector));
 		}

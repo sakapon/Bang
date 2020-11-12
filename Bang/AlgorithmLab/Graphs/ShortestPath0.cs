@@ -36,7 +36,7 @@ namespace AlgorithmLab.Graphs
 
 			var costs = Array.ConvertAll(new bool[vertexesCount], _ => long.MaxValue);
 			var inEdges = new int[vertexesCount][];
-			var q = Heap<int>.CreateWithKey(v => costs[v]);
+			var q = PriorityQueue<int>.CreateWithKey(v => costs[v]);
 			costs[startVertexId] = 0;
 			q.Push(startVertexId);
 

@@ -94,6 +94,34 @@ namespace AlgorithmLab.Graphs
 			return (costs, inEdges);
 		}
 
+		public static (long[] minCosts, int[][] inEdges) BellmanFord(int vertexesCount, int[][] directedEdges, int startVertexId)
+		{
+			if (directedEdges == null) throw new ArgumentNullException(nameof(directedEdges));
+			// 入力チェックは省略。
+
+			var costs = Array.ConvertAll(new bool[vertexesCount], _ => long.MaxValue);
+			var inEdges = new int[vertexesCount][];
+			costs[startVertexId] = 0;
+
+			// V-1 回後に true であっても、負閉路の有無は確定しません。
+			var next = true;
+			for (int k = 0; k < vertexesCount && next; ++k)
+			{
+				next = false;
+				foreach (var e in directedEdges)
+				{
+					if (costs[e[0]] == long.MaxValue) continue;
+					var nc = costs[e[0]] + e[2];
+					if (costs[e[1]] <= nc) continue;
+					costs[e[1]] = nc;
+					inEdges[e[1]] = e;
+					next = true;
+				}
+			}
+			if (next) return (null, null);
+			return (costs, inEdges);
+		}
+
 		public static int[] GetPathVertexes(int[][] inEdges, int endVertexId)
 		{
 			var path = new Stack<int>();

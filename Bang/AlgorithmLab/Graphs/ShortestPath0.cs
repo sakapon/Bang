@@ -4,17 +4,20 @@ using AlgorithmLab.DataTrees;
 
 namespace AlgorithmLab.Graphs
 {
-	// 配列を用いた基本的な実装です。
-	// Test: https://judge.yosupo.jp/problem/shortest_path
-	// Test: https://codeforces.com/contest/20/problem/C
+	/// <summary>
+	/// 最短経路を求めるための静的メソッドを提供します。
+	/// </summary>
+	/// <remarks>
+	/// 配列を用いた基本的な実装です。
+	/// </remarks>
 	public static class ShortestPath0
 	{
 		/// <summary>
-		/// Dijkstra 法により、始点からの最短路を求めます。
+		/// Dijkstra 法により、始点からの最短経路を求めます。
 		/// </summary>
 		/// <param name="vertexesCount">頂点の個数。これ未満の値を ID として使用できます。</param>
-		/// <param name="edges">edge: { from, to, cost }</param>
-		/// <param name="directed">有向グラフかどうかを表す値。</param>
+		/// <param name="edges">辺のリスト。edge: { from, to, cost }</param>
+		/// <param name="directed">有向グラフかどうかを示す値。</param>
 		/// <param name="startVertexId">始点の ID。</param>
 		/// <param name="endVertexId">終点の ID。終点を指定しない場合、-1。</param>
 		/// <returns>最小コストおよび入辺。到達不可能の場合、最小コストは <see cref="long.MaxValue"/>、入辺は <see langword="null"/>。</returns>

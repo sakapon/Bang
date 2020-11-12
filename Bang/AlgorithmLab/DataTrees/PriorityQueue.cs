@@ -4,12 +4,12 @@ using System.Collections.Generic;
 namespace AlgorithmLab.DataTrees
 {
 	/// <summary>
-	/// Represents a binary heap.
+	/// 優先度付きキューを表します。
 	/// </summary>
-	/// <typeparam name="T">The type of the object.</typeparam>
+	/// <typeparam name="T">オブジェクトの型。</typeparam>
 	/// <remarks>
-	/// 内部では 1-indexed のため、raw array (直接のソートなど) では使われません。
-	/// したがって、実質的に priority queue として使われます。
+	/// 二分ヒープによる実装です。<br/>
+	/// 内部では 1-indexed のため、raw array を直接ソートする用途では使われません。
 	/// </remarks>
 	public class PriorityQueue<T>
 	{

@@ -141,6 +141,35 @@ namespace AlgorithmLab.Graphs
 			return (costs, inEdges);
 		}
 
+		public static (long[][] minCosts, int[][] interVertexes) WarshallFloyd(int vertexesCount, int[][] edges, bool directed)
+		{
+			if (edges == null) throw new ArgumentNullException(nameof(edges));
+			// 入力チェックは省略。
+
+			var costs = Array.ConvertAll(new bool[vertexesCount], _ => Array.ConvertAll(new bool[vertexesCount], _ => long.MaxValue));
+			var inters = Array.ConvertAll(new bool[vertexesCount], _ => Array.ConvertAll(new bool[vertexesCount], _ => -1));
+			for (int i = 0; i < vertexesCount; ++i) costs[i][i] = 0;
+
+			foreach (var e in edges)
+			{
+				costs[e[0]][e[1]] = Math.Min(costs[e[0]][e[1]], e[2]);
+				if (!directed) costs[e[1]][e[0]] = Math.Min(costs[e[1]][e[0]], e[2]);
+			}
+
+			for (int k = 0; k < vertexesCount; ++k)
+				for (int i = 0; i < vertexesCount; ++i)
+					for (int j = 0; j < vertexesCount; ++j)
+					{
+						if (costs[i][k] == long.MaxValue || costs[k][j] == long.MaxValue) continue;
+						var nc = costs[i][k] + costs[k][j];
+						if (costs[i][j] <= nc) continue;
+						costs[i][j] = nc;
+						inters[i][j] = k;
+					}
+			for (int i = 0; i < vertexesCount; ++i) if (costs[i][i] < 0) return (null, null);
+			return (costs, inters);
+		}
+
 		public static int[] GetPathVertexes(int[][] inEdges, int endVertexId)
 		{
 			var path = new Stack<int>();

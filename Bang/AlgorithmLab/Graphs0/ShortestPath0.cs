@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using AlgorithmLab.DataTrees;
 
-namespace AlgorithmLab.Graphs
+namespace AlgorithmLab.Graphs0
 {
 	/// <summary>
 	/// 最短経路を求めるための静的メソッドを提供します。

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using AlgorithmLab.Graphs;
+using AlgorithmLab.Graphs0;
 
-namespace OnlineTest.Graphs
+namespace OnlineTest.Graphs0
 {
 	// Test: https://codeforces.com/contest/20/problem/C
 	class Dijkstra0Test2

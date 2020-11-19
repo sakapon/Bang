@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using AlgorithmLab.Graphs;
+using AlgorithmLab.Graphs0;
 
-namespace OnlineTest.Graphs
+namespace OnlineTest.Graphs0
 {
 	// Test: https://judge.yosupo.jp/problem/shortest_path
 	class Dijkstra0Test1

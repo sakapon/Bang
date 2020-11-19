@@ -143,12 +143,13 @@ namespace AlgorithmLab.Graphs
 
 		public static (long[][] minCosts, int[][] interVertexes) WarshallFloyd(int vertexesCount, int[][] edges, bool directed)
 		{
+			var n = vertexesCount;
 			if (edges == null) throw new ArgumentNullException(nameof(edges));
 			// 入力チェックは省略。
 
-			var costs = Array.ConvertAll(new bool[vertexesCount], _ => Array.ConvertAll(new bool[vertexesCount], _ => long.MaxValue));
-			var inters = Array.ConvertAll(new bool[vertexesCount], _ => Array.ConvertAll(new bool[vertexesCount], _ => -1));
-			for (int i = 0; i < vertexesCount; ++i) costs[i][i] = 0;
+			var costs = Array.ConvertAll(new bool[n], _ => Array.ConvertAll(new bool[n], _ => long.MaxValue));
+			var inters = Array.ConvertAll(new bool[n], _ => Array.ConvertAll(new bool[n], _ => -1));
+			for (int i = 0; i < n; ++i) costs[i][i] = 0;
 
 			foreach (var e in edges)
 			{
@@ -156,9 +157,9 @@ namespace AlgorithmLab.Graphs
 				if (!directed) costs[e[1]][e[0]] = Math.Min(costs[e[1]][e[0]], e[2]);
 			}
 
-			for (int k = 0; k < vertexesCount; ++k)
-				for (int i = 0; i < vertexesCount; ++i)
-					for (int j = 0; j < vertexesCount; ++j)
+			for (int k = 0; k < n; ++k)
+				for (int i = 0; i < n; ++i)
+					for (int j = 0; j < n; ++j)
 					{
 						if (costs[i][k] == long.MaxValue || costs[k][j] == long.MaxValue) continue;
 						var nc = costs[i][k] + costs[k][j];
@@ -166,7 +167,7 @@ namespace AlgorithmLab.Graphs
 						costs[i][j] = nc;
 						inters[i][j] = k;
 					}
-			for (int i = 0; i < vertexesCount; ++i) if (costs[i][i] < 0) return (null, null);
+			for (int i = 0; i < n; ++i) if (costs[i][i] < 0) return (null, null);
 			return (costs, inters);
 		}
 
@@ -185,6 +186,25 @@ namespace AlgorithmLab.Graphs
 			for (var e = inEdges[endVertexId]; e != null; e = inEdges[e[0]])
 				path.Push(e);
 			return path.ToArray();
+		}
+
+		// For Warshall-Floyd
+		public static int[] GetPathVertexes(int[][] interVertexes, int startVertexId, int endVertexId)
+		{
+			var path = new List<int>();
+			path.Add(startVertexId);
+			Dfs(startVertexId, endVertexId);
+			path.Add(endVertexId);
+			return path.ToArray();
+
+			void Dfs(int i, int j)
+			{
+				var k = interVertexes[i][j];
+				if (k == -1) return;
+				Dfs(i, k);
+				path.Add(k);
+				Dfs(k, j);
+			}
 		}
 	}
 }

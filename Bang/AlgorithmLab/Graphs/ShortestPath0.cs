@@ -30,9 +30,10 @@ namespace AlgorithmLab.Graphs
 		/// </remarks>
 		public static (long[] minCosts, int[][] inEdges) Dijkstra(int vertexesCount, int[][] edges, bool directed, int startVertexId, int endVertexId = -1)
 		{
+			var n = vertexesCount;
 			if (edges == null) throw new ArgumentNullException(nameof(edges));
 
-			var map = Array.ConvertAll(new bool[vertexesCount], _ => new List<int[]>());
+			var map = Array.ConvertAll(new bool[n], _ => new List<int[]>());
 			foreach (var e in edges)
 			{
 				// 入力チェックは省略。
@@ -40,8 +41,8 @@ namespace AlgorithmLab.Graphs
 				if (!directed) map[e[1]].Add(new[] { e[1], e[0], e[2] });
 			}
 
-			var costs = Array.ConvertAll(new bool[vertexesCount], _ => long.MaxValue);
-			var inEdges = new int[vertexesCount][];
+			var costs = Array.ConvertAll(new bool[n], _ => long.MaxValue);
+			var inEdges = new int[n][];
 			var q = PriorityQueue<int>.CreateWithKey(v => costs[v]);
 			costs[startVertexId] = 0;
 			q.Push(startVertexId);
@@ -68,15 +69,16 @@ namespace AlgorithmLab.Graphs
 		[Obsolete("最悪計算量は O(VE) です。")]
 		public static (long[] minCosts, int[][] inEdges) Dijklmna(int vertexesCount, int[][] edges, bool directed, int startVertexId, int endVertexId = -1)
 		{
-			var map = Array.ConvertAll(new bool[vertexesCount], _ => new List<int[]>());
+			var n = vertexesCount;
+			var map = Array.ConvertAll(new bool[n], _ => new List<int[]>());
 			foreach (var e in edges)
 			{
 				map[e[0]].Add(new[] { e[0], e[1], e[2] });
 				if (!directed) map[e[1]].Add(new[] { e[1], e[0], e[2] });
 			}
 
-			var costs = Array.ConvertAll(new bool[vertexesCount], _ => long.MaxValue);
-			var inEdges = new int[vertexesCount][];
+			var costs = Array.ConvertAll(new bool[n], _ => long.MaxValue);
+			var inEdges = new int[n][];
 			var q = new Queue<int>();
 			costs[startVertexId] = 0;
 			q.Enqueue(startVertexId);
@@ -115,16 +117,17 @@ namespace AlgorithmLab.Graphs
 		/// </remarks>
 		public static (long[] minCosts, int[][] inEdges) BellmanFord(int vertexesCount, int[][] directedEdges, int startVertexId)
 		{
+			var n = vertexesCount;
 			if (directedEdges == null) throw new ArgumentNullException(nameof(directedEdges));
 			// 入力チェックは省略。
 
-			var costs = Array.ConvertAll(new bool[vertexesCount], _ => long.MaxValue);
-			var inEdges = new int[vertexesCount][];
+			var costs = Array.ConvertAll(new bool[n], _ => long.MaxValue);
+			var inEdges = new int[n][];
 			costs[startVertexId] = 0;
 
 			// V-1 回後に true であっても、負閉路の有無は確定しません。
 			var next = true;
-			for (int k = 0; k < vertexesCount && next; ++k)
+			for (int k = 0; k < n && next; ++k)
 			{
 				next = false;
 				foreach (var e in directedEdges)

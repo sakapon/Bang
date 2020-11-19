@@ -144,6 +144,23 @@ namespace AlgorithmLab.Graphs
 			return (costs, inEdges);
 		}
 
+		/// <summary>
+		/// Warshall-Floyd 法により、すべての頂点の間の最短経路を求めます。
+		/// </summary>
+		/// <param name="vertexesCount">頂点の個数。これ未満の値を ID として使用できます。</param>
+		/// <param name="edges">辺のリスト。edge: { from, to, cost }</param>
+		/// <param name="directed">有向グラフかどうかを示す値。</param>
+		/// <returns>
+		/// 各始点と終点のペアに対する最小コストおよび中間点。<br/>
+		/// 負閉路が存在するとき、ともに <see langword="null"/>。<br/>
+		/// ある始点から終点へ到達不可能の場合、最小コストは <see cref="long.MaxValue"/>、中間点は -1。<br/>
+		/// 到達可能でも、中間点がなければ -1。
+		/// </returns>
+		/// <remarks>
+		/// グラフの有向性、連結性、多重性、開閉を問いません。したがって、1-indexed でも利用できます。<br/>
+		/// 負閉路が存在するときは検出されます。<br/>
+		/// 計算量: O(V^3)
+		/// </remarks>
 		public static (long[][] minCosts, int[][] interVertexes) WarshallFloyd(int vertexesCount, int[][] edges, bool directed)
 		{
 			var n = vertexesCount;

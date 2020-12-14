@@ -17,6 +17,7 @@ namespace OnlineTest.Graphs0
 			var ev = FindChar(s, 'g');
 
 			// 最短距離は必要ないため、bool 型でも十分です。
+			// DFS (Stack) で最短距離を求めると TLE となります。
 			var cs = Array.ConvertAll(new bool[h], _ => Array.ConvertAll(new bool[w], __ => int.MaxValue));
 			var q = new Queue<(int i, int j)>();
 			cs.SetByP(sv, 0);

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace OnlineTest.Graphs0
 {
+	// Test: https://atcoder.jp/contests/atc001/tasks/dfs_a
 	static class Bfs_ATC001A0
 	{
 		static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);

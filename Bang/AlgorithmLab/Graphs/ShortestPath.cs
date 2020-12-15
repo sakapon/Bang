@@ -5,6 +5,15 @@ namespace AlgorithmLab.Graphs
 {
 	public static class ShortestPath
 	{
+		// 無向グリッド上での典型的な BFS の例
+		// ev: 終点を指定しない場合、(-1, -1) など
+		// 
+		//var r = ShortestPath.Bfs(h * w,
+		//	v => GridHelper.ToId(v, w),
+		//	id => GridHelper.FromId(id, w),
+		//	v => Array.FindAll(GridHelper.Nexts(v), v => s.GetByP(v) != '#'),
+		//	sv, ev);
+
 		public static Func<T, long> Bfs<T>(int vertexesCount, Func<T, int> toId, Func<int, T> fromId, Func<T, T[]> getNextVertexes, T startVertex, T endVertex)
 		{
 			var r = ShortestPathCore.Bfs(vertexesCount, id => Array.ConvertAll(getNextVertexes(fromId(id)), v => toId(v)), toId(startVertex), toId(endVertex));

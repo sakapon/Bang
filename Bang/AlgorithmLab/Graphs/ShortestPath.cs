@@ -5,20 +5,23 @@ namespace AlgorithmLab.Graphs
 {
 	public static class ShortestPath
 	{
-		public static Func<T, long> Bfs<T>(int vertexesCount, Func<T, int> toId, Func<int, T> fromId, Func<T, IEnumerable<T>> getNextVertexes, T startVertex, T endVertex)
+		public static Func<T, long> Bfs<T>(int vertexesCount, Func<T, int> toId, Func<int, T> fromId, Func<T, T[]> getNextVertexes, T startVertex, T endVertex)
 		{
-			IEnumerable<int> toNextIds(int v)
-			{
-				foreach (var nv in getNextVertexes(fromId(v)))
-					yield return toId(nv);
-			}
-			var r = ShortestPathCore.Bfs(vertexesCount, toNextIds, toId(startVertex), toId(endVertex));
+			var r = ShortestPathCore.Bfs(vertexesCount, id => Array.ConvertAll(getNextVertexes(fromId(id)), v => toId(v)), toId(startVertex), toId(endVertex));
 			return v => r[toId(v)];
 		}
 
 		public static Func<T, long> Bfs<T>(int vertexesCount, Func<T, int> toId, T[][] edges, bool directed, T startVertex, T endVertex)
 		{
-			var r = ShortestPathCore.Bfs(vertexesCount, Array.ConvertAll(edges, e => new[] { toId(e[0]), toId(e[1]) }), directed, toId(startVertex), toId(endVertex));
+			var map = Array.ConvertAll(new bool[vertexesCount], _ => new List<int>());
+			foreach (var e in edges)
+			{
+				var id0 = toId(e[0]);
+				var id1 = toId(e[1]);
+				map[id0].Add(id1);
+				if (!directed) map[id1].Add(id0);
+			}
+			var r = ShortestPathCore.Bfs(vertexesCount, id => map[id], toId(startVertex), toId(endVertex));
 			return v => r[toId(v)];
 		}
 	}

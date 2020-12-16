@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using AlgorithmLab.Graphs;
 
 namespace OnlineTest.Graphs
@@ -27,13 +28,7 @@ namespace OnlineTest.Graphs
 						v => Array.FindAll(GridHelper.Nexts(v), v => s.GetByP(v) != '#'),
 						(i, j), (0, -1));
 
-					for (int k = 0; k < h; k++)
-						for (int l = 0; l < w; l++)
-						{
-							if (s[k][l] == '#') continue;
-
-							M = Math.Max(M, r((k, l)));
-						}
+					M = Math.Max(M, r.RawCosts.Where(x => x < long.MaxValue).Max());
 				}
 			Console.WriteLine(M);
 		}

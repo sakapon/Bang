@@ -23,7 +23,7 @@ namespace OnlineTest.Graphs
 				id => GridHelper.FromId(id, w),
 				v => Array.FindAll(GridHelper.Nexts(v), v => s.GetByP(v) != '#'),
 				sv, ev);
-			return r(ev);
+			return r[ev];
 		}
 	}
 }

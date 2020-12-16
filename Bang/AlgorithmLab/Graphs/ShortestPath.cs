@@ -17,13 +17,13 @@ namespace AlgorithmLab.Graphs
 		//	v => Array.FindAll(GridHelper.Nexts(v), v => s.GetByP(v) != '#'),
 		//	sv, ev);
 
-		public static Func<T, long> Bfs<T>(int vertexesCount, Func<T, int> toId, Func<int, T> fromId, Func<T, T[]> getNextVertexes, T startVertex, T endVertex)
+		public static UnweightedResult<T> Bfs<T>(int vertexesCount, Func<T, int> toId, Func<int, T> fromId, Func<T, T[]> getNextVertexes, T startVertex, T endVertex)
 		{
 			var r = ShortestPathCore.Bfs(vertexesCount, id => Array.ConvertAll(getNextVertexes(fromId(id)), v => toId(v)), toId(startVertex), toId(endVertex));
-			return v => r[toId(v)];
+			return new UnweightedResult<T>(r, toId, fromId);
 		}
 
-		public static Func<T, long> Bfs<T>(int vertexesCount, Func<T, int> toId, T[][] edges, bool directed, T startVertex, T endVertex)
+		public static UnweightedResult<T> Bfs<T>(int vertexesCount, Func<T, int> toId, Func<int, T> fromId, T[][] edges, bool directed, T startVertex, T endVertex)
 		{
 			var map = Array.ConvertAll(new bool[vertexesCount], _ => new List<int>());
 			foreach (var e in edges)
@@ -34,7 +34,7 @@ namespace AlgorithmLab.Graphs
 				if (!directed) map[id1].Add(id0);
 			}
 			var r = ShortestPathCore.Bfs(vertexesCount, id => map[id], toId(startVertex), toId(endVertex));
-			return v => r[toId(v)];
+			return new UnweightedResult<T>(r, toId, fromId);
 		}
 
 		public static UnweightedResult Bfs(int vertexesCount, int[][] edges, bool directed, int startVertexId, int endVertexId = -1)
@@ -75,5 +75,23 @@ namespace AlgorithmLab.Graphs
 			return map;
 		}
 		#endregion
+	}
+
+	public class UnweightedResult<T> : UnweightedResult
+	{
+		Func<T, int> ToId;
+		Func<int, T> FromId;
+		public long this[T vertex] => RawCosts[ToId(vertex)];
+
+		public UnweightedResult(UnweightedResult result, Func<T, int> toId, Func<int, T> fromId) : base(result.RawCosts, result.RawInVertexes)
+		{
+			ToId = toId;
+			FromId = fromId;
+		}
+
+		public T[] GetPathVertexes(T endVertex)
+		{
+			return Array.ConvertAll(GetPathVertexes(ToId(endVertex)), id => FromId(id));
+		}
 	}
 }

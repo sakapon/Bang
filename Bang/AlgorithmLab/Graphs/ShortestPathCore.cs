@@ -46,6 +46,18 @@ namespace AlgorithmLab.Graphs
 			return costs;
 		}
 
+		/// <summary>
+		/// Dijkstra 法により、始点から各頂点への最短経路を求めます。
+		/// </summary>
+		/// <param name="vertexesCount">頂点の個数。これ未満の値を ID として使用できます。</param>
+		/// <param name="getNextEdges">指定された頂点からの出辺を取得するための関数。</param>
+		/// <param name="startVertexId">始点の ID。</param>
+		/// <param name="endVertexId">終点の ID。終点を指定しない場合、-1。</param>
+		/// <returns>探索結果を表す <see cref="WeightedResult"/> オブジェクト。</returns>
+		/// <remarks>
+		/// グラフの有向性、連結性、多重性、開閉を問いません。したがって、1-indexed でも利用できます。<br/>
+		/// 辺のコストは非負でなければなりません。
+		/// </remarks>
 		public static WeightedResult Dijkstra(int vertexesCount, Func<int, IEnumerable<int[]>> getNextEdges, int startVertexId, int endVertexId = -1)
 		{
 			var costs = Array.ConvertAll(new bool[vertexesCount], _ => long.MaxValue);
@@ -83,6 +95,23 @@ namespace AlgorithmLab.Graphs
 		{
 			RawCosts = rawCosts;
 			InEdges = inEdges;
+		}
+
+		public int[] GetPathVertexes(int endVertexId)
+		{
+			var path = new Stack<int>();
+			path.Push(endVertexId);
+			for (var e = InEdges[endVertexId]; e != null; e = InEdges[e[0]])
+				path.Push(e[0]);
+			return path.ToArray();
+		}
+
+		public int[][] GetPathEdges(int endVertexId)
+		{
+			var path = new Stack<int[]>();
+			for (var e = InEdges[endVertexId]; e != null; e = InEdges[e[0]])
+				path.Push(e);
+			return path.ToArray();
 		}
 	}
 }

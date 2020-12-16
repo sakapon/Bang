@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 namespace AlgorithmLab.Graphs
 {
+	/// <summary>
+	/// 最短経路を求めるための静的メソッドを提供します。
+	/// </summary>
 	public static class ShortestPath
 	{
 		// 無向グリッド上での典型的な BFS の例
@@ -40,6 +43,14 @@ namespace AlgorithmLab.Graphs
 			return ShortestPathCore.Bfs(vertexesCount, v => map[v], startVertexId, endVertexId);
 		}
 
+		public static WeightedResult Dijkstra(int vertexesCount, int[][] edges, bool directed, int startVertexId, int endVertexId = -1)
+		{
+			var map = WeightedEdgesToMap(vertexesCount, edges, directed);
+			return ShortestPathCore.Dijkstra(vertexesCount, v => map[v], startVertexId, endVertexId);
+		}
+
+		#region Adjacent List
+
 		public static List<int>[] UnweightedEdgesToMap(int vertexesCount, int[][] edges, bool directed)
 		{
 			var map = Array.ConvertAll(new bool[vertexesCount], _ => new List<int>());
@@ -63,5 +74,6 @@ namespace AlgorithmLab.Graphs
 			}
 			return map;
 		}
+		#endregion
 	}
 }

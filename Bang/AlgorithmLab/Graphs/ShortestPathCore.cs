@@ -23,9 +23,10 @@ namespace AlgorithmLab.Graphs
 		/// グラフの有向性、連結性、多重性、開閉を問いません。したがって、1-indexed でも利用できます。<br/>
 		/// 辺のコストはすべて 1 です。
 		/// </remarks>
-		public static long[] Bfs(int vertexesCount, Func<int, IEnumerable<int>> getNextVertexes, int startVertexId, int endVertexId = -1)
+		public static UnweightedResult Bfs(int vertexesCount, Func<int, IEnumerable<int>> getNextVertexes, int startVertexId, int endVertexId = -1)
 		{
 			var costs = Array.ConvertAll(new bool[vertexesCount], _ => long.MaxValue);
+			var inVertexs = Array.ConvertAll(new bool[vertexesCount], _ => -1);
 			var q = new Queue<int>();
 			costs[startVertexId] = 0;
 			q.Enqueue(startVertexId);
@@ -39,11 +40,12 @@ namespace AlgorithmLab.Graphs
 				{
 					if (costs[nv] <= nc) continue;
 					costs[nv] = nc;
-					if (nv == endVertexId) return costs;
+					inVertexs[nv] = v;
+					if (nv == endVertexId) return new UnweightedResult(costs, inVertexs);
 					q.Enqueue(nv);
 				}
 			}
-			return costs;
+			return new UnweightedResult(costs, inVertexs);
 		}
 
 		/// <summary>
@@ -85,23 +87,44 @@ namespace AlgorithmLab.Graphs
 		}
 	}
 
+	public class UnweightedResult
+	{
+		public long[] RawCosts { get; }
+		public int[] RawInVertexes { get; }
+		public long this[int vertexId] => RawCosts[vertexId];
+
+		public UnweightedResult(long[] costs, int[] inVertexes)
+		{
+			RawCosts = costs;
+			RawInVertexes = inVertexes;
+		}
+
+		public int[] GetPathVertexes(int endVertexId)
+		{
+			var path = new Stack<int>();
+			for (var v = endVertexId; v != -1; v = RawInVertexes[v])
+				path.Push(v);
+			return path.ToArray();
+		}
+	}
+
 	public class WeightedResult
 	{
 		public long[] RawCosts { get; }
-		public int[][] InEdges { get; }
+		public int[][] RawInEdges { get; }
 		public long this[int vertexId] => RawCosts[vertexId];
 
-		public WeightedResult(long[] rawCosts, int[][] inEdges)
+		public WeightedResult(long[] costs, int[][] inEdges)
 		{
-			RawCosts = rawCosts;
-			InEdges = inEdges;
+			RawCosts = costs;
+			RawInEdges = inEdges;
 		}
 
 		public int[] GetPathVertexes(int endVertexId)
 		{
 			var path = new Stack<int>();
 			path.Push(endVertexId);
-			for (var e = InEdges[endVertexId]; e != null; e = InEdges[e[0]])
+			for (var e = RawInEdges[endVertexId]; e != null; e = RawInEdges[e[0]])
 				path.Push(e[0]);
 			return path.ToArray();
 		}
@@ -109,7 +132,7 @@ namespace AlgorithmLab.Graphs
 		public int[][] GetPathEdges(int endVertexId)
 		{
 			var path = new Stack<int[]>();
-			for (var e = InEdges[endVertexId]; e != null; e = InEdges[e[0]])
+			for (var e = RawInEdges[endVertexId]; e != null; e = RawInEdges[e[0]])
 				path.Push(e);
 			return path.ToArray();
 		}

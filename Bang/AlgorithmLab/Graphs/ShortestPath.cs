@@ -37,7 +37,7 @@ namespace AlgorithmLab.Graphs
 			return v => r[toId(v)];
 		}
 
-		public static long[] Bfs(int vertexesCount, int[][] edges, bool directed, int startVertexId, int endVertexId = -1)
+		public static UnweightedResult Bfs(int vertexesCount, int[][] edges, bool directed, int startVertexId, int endVertexId = -1)
 		{
 			var map = UnweightedEdgesToMap(vertexesCount, edges, directed);
 			return ShortestPathCore.Bfs(vertexesCount, v => map[v], startVertexId, endVertexId);

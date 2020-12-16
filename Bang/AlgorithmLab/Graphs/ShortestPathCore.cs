@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using AlgorithmLab.DataTrees;
 
 namespace AlgorithmLab.Graphs
 {
@@ -43,6 +44,45 @@ namespace AlgorithmLab.Graphs
 				}
 			}
 			return costs;
+		}
+
+		public static WeightedResult Dijkstra(int vertexesCount, Func<int, IEnumerable<int[]>> getNextEdges, int startVertexId, int endVertexId = -1)
+		{
+			var costs = Array.ConvertAll(new bool[vertexesCount], _ => long.MaxValue);
+			var inEdges = new int[vertexesCount][];
+			var q = PriorityQueue<int>.CreateWithKey(v => costs[v]);
+			costs[startVertexId] = 0;
+			q.Push(startVertexId);
+
+			while (q.Any)
+			{
+				var (v, c) = q.Pop();
+				if (v == endVertexId) break;
+				if (costs[v] < c) continue;
+
+				foreach (var e in getNextEdges(v))
+				{
+					var nc = costs[v] + e[2];
+					if (costs[e[1]] <= nc) continue;
+					costs[e[1]] = nc;
+					inEdges[e[1]] = e;
+					q.Push(e[1]);
+				}
+			}
+			return new WeightedResult(costs, inEdges);
+		}
+	}
+
+	public class WeightedResult
+	{
+		public long[] RawCosts { get; }
+		public int[][] InEdges { get; }
+		public long this[int vertexId] => RawCosts[vertexId];
+
+		public WeightedResult(long[] rawCosts, int[][] inEdges)
+		{
+			RawCosts = rawCosts;
+			InEdges = inEdges;
 		}
 	}
 }

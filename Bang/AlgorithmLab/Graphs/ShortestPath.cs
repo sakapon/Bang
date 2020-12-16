@@ -36,6 +36,12 @@ namespace AlgorithmLab.Graphs
 
 		public static long[] Bfs(int vertexesCount, int[][] edges, bool directed, int startVertexId, int endVertexId = -1)
 		{
+			var map = UnweightedEdgesToMap(vertexesCount, edges, directed);
+			return ShortestPathCore.Bfs(vertexesCount, v => map[v], startVertexId, endVertexId);
+		}
+
+		public static List<int>[] UnweightedEdgesToMap(int vertexesCount, int[][] edges, bool directed)
+		{
 			var map = Array.ConvertAll(new bool[vertexesCount], _ => new List<int>());
 			foreach (var e in edges)
 			{
@@ -43,7 +49,19 @@ namespace AlgorithmLab.Graphs
 				map[e[0]].Add(e[1]);
 				if (!directed) map[e[1]].Add(e[0]);
 			}
-			return ShortestPathCore.Bfs(vertexesCount, v => map[v], startVertexId, endVertexId);
+			return map;
+		}
+
+		public static List<int[]>[] WeightedEdgesToMap(int vertexesCount, int[][] edges, bool directed)
+		{
+			var map = Array.ConvertAll(new bool[vertexesCount], _ => new List<int[]>());
+			foreach (var e in edges)
+			{
+				// 入力チェックは省略。
+				map[e[0]].Add(new[] { e[0], e[1], e[2] });
+				if (!directed) map[e[1]].Add(new[] { e[1], e[0], e[2] });
+			}
+			return map;
 		}
 	}
 }

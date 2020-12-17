@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using AlgorithmLab.Graphs;
 
-namespace OnlineTest.Graphs
+namespace OnlineTest.Graphs.SppTest
 {
 	// Test: https://atcoder.jp/contests/abc151/tasks/abc151_d
-	class Bfs_ABC151D
+	class Bfs_ABC151_D
 	{
 		static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
 		static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }

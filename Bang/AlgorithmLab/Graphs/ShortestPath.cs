@@ -94,4 +94,22 @@ namespace AlgorithmLab.Graphs
 			return Array.ConvertAll(GetPathVertexes(ToId(endVertex)), id => FromId(id));
 		}
 	}
+
+	public class WeightedResult<T> : WeightedResult
+	{
+		Func<T, int> ToId;
+		Func<int, T> FromId;
+		public long this[T vertex] => RawCosts[ToId(vertex)];
+
+		public WeightedResult(WeightedResult result, Func<T, int> toId, Func<int, T> fromId) : base(result.RawCosts, result.RawInEdges)
+		{
+			ToId = toId;
+			FromId = fromId;
+		}
+
+		public T[] GetPathVertexes(T endVertex)
+		{
+			return Array.ConvertAll(GetPathVertexes(ToId(endVertex)), id => FromId(id));
+		}
+	}
 }

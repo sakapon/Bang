@@ -21,6 +21,15 @@ namespace AlgorithmLab.Graphs
 			return s;
 		}
 
+		public static void EncloseGrid(ref int h, ref int w, ref string[] s, char c = Wall)
+		{
+			var t = new string[h + 2];
+			t[h + 1] = t[0] = new string(c, w += 2);
+			for (int i = 1; i <= h; ++i) t[i] = c + s[i - 1] + c;
+			h += 2;
+			s = t;
+		}
+
 		public static (int i, int j) FindChar(string[] s, char c)
 		{
 			var (h, w) = (s.Length, s[0].Length);

@@ -92,6 +92,7 @@ namespace AlgorithmLab.Graphs
 		public long[] RawCosts { get; }
 		public int[] RawInVertexes { get; }
 		public long this[int vertexId] => RawCosts[vertexId];
+		public bool IsConnected(int vertexId) => RawCosts[vertexId] != long.MaxValue;
 
 		public UnweightedResult(long[] costs, int[] inVertexes)
 		{
@@ -113,6 +114,7 @@ namespace AlgorithmLab.Graphs
 		public long[] RawCosts { get; }
 		public int[][] RawInEdges { get; }
 		public long this[int vertexId] => RawCosts[vertexId];
+		public bool IsConnected(int vertexId) => RawCosts[vertexId] != long.MaxValue;
 
 		public WeightedResult(long[] costs, int[][] inEdges)
 		{

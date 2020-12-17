@@ -82,6 +82,7 @@ namespace AlgorithmLab.Graphs
 		Func<T, int> ToId;
 		Func<int, T> FromId;
 		public long this[T vertex] => RawCosts[ToId(vertex)];
+		public bool IsConnected(T vertex) => RawCosts[ToId(vertex)] != long.MaxValue;
 
 		public UnweightedResult(UnweightedResult result, Func<T, int> toId, Func<int, T> fromId) : base(result.RawCosts, result.RawInVertexes)
 		{
@@ -100,6 +101,7 @@ namespace AlgorithmLab.Graphs
 		Func<T, int> ToId;
 		Func<int, T> FromId;
 		public long this[T vertex] => RawCosts[ToId(vertex)];
+		public bool IsConnected(T vertex) => RawCosts[ToId(vertex)] != long.MaxValue;
 
 		public WeightedResult(WeightedResult result, Func<T, int> toId, Func<int, T> fromId) : base(result.RawCosts, result.RawInEdges)
 		{

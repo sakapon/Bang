@@ -23,7 +23,7 @@ namespace AlgorithmLab.Graphs
 		/// グラフの有向性、連結性、多重性、開閉を問いません。したがって、1-indexed でも利用できます。<br/>
 		/// 辺のコストはすべて 1 です。
 		/// </remarks>
-		public static UnweightedResult Bfs(int vertexesCount, Func<int, IEnumerable<int>> getNextVertexes, int startVertexId, int endVertexId = -1)
+		public static UnweightedResult Bfs(int vertexesCount, Func<int, int[]> getNextVertexes, int startVertexId, int endVertexId = -1)
 		{
 			var costs = Array.ConvertAll(new bool[vertexesCount], _ => long.MaxValue);
 			var inVertexs = Array.ConvertAll(costs, _ => -1);
@@ -36,6 +36,7 @@ namespace AlgorithmLab.Graphs
 				var v = q.Dequeue();
 				var nc = costs[v] + 1;
 
+				// IEnumerable<T>, List<T>, T[] の順に高速になります。
 				foreach (var nv in getNextVertexes(v))
 				{
 					if (costs[nv] <= nc) continue;
@@ -60,7 +61,7 @@ namespace AlgorithmLab.Graphs
 		/// グラフの有向性、連結性、多重性、開閉を問いません。したがって、1-indexed でも利用できます。<br/>
 		/// 辺のコストは非負でなければなりません。
 		/// </remarks>
-		public static WeightedResult Dijkstra(int vertexesCount, Func<int, IEnumerable<WeightedEdge>> getNextEdges, int startVertexId, int endVertexId = -1)
+		public static WeightedResult Dijkstra(int vertexesCount, Func<int, WeightedEdge[]> getNextEdges, int startVertexId, int endVertexId = -1)
 		{
 			var costs = Array.ConvertAll(new bool[vertexesCount], _ => long.MaxValue);
 			var inEdges = Array.ConvertAll(costs, _ => WeightedEdge.Invalid);
@@ -74,6 +75,7 @@ namespace AlgorithmLab.Graphs
 				if (v == endVertexId) break;
 				if (costs[v] < c) continue;
 
+				// IEnumerable<T>, List<T>, T[] の順に高速になります。
 				foreach (var e in getNextEdges(v))
 				{
 					var nv = e.To;

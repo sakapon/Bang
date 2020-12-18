@@ -33,20 +33,20 @@ namespace AlgorithmLab.Graphs
 				map[id0].Add(id1);
 				if (!directed) map[id1].Add(id0);
 			}
-			var r = ShortestPathCore.Bfs(vertexesCount, id => map[id], toId(startVertex), toId(endVertex));
+			var r = ShortestPathCore.Bfs(vertexesCount, id => map[id].ToArray(), toId(startVertex), toId(endVertex));
 			return new UnweightedResult<T>(r, toId, fromId);
 		}
 
 		public static UnweightedResult Bfs(int vertexesCount, int[][] edges, bool directed, int startVertexId, int endVertexId = -1)
 		{
 			var map = UnweightedEdgesToMap(vertexesCount, edges, directed);
-			return ShortestPathCore.Bfs(vertexesCount, v => map[v], startVertexId, endVertexId);
+			return ShortestPathCore.Bfs(vertexesCount, v => map[v].ToArray(), startVertexId, endVertexId);
 		}
 
 		public static WeightedResult Dijkstra(int vertexesCount, int[][] edges, bool directed, int startVertexId, int endVertexId = -1)
 		{
 			var map = WeightedEdgesToMap(vertexesCount, edges, directed);
-			return ShortestPathCore.Dijkstra(vertexesCount, v => map[v], startVertexId, endVertexId);
+			return ShortestPathCore.Dijkstra(vertexesCount, v => map[v].ToArray(), startVertexId, endVertexId);
 		}
 
 		public static WeightedResult<T> Dijkstra<T>(int vertexesCount, Func<T, int> toId, Func<int, T> fromId, Func<T, WeightedEdge<T>[]> getNextEdges, T startVertex, T endVertex)

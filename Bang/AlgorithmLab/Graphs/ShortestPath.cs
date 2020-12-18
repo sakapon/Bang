@@ -49,6 +49,12 @@ namespace AlgorithmLab.Graphs
 			return ShortestPathCore.Dijkstra(vertexesCount, v => map[v], startVertexId, endVertexId);
 		}
 
+		public static WeightedResult<T> Dijkstra<T>(int vertexesCount, Func<T, int> toId, Func<int, T> fromId, Func<T, WeightedEdge<T>[]> getNextEdges, T startVertex, T endVertex)
+		{
+			var r = ShortestPathCore.Dijkstra(vertexesCount, id => Array.ConvertAll(getNextEdges(fromId(id)), e => e.Untype(toId)), toId(startVertex), toId(endVertex));
+			return new WeightedResult<T>(r, toId, fromId);
+		}
+
 		#region Adjacent List
 
 		public static List<int>[] UnweightedEdgesToMap(int vertexesCount, int[][] edges, bool directed)
@@ -63,18 +69,47 @@ namespace AlgorithmLab.Graphs
 			return map;
 		}
 
-		public static List<int[]>[] WeightedEdgesToMap(int vertexesCount, int[][] edges, bool directed)
+		public static List<WeightedEdge>[] WeightedEdgesToMap(int vertexesCount, int[][] edges, bool directed)
 		{
-			var map = Array.ConvertAll(new bool[vertexesCount], _ => new List<int[]>());
+			var map = Array.ConvertAll(new bool[vertexesCount], _ => new List<WeightedEdge>());
 			foreach (var e in edges)
 			{
 				// 入力チェックは省略。
-				map[e[0]].Add(new[] { e[0], e[1], e[2] });
-				if (!directed) map[e[1]].Add(new[] { e[1], e[0], e[2] });
+				map[e[0]].Add(new WeightedEdge(e[0], e[1], e[2]));
+				if (!directed) map[e[1]].Add(new WeightedEdge(e[1], e[0], e[2]));
+			}
+			return map;
+		}
+
+		public static List<WeightedEdge>[] WeightedEdgesToMap(int vertexesCount, WeightedEdge[] edges, bool directed)
+		{
+			var map = Array.ConvertAll(new bool[vertexesCount], _ => new List<WeightedEdge>());
+			foreach (var e in edges)
+			{
+				map[e.From].Add(e);
+				if (!directed) map[e.To].Add(e.Reverse());
 			}
 			return map;
 		}
 		#endregion
+	}
+
+	public struct WeightedEdge<T>
+	{
+		public T From { get; }
+		public T To { get; }
+		public long Cost { get; }
+
+		public WeightedEdge(T from, T to, long cost)
+		{
+			From = from;
+			To = to;
+			Cost = cost;
+		}
+		public WeightedEdge(WeightedEdge e, Func<int, T> fromId) : this(fromId(e.From), fromId(e.To), e.Cost) { }
+
+		public WeightedEdge Untype(Func<T, int> toId) => new WeightedEdge(toId(From), toId(To), Cost);
+		public WeightedEdge<T> Reverse() => new WeightedEdge<T>(To, From, Cost);
 	}
 
 	public class UnweightedResult<T> : UnweightedResult
@@ -112,6 +147,11 @@ namespace AlgorithmLab.Graphs
 		public T[] GetPathVertexes(T endVertex)
 		{
 			return Array.ConvertAll(GetPathVertexes(ToId(endVertex)), id => FromId(id));
+		}
+
+		public WeightedEdge<T>[] GetPathEdges(T endVertex)
+		{
+			return Array.ConvertAll(GetPathEdges(ToId(endVertex)), e => new WeightedEdge<T>(e, FromId));
 		}
 	}
 }

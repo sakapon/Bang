@@ -21,7 +21,7 @@ namespace OnlineTest.Graphs.SppTest
 
 			var path = r.GetPathEdges(t);
 			Console.WriteLine($"{r[t]} {path.Length}");
-			Console.WriteLine(string.Join("\n", path.Select(e => $"{e[0]} {e[1]}")));
+			Console.WriteLine(string.Join("\n", path.Select(e => $"{e.From} {e.To}")));
 		}
 	}
 }

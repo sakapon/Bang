@@ -22,16 +22,17 @@ namespace OnlineTest.Graphs.SppTest
 			ev = (ev.i + 1, ev.j + 1);
 			GridHelper.EncloseGrid(ref h, ref w, ref s);
 
-			var r = ShortestPathCore.Dijkstra(h * w,
-				id =>
+			var r = ShortestPath.Dijkstra(h * w,
+				v => GridHelper.ToId(v, w),
+				id => GridHelper.FromId(id, w),
+				v =>
 				{
-					var v = GridHelper.FromId(id, w);
-					var nids = new List<int[]>();
+					var nids = new List<WeightedEdge<(int, int)>>();
 
 					foreach (var nv in GridHelper.Nexts(v))
 					{
 						if (s.GetByP(nv) == '#') continue;
-						nids.Add(new[] { id, GridHelper.ToId(nv, w), 0 });
+						nids.Add(new WeightedEdge<(int, int)>(v, nv, 0));
 					}
 
 					for (int i = -2; i <= 2; i++)
@@ -39,14 +40,13 @@ namespace OnlineTest.Graphs.SppTest
 						{
 							var nv = (v.i + i, v.j + j);
 							if (s.GetByP(nv) == '#') continue;
-							nids.Add(new[] { id, GridHelper.ToId(nv, w), 1 });
+							nids.Add(new WeightedEdge<(int, int)>(v, nv, 1));
 						}
 					return nids.ToArray();
 				},
-				GridHelper.ToId(sv, w), GridHelper.ToId(ev, w));
+				sv, ev);
 
-			var eid = GridHelper.ToId(ev, w);
-			Console.WriteLine(r.IsConnected(eid) ? r[eid] : -1);
+			Console.WriteLine(r.IsConnected(ev) ? r[ev] : -1);
 		}
 	}
 }

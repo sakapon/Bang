@@ -39,13 +39,13 @@ namespace AlgorithmLab.Graphs
 
 		public static UnweightedResult Bfs(int vertexesCount, int[][] edges, bool directed, int startVertexId, int endVertexId = -1)
 		{
-			var map = UnweightedEdgesToMap(vertexesCount, edges, directed);
+			var map = GraphConvert.UnweightedEdgesToMap(vertexesCount, edges, directed);
 			return ShortestPathCore.Bfs(vertexesCount, v => map[v].ToArray(), startVertexId, endVertexId);
 		}
 
 		public static WeightedResult Dijkstra(int vertexesCount, int[][] edges, bool directed, int startVertexId, int endVertexId = -1)
 		{
-			var map = WeightedEdgesToMap(vertexesCount, edges, directed);
+			var map = GraphConvert.WeightedEdgesToMap(vertexesCount, edges, directed);
 			return ShortestPathCore.Dijkstra(vertexesCount, v => map[v].ToArray(), startVertexId, endVertexId);
 		}
 
@@ -57,59 +57,9 @@ namespace AlgorithmLab.Graphs
 
 		public static WeightedResult<T> Dijkstra<T>(int vertexesCount, Func<T, int> toId, Func<int, T> fromId, WeightedEdge<T>[] edges, bool directed, T startVertex, T endVertex)
 		{
-			var map = WeightedEdgesToMap(vertexesCount, edges, directed, toId);
+			var map = GraphConvert.WeightedEdgesToMap(vertexesCount, edges, directed, toId);
 			var r = ShortestPathCore.Dijkstra(vertexesCount, id => map[id].ToArray(), toId(startVertex), toId(endVertex));
 			return new WeightedResult<T>(r, toId, fromId);
 		}
-
-		#region Adjacent List
-
-		public static List<int>[] UnweightedEdgesToMap(int vertexesCount, int[][] edges, bool directed)
-		{
-			var map = Array.ConvertAll(new bool[vertexesCount], _ => new List<int>());
-			foreach (var e in edges)
-			{
-				// 入力チェックは省略。
-				map[e[0]].Add(e[1]);
-				if (!directed) map[e[1]].Add(e[0]);
-			}
-			return map;
-		}
-
-		public static List<WeightedEdge>[] WeightedEdgesToMap(int vertexesCount, int[][] edges, bool directed)
-		{
-			var map = Array.ConvertAll(new bool[vertexesCount], _ => new List<WeightedEdge>());
-			foreach (var e in edges)
-			{
-				// 入力チェックは省略。
-				map[e[0]].Add(new WeightedEdge(e[0], e[1], e[2]));
-				if (!directed) map[e[1]].Add(new WeightedEdge(e[1], e[0], e[2]));
-			}
-			return map;
-		}
-
-		public static List<WeightedEdge>[] WeightedEdgesToMap(int vertexesCount, WeightedEdge[] edges, bool directed)
-		{
-			var map = Array.ConvertAll(new bool[vertexesCount], _ => new List<WeightedEdge>());
-			foreach (var e in edges)
-			{
-				map[e.From].Add(e);
-				if (!directed) map[e.To].Add(e.Reverse());
-			}
-			return map;
-		}
-
-		public static List<WeightedEdge>[] WeightedEdgesToMap<T>(int vertexesCount, WeightedEdge<T>[] edges, bool directed, Func<T, int> toId)
-		{
-			var map = Array.ConvertAll(new bool[vertexesCount], _ => new List<WeightedEdge>());
-			foreach (var te in edges)
-			{
-				var e = te.Untype(toId);
-				map[e.From].Add(e);
-				if (!directed) map[e.To].Add(e.Reverse());
-			}
-			return map;
-		}
-		#endregion
 	}
 }

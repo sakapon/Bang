@@ -24,8 +24,6 @@ namespace OnlineTest.Graphs.SppTest
 
 			// WeightedEdge<T>[] を静的に構築する方法では TLE。
 			var r = ShortestPath.Dijkstra(h * w,
-				v => GridHelper.ToId(v, w),
-				id => GridHelper.FromId(id, w),
 				v =>
 				{
 					var nids = new List<WeightedEdge<(int, int)>>();
@@ -45,7 +43,9 @@ namespace OnlineTest.Graphs.SppTest
 						}
 					return nids.ToArray();
 				},
-				sv, ev);
+				sv, ev,
+				v => GridHelper.ToId(v, w),
+				id => GridHelper.FromId(id, w));
 
 			Console.WriteLine(r.IsConnected(ev) ? r[ev] : -1);
 		}

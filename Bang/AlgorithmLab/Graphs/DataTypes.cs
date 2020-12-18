@@ -17,6 +17,8 @@ namespace AlgorithmLab.Graphs
 			To = to;
 			Cost = cost;
 		}
+		public WeightedEdge(int[] e) : this(e[0], e[1], e.Length > 2 ? e[2] : 0) { }
+		public WeightedEdge(long[] e) : this((int)e[0], (int)e[1], e.Length > 2 ? e[2] : 0) { }
 
 		public WeightedEdge Reverse() => new WeightedEdge(To, From, Cost);
 	}

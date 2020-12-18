@@ -43,22 +43,26 @@ namespace AlgorithmLab.Graphs
 			return ShortestPathCore.Bfs(vertexesCount, v => map[v].ToArray(), startVertexId, endVertexId);
 		}
 
-		public static WeightedResult Dijkstra(int vertexesCount, int[][] edges, bool directed, int startVertexId, int endVertexId = -1)
+		public static WeightedResult Dijkstra(int vertexesCount, WeightedEdge[] edges, bool directed, int startVertexId, int endVertexId = -1)
 		{
 			var map = GraphConvert.WeightedEdgesToMap(vertexesCount, edges, directed);
 			return ShortestPathCore.Dijkstra(vertexesCount, v => map[v].ToArray(), startVertexId, endVertexId);
 		}
 
-		public static WeightedResult<T> Dijkstra<T>(int vertexesCount, Func<T, int> toId, Func<int, T> fromId, Func<T, WeightedEdge<T>[]> getNextEdges, T startVertex, T endVertex)
+		public static WeightedResult Dijkstra(int vertexesCount, int[][] edges, bool directed, int startVertexId, int endVertexId = -1)
 		{
-			var r = ShortestPathCore.Dijkstra(vertexesCount, id => Array.ConvertAll(getNextEdges(fromId(id)), e => e.Untype(toId)), toId(startVertex), toId(endVertex));
+			return Dijkstra(vertexesCount, Array.ConvertAll(edges, e => new WeightedEdge(e)), directed, startVertexId, endVertexId);
+		}
+
+		public static WeightedResult<T> Dijkstra<T>(int vertexesCount, WeightedEdge<T>[] edges, bool directed, T startVertex, T endVertex, Func<T, int> toId, Func<int, T> fromId)
+		{
+			var r = Dijkstra(vertexesCount, Array.ConvertAll(edges, e => e.Untype(toId)), directed, toId(startVertex), toId(endVertex));
 			return new WeightedResult<T>(r, toId, fromId);
 		}
 
-		public static WeightedResult<T> Dijkstra<T>(int vertexesCount, Func<T, int> toId, Func<int, T> fromId, WeightedEdge<T>[] edges, bool directed, T startVertex, T endVertex)
+		public static WeightedResult<T> Dijkstra<T>(int vertexesCount, Func<T, WeightedEdge<T>[]> getNextEdges, T startVertex, T endVertex, Func<T, int> toId, Func<int, T> fromId)
 		{
-			var map = GraphConvert.WeightedEdgesToMap(vertexesCount, edges, directed, toId);
-			var r = ShortestPathCore.Dijkstra(vertexesCount, id => map[id].ToArray(), toId(startVertex), toId(endVertex));
+			var r = ShortestPathCore.Dijkstra(vertexesCount, id => Array.ConvertAll(getNextEdges(fromId(id)), e => e.Untype(toId)), toId(startVertex), toId(endVertex));
 			return new WeightedResult<T>(r, toId, fromId);
 		}
 	}

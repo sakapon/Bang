@@ -4,26 +4,12 @@ namespace AlgorithmLab.Graphs
 {
 	public static class GraphConsole
 	{
-		public static WeightedEdge[] ReadUnweightedEdges(int count)
-		{
-			var edges = new WeightedEdge[count];
-			for (int i = 0; i < count; ++i)
-			{
-				var e = Console.ReadLine().Split();
-				edges[i] = new WeightedEdge(int.Parse(e[0]), int.Parse(e[1]), 0);
-			}
-			return edges;
-		}
+		static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
 
-		public static WeightedEdge[] ReadWeightedEdges(int count)
+		// Unweighted も含まれます。
+		public static WeightedEdge[] ReadEdges(int count)
 		{
-			var edges = new WeightedEdge[count];
-			for (int i = 0; i < count; ++i)
-			{
-				var e = Console.ReadLine().Split();
-				edges[i] = new WeightedEdge(int.Parse(e[0]), int.Parse(e[1]), long.Parse(e[2]));
-			}
-			return edges;
+			return Array.ConvertAll(new bool[count], _ => new WeightedEdge(Read()));
 		}
 
 		public static string[] ReadGrid(int h)

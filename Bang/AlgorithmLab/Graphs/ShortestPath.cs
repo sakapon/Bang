@@ -55,6 +55,13 @@ namespace AlgorithmLab.Graphs
 			return new WeightedResult<T>(r, toId, fromId);
 		}
 
+		public static WeightedResult<T> Dijkstra<T>(int vertexesCount, Func<T, int> toId, Func<int, T> fromId, WeightedEdge<T>[] edges, bool directed, T startVertex, T endVertex)
+		{
+			var map = WeightedEdgesToMap(vertexesCount, edges, directed, toId);
+			var r = ShortestPathCore.Dijkstra(vertexesCount, id => map[id].ToArray(), toId(startVertex), toId(endVertex));
+			return new WeightedResult<T>(r, toId, fromId);
+		}
+
 		#region Adjacent List
 
 		public static List<int>[] UnweightedEdgesToMap(int vertexesCount, int[][] edges, bool directed)
@@ -86,6 +93,18 @@ namespace AlgorithmLab.Graphs
 			var map = Array.ConvertAll(new bool[vertexesCount], _ => new List<WeightedEdge>());
 			foreach (var e in edges)
 			{
+				map[e.From].Add(e);
+				if (!directed) map[e.To].Add(e.Reverse());
+			}
+			return map;
+		}
+
+		public static List<WeightedEdge>[] WeightedEdgesToMap<T>(int vertexesCount, WeightedEdge<T>[] edges, bool directed, Func<T, int> toId)
+		{
+			var map = Array.ConvertAll(new bool[vertexesCount], _ => new List<WeightedEdge>());
+			foreach (var te in edges)
+			{
+				var e = te.Untype(toId);
 				map[e.From].Add(e);
 				if (!directed) map[e.To].Add(e.Reverse());
 			}

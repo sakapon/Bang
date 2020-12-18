@@ -22,6 +22,7 @@ namespace OnlineTest.Graphs.SppTest
 			ev = (ev.i + 1, ev.j + 1);
 			GridHelper.EncloseGrid(ref h, ref w, ref s);
 
+			// WeightedEdge<T>[] を静的に構築する方法では TLE。
 			var r = ShortestPath.Dijkstra(h * w,
 				v => GridHelper.ToId(v, w),
 				id => GridHelper.FromId(id, w),

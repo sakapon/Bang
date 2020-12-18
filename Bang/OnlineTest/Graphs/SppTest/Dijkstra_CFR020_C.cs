@@ -13,7 +13,7 @@ namespace OnlineTest.Graphs.SppTest
 		static void Main()
 		{
 			var (n, m) = Read2();
-			var es = Array.ConvertAll(new bool[m], _ => Read());
+			var es = GraphConsole.ReadEdges(m);
 
 			var r = ShortestPath.Dijkstra(n + 1, es, false, 1, n);
 			if (!r.IsConnected(n)) { Console.WriteLine(-1); return; }

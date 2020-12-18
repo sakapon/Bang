@@ -18,7 +18,7 @@ namespace AlgorithmLab.Graphs
 		/// <param name="getNextVertexes">指定された頂点からの行先を取得するための関数。</param>
 		/// <param name="startVertexId">始点の ID。</param>
 		/// <param name="endVertexId">終点の ID。終点を指定しない場合、-1。</param>
-		/// <returns>頂点ごとの最小コスト。到達不可能の場合、<see cref="long.MaxValue"/>。</returns>
+		/// <returns>探索結果を表す <see cref="UnweightedResult"/> オブジェクト。</returns>
 		/// <remarks>
 		/// グラフの有向性、連結性、多重性、開閉を問いません。したがって、1-indexed でも利用できます。<br/>
 		/// 辺のコストはすべて 1 です。

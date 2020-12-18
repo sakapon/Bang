@@ -13,7 +13,7 @@ namespace OnlineTest.Graphs.SppTest
 		static void Main()
 		{
 			var (h, w) = Read2();
-			var s = GridHelper.ReadEnclosedGrid(ref h, ref w);
+			var s = GraphConsole.ReadEnclosedGrid(ref h, ref w);
 
 			var M = 0L;
 

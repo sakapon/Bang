@@ -13,7 +13,7 @@ namespace OnlineTest.Graphs.SppTest
 		static bool Solve()
 		{
 			var (h, w) = Read2();
-			var s = GridHelper.ReadEnclosedGrid(ref h, ref w);
+			var s = GraphConsole.ReadEnclosedGrid(ref h, ref w);
 
 			var sv = GridHelper.FindChar(s, 's');
 			var ev = GridHelper.FindChar(s, 'g');

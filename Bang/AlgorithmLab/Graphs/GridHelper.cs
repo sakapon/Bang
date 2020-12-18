@@ -12,15 +12,6 @@ namespace AlgorithmLab.Graphs
 		public static void SetByP<T>(this T[][] a, (int i, int j) p, T value) => a[p.i][p.j] = value;
 		public static char GetByP(this string[] s, (int i, int j) p) => s[p.i][p.j];
 
-		public static string[] ReadEnclosedGrid(ref int h, ref int w, char c = Wall)
-		{
-			var s = new string[h + 2];
-			s[h + 1] = s[0] = new string(c, w += 2);
-			for (int i = 1; i <= h; ++i) s[i] = c + Console.ReadLine() + c;
-			h += 2;
-			return s;
-		}
-
 		public static void EncloseGrid(ref int h, ref int w, ref string[] s, char c = Wall)
 		{
 			var t = new string[h + 2];

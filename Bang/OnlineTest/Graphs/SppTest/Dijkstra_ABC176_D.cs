@@ -16,7 +16,7 @@ namespace OnlineTest.Graphs.SppTest
 			// 1-indexed に注意
 			var sv = Read2();
 			var ev = Read2();
-			var s = GridHelper.ReadEnclosedGrid(ref h, ref w);
+			var s = GraphConsole.ReadEnclosedGrid(ref h, ref w);
 
 			sv = (sv.i + 1, sv.j + 1);
 			ev = (ev.i + 1, ev.j + 1);

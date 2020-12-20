@@ -23,6 +23,14 @@ namespace AlgorithmLab.Graphs
 		public WeightedEdge Reverse() => new WeightedEdge(To, From, Cost);
 	}
 
+	public struct UnweightedEdge<T>
+	{
+		public T From { get; }
+		public T To { get; }
+		public UnweightedEdge(T from, T to) { From = from; To = to; }
+		public UnweightedEdge<T> Reverse() => new UnweightedEdge<T>(To, From);
+	}
+
 	public struct WeightedEdge<T>
 	{
 		public T From { get; }
@@ -39,6 +47,14 @@ namespace AlgorithmLab.Graphs
 
 		public WeightedEdge Untype(Func<T, int> toId) => new WeightedEdge(toId(From), toId(To), Cost);
 		public WeightedEdge<T> Reverse() => new WeightedEdge<T>(To, From, Cost);
+	}
+
+	public static class EdgeHelper
+	{
+		public static UnweightedEdge<int> Unweighted(int[] e) => new UnweightedEdge<int>(e[0], e[1]);
+		public static UnweightedEdge<int> Unweighted(long[] e) => new UnweightedEdge<int>((int)e[0], (int)e[1]);
+		public static WeightedEdge<int> Weighted(int[] e) => new WeightedEdge<int>(e[0], e[1], e.Length > 2 ? e[2] : 0);
+		public static WeightedEdge<int> Weighted(long[] e) => new WeightedEdge<int>((int)e[0], (int)e[1], e.Length > 2 ? e[2] : 0);
 	}
 
 	public class UnweightedResult
@@ -134,5 +150,89 @@ namespace AlgorithmLab.Graphs
 		{
 			return Array.ConvertAll(GetPathEdges(ToId(endVertex)), e => new WeightedEdge<T>(e, FromId));
 		}
+	}
+
+	public abstract class Map<TKey, TValue>
+	{
+		public abstract TValue this[TKey key] { get; set; }
+	}
+
+	public abstract class ReadOnlyMap<TKey, TValue>
+	{
+		public abstract TValue this[TKey key] { get; }
+	}
+
+	public class IntMap<TValue> : Map<int, TValue>
+	{
+		TValue[] a;
+		public IntMap(int count, TValue v0)
+		{
+			a = Array.ConvertAll(new bool[count], _ => v0);
+		}
+		public override TValue this[int key] { get => a[key]; set => a[key] = value; }
+	}
+
+	public class GridMap<TValue> : Map<(int i, int j), TValue>
+	{
+		TValue[][] a;
+		public GridMap(int h, int w, TValue v0)
+		{
+			a = Array.ConvertAll(new bool[h], _ => Array.ConvertAll(new bool[w], __ => v0));
+		}
+		public override TValue this[(int i, int j) key] { get => a[key.i][key.j]; set => a[key.i][key.j] = value; }
+	}
+
+	public class MappingMap<TKey, TValue> : Map<TKey, TValue>
+	{
+		TValue[] a;
+		Func<TKey, int> ToId;
+		public MappingMap(int count, TValue v0, Func<TKey, int> toId)
+		{
+			a = Array.ConvertAll(new bool[count], _ => v0);
+			ToId = toId;
+		}
+		public override TValue this[TKey key] { get => a[ToId(key)]; set => a[ToId(key)] = value; }
+	}
+
+	public class FuncReadOnlyMap<TKey, TValue> : ReadOnlyMap<TKey, TValue>
+	{
+		Func<TKey, TValue> GetValue;
+		public FuncReadOnlyMap(Func<TKey, TValue> getValue)
+		{
+			GetValue = getValue;
+		}
+		public override TValue this[TKey key] => GetValue(key);
+	}
+
+	public class IntListReadOnlyMap<TValue> : ReadOnlyMap<int, TValue[]>
+	{
+		List<TValue>[] Map;
+		public IntListReadOnlyMap(List<TValue>[] map)
+		{
+			Map = map;
+		}
+		public override TValue[] this[int key] => Map[key].ToArray();
+	}
+
+	public class GridListReadOnlyMap<TValue> : ReadOnlyMap<(int i, int j), TValue[]>
+	{
+		List<TValue>[][] Map;
+		public GridListReadOnlyMap(List<TValue>[][] map)
+		{
+			Map = map;
+		}
+		public override TValue[] this[(int i, int j) key] => Map[key.i][key.j].ToArray();
+	}
+
+	public class MappingListReadOnlyMap<TKey, TValue> : ReadOnlyMap<TKey, TValue[]>
+	{
+		List<TValue>[] Map;
+		Func<TKey, int> ToId;
+		public MappingListReadOnlyMap(List<TValue>[] map, Func<TKey, int> toId)
+		{
+			Map = map;
+			ToId = toId;
+		}
+		public override TValue[] this[TKey key] => Map[ToId(key)].ToArray();
 	}
 }

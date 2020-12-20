@@ -204,35 +204,38 @@ namespace AlgorithmLab.Graphs
 		public override TValue this[TKey key] => GetValue(key);
 	}
 
-	public class IntListReadOnlyMap<TValue> : ReadOnlyMap<int, TValue[]>
+	public class IntListMap<TValue> : ReadOnlyMap<int, TValue[]>
 	{
-		List<TValue>[] Map;
-		public IntListReadOnlyMap(List<TValue>[] map)
+		List<TValue>[] map;
+		public IntListMap(int count)
 		{
-			Map = map;
+			map = Array.ConvertAll(new bool[count], _ => new List<TValue>());
 		}
-		public override TValue[] this[int key] => Map[key].ToArray();
+		public override TValue[] this[int key] => map[key].ToArray();
+		public void Add(int key, TValue value) => map[key].Add(value);
 	}
 
-	public class GridListReadOnlyMap<TValue> : ReadOnlyMap<(int i, int j), TValue[]>
+	public class GridListMap<TValue> : ReadOnlyMap<(int i, int j), TValue[]>
 	{
-		List<TValue>[][] Map;
-		public GridListReadOnlyMap(List<TValue>[][] map)
+		List<TValue>[][] map;
+		public GridListMap(int h, int w)
 		{
-			Map = map;
+			map = Array.ConvertAll(new bool[h], _ => Array.ConvertAll(new bool[w], __ => new List<TValue>()));
 		}
-		public override TValue[] this[(int i, int j) key] => Map[key.i][key.j].ToArray();
+		public override TValue[] this[(int i, int j) key] => map[key.i][key.j].ToArray();
+		public void Add((int i, int j) key, TValue value) => map[key.i][key.j].Add(value);
 	}
 
-	public class MappingListReadOnlyMap<TKey, TValue> : ReadOnlyMap<TKey, TValue[]>
+	public class MappingListMap<TKey, TValue> : ReadOnlyMap<TKey, TValue[]>
 	{
-		List<TValue>[] Map;
+		List<TValue>[] map;
 		Func<TKey, int> ToId;
-		public MappingListReadOnlyMap(List<TValue>[] map, Func<TKey, int> toId)
+		public MappingListMap(int count, Func<TKey, int> toId)
 		{
-			Map = map;
+			map = Array.ConvertAll(new bool[count], _ => new List<TValue>());
 			ToId = toId;
 		}
-		public override TValue[] this[TKey key] => Map[ToId(key)].ToArray();
+		public override TValue[] this[TKey key] => map[ToId(key)].ToArray();
+		public void Add(TKey key, TValue value) => map[ToId(key)].Add(value);
 	}
 }

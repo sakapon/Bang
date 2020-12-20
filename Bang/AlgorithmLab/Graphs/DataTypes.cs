@@ -162,6 +162,11 @@ namespace AlgorithmLab.Graphs
 		public abstract TValue this[TKey key] { get; }
 	}
 
+	public abstract class ListMap<TKey, TValue> : ReadOnlyMap<TKey, TValue[]>
+	{
+		public abstract void Add(TKey key, TValue value);
+	}
+
 	public class IntMap<TValue> : Map<int, TValue>
 	{
 		TValue[] a;
@@ -204,7 +209,7 @@ namespace AlgorithmLab.Graphs
 		public override TValue this[TKey key] => GetValue(key);
 	}
 
-	public class IntListMap<TValue> : ReadOnlyMap<int, TValue[]>
+	public class IntListMap<TValue> : ListMap<int, TValue>
 	{
 		List<TValue>[] map;
 		public IntListMap(int count)
@@ -212,10 +217,10 @@ namespace AlgorithmLab.Graphs
 			map = Array.ConvertAll(new bool[count], _ => new List<TValue>());
 		}
 		public override TValue[] this[int key] => map[key].ToArray();
-		public void Add(int key, TValue value) => map[key].Add(value);
+		public override void Add(int key, TValue value) => map[key].Add(value);
 	}
 
-	public class GridListMap<TValue> : ReadOnlyMap<(int i, int j), TValue[]>
+	public class GridListMap<TValue> : ListMap<(int i, int j), TValue>
 	{
 		List<TValue>[][] map;
 		public GridListMap(int h, int w)
@@ -223,10 +228,10 @@ namespace AlgorithmLab.Graphs
 			map = Array.ConvertAll(new bool[h], _ => Array.ConvertAll(new bool[w], __ => new List<TValue>()));
 		}
 		public override TValue[] this[(int i, int j) key] => map[key.i][key.j].ToArray();
-		public void Add((int i, int j) key, TValue value) => map[key.i][key.j].Add(value);
+		public override void Add((int i, int j) key, TValue value) => map[key.i][key.j].Add(value);
 	}
 
-	public class MappingListMap<TKey, TValue> : ReadOnlyMap<TKey, TValue[]>
+	public class MappingListMap<TKey, TValue> : ListMap<TKey, TValue>
 	{
 		List<TValue>[] map;
 		Func<TKey, int> ToId;
@@ -236,6 +241,6 @@ namespace AlgorithmLab.Graphs
 			ToId = toId;
 		}
 		public override TValue[] this[TKey key] => map[ToId(key)].ToArray();
-		public void Add(TKey key, TValue value) => map[ToId(key)].Add(value);
+		public override void Add(TKey key, TValue value) => map[ToId(key)].Add(value);
 	}
 }

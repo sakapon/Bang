@@ -23,20 +23,6 @@ namespace AlgorithmLab.Graphs
 			return new UnweightedResult<T>(r, toId, fromId);
 		}
 
-		public static UnweightedResult<T> Bfs<T>(int vertexesCount, Func<T, int> toId, Func<int, T> fromId, T[][] edges, bool directed, T startVertex, T endVertex)
-		{
-			var map = Array.ConvertAll(new bool[vertexesCount], _ => new List<int>());
-			foreach (var e in edges)
-			{
-				var id0 = toId(e[0]);
-				var id1 = toId(e[1]);
-				map[id0].Add(id1);
-				if (!directed) map[id1].Add(id0);
-			}
-			var r = ShortestPathCore.Bfs(vertexesCount, id => map[id].ToArray(), toId(startVertex), toId(endVertex));
-			return new UnweightedResult<T>(r, toId, fromId);
-		}
-
 		public static UnweightedResult Bfs(int vertexesCount, int[][] edges, bool directed, int startVertexId, int endVertexId = -1)
 		{
 			var map = GraphConvert.UnweightedEdgesToMap(vertexesCount, edges, directed);

@@ -12,9 +12,29 @@ namespace AlgorithmLab.Graphs
 			return Array.ConvertAll(new bool[count], _ => new WeightedEdge(Read()));
 		}
 
+		public static UnweightedEdge<int>[] ReadUnweightedEdges(int count)
+		{
+			return Array.ConvertAll(new bool[count], _ => EdgeHelper.Unweighted(Read()));
+		}
+
+		public static WeightedEdge<int>[] ReadWeightedEdges(int count)
+		{
+			return Array.ConvertAll(new bool[count], _ => EdgeHelper.Weighted(Read()));
+		}
+
 		public static string[] ReadGrid(int h)
 		{
 			return Array.ConvertAll(new bool[h], _ => Console.ReadLine());
+		}
+
+		public static char[][] ReadGridAsChar(int h)
+		{
+			return Array.ConvertAll(new bool[h], _ => Console.ReadLine().ToCharArray());
+		}
+
+		public static int[][] ReadGridAsInt(int h)
+		{
+			return Array.ConvertAll(new bool[h], _ => Read());
 		}
 
 		public static string[] ReadEnclosedGrid(ref int h, ref int w, char c = '#')

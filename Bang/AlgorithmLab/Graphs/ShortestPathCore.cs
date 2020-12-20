@@ -26,7 +26,7 @@ namespace AlgorithmLab.Graphs
 		public static UnweightedResult Bfs(int vertexesCount, Func<int, int[]> getNextVertexes, int startVertexId, int endVertexId = -1)
 		{
 			var costs = Array.ConvertAll(new bool[vertexesCount], _ => long.MaxValue);
-			var inVertexs = Array.ConvertAll(costs, _ => -1);
+			var inVertexes = Array.ConvertAll(costs, _ => -1);
 			var q = new Queue<int>();
 			costs[startVertexId] = 0;
 			q.Enqueue(startVertexId);
@@ -41,12 +41,12 @@ namespace AlgorithmLab.Graphs
 				{
 					if (costs[nv] <= nc) continue;
 					costs[nv] = nc;
-					inVertexs[nv] = v;
-					if (nv == endVertexId) return new UnweightedResult(costs, inVertexs);
+					inVertexes[nv] = v;
+					if (nv == endVertexId) return new UnweightedResult(costs, inVertexes);
 					q.Enqueue(nv);
 				}
 			}
-			return new UnweightedResult(costs, inVertexs);
+			return new UnweightedResult(costs, inVertexes);
 		}
 
 		/// <summary>

@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using AlgorithmLab.DataTrees;
 using AlgorithmLab.Graphs0;
 
-namespace OnlineTest.Graphs0
+namespace OnlineTest.Graphs0.Spp0Test
 {
 	// Test: https://judge.yosupo.jp/problem/shortest_path
-	class Dijkstra0Test1
+	class Dijkstra_YLC_SPP0
 	{
 		static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
 		static void Main()

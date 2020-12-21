@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using AlgorithmLab.DataTrees;
 using AlgorithmLab.Graphs0;
 
-namespace OnlineTest.Graphs0
+namespace OnlineTest.Graphs0.Spp0Test
 {
 	// Test: https://codeforces.com/contest/20/problem/C
-	class Dijkstra0Test2
+	class Dijkstra_CFR020_C0
 	{
 		static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
 		static void Main()

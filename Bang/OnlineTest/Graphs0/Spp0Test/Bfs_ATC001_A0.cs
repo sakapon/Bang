@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace OnlineTest.Graphs0
+namespace OnlineTest.Graphs0.Spp0Test
 {
 	// Test: https://atcoder.jp/contests/atc001/tasks/dfs_a
-	static class Bfs_ATC001A0
+	static class Bfs_ATC001_A0
 	{
 		static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
 		static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }

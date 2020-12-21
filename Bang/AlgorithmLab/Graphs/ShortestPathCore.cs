@@ -21,7 +21,7 @@ namespace AlgorithmLab.Graphs
 		/// <returns>探索結果を表す <see cref="UnweightedResult"/> オブジェクト。</returns>
 		/// <remarks>
 		/// グラフの有向性、連結性、多重性、開閉を問いません。したがって、1-indexed でも利用できます。<br/>
-		/// 辺のコストはすべて 1 です。
+		/// 辺のコストはすべて 1 として扱われます。
 		/// </remarks>
 		public static UnweightedResult Bfs(int vertexesCount, Func<int, int[]> getNextVertexes, int startVertexId, int endVertexId = -1)
 		{

@@ -13,7 +13,48 @@ namespace AlgorithmLab.Graphs0
 	public static class ShortestPath0
 	{
 		/// <summary>
-		/// Dijkstra 法により、始点からの最短経路を求めます。
+		/// 幅優先探索により、始点から各頂点への最短経路を求めます。
+		/// </summary>
+		/// <param name="vertexesCount">頂点の個数。これ未満の値を ID として使用できます。</param>
+		/// <param name="getNextVertexes">指定された頂点からの行先を取得するための関数。</param>
+		/// <param name="startVertexId">始点の ID。</param>
+		/// <param name="endVertexId">終点の ID。終点を指定しない場合、-1。</param>
+		/// <returns>
+		/// 最小コストおよび入頂点。<br/>
+		/// ある頂点に到達不可能の場合、最小コストは <see cref="long.MaxValue"/>、入頂点は <c>-1</c>。
+		/// </returns>
+		/// <remarks>
+		/// グラフの有向性、連結性、多重性、開閉を問いません。したがって、1-indexed でも利用できます。<br/>
+		/// 辺のコストはすべて 1 として扱われます。
+		/// </remarks>
+		public static (long[] minCosts, int[] inVertexes) Bfs(int vertexesCount, Func<int, int[]> getNextVertexes, int startVertexId, int endVertexId = -1)
+		{
+			var costs = Array.ConvertAll(new bool[vertexesCount], _ => long.MaxValue);
+			var inVertexes = Array.ConvertAll(costs, _ => -1);
+			var q = new Queue<int>();
+			costs[startVertexId] = 0;
+			q.Enqueue(startVertexId);
+
+			while (q.Count > 0)
+			{
+				var v = q.Dequeue();
+				var nc = costs[v] + 1;
+
+				// IEnumerable<T>, List<T>, T[] の順に高速になります。
+				foreach (var nv in getNextVertexes(v))
+				{
+					if (costs[nv] <= nc) continue;
+					costs[nv] = nc;
+					inVertexes[nv] = v;
+					if (nv == endVertexId) return (costs, inVertexes);
+					q.Enqueue(nv);
+				}
+			}
+			return (costs, inVertexes);
+		}
+
+		/// <summary>
+		/// Dijkstra 法により、始点から各頂点への最短経路を求めます。
 		/// </summary>
 		/// <param name="vertexesCount">頂点の個数。これ未満の値を ID として使用できます。</param>
 		/// <param name="edges">辺のリスト。edge: { from, to, cost }</param>
@@ -100,7 +141,7 @@ namespace AlgorithmLab.Graphs0
 		}
 
 		/// <summary>
-		/// Bellman-Ford 法により、始点からの最短経路を求めます。
+		/// Bellman-Ford 法により、始点から各頂点への最短経路を求めます。
 		/// </summary>
 		/// <param name="vertexesCount">頂点の個数。これ未満の値を ID として使用できます。</param>
 		/// <param name="directedEdges">有向辺のリスト。edge: { from, to, cost }</param>
@@ -189,6 +230,14 @@ namespace AlgorithmLab.Graphs0
 					}
 			for (int i = 0; i < n; ++i) if (costs[i][i] < 0) return (null, null);
 			return (costs, inters);
+		}
+
+		public static int[] GetPathVertexes(int[] inVertexes, int endVertexId)
+		{
+			var path = new Stack<int>();
+			for (var v = endVertexId; v != -1; v = inVertexes[v])
+				path.Push(v);
+			return path.ToArray();
 		}
 
 		public static int[] GetPathVertexes(int[][] inEdges, int endVertexId)

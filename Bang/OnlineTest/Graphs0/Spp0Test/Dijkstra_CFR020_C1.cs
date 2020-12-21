@@ -6,6 +6,7 @@ using AlgorithmLab.Graphs0;
 namespace OnlineTest.Graphs0.Spp0Test
 {
 	// Test: https://codeforces.com/contest/20/problem/C
+	// https://codeforces.com/contest/20/submission/101973330
 	class Dijkstra_CFR020_C1
 	{
 		static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);

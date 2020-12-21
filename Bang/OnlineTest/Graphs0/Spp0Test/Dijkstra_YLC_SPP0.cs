@@ -7,6 +7,7 @@ using AlgorithmLab.Graphs0;
 namespace OnlineTest.Graphs0.Spp0Test
 {
 	// Test: https://judge.yosupo.jp/problem/shortest_path
+	// https://judge.yosupo.jp/submission/33190
 	class Dijkstra_YLC_SPP0
 	{
 		static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);

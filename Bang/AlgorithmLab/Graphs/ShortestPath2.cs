@@ -2,8 +2,13 @@
 
 namespace AlgorithmLab.Graphs
 {
+	public static class ShortestPath2
+	{
+
+	}
+
 	/// <summary>
-	/// データ型による内部実装の違いを吸収します。
+	/// 実装による内部データ構造の違いを吸収します。
 	/// </summary>
 	/// <typeparam name="TVertex">頂点を表すオブジェクトの型。</typeparam>
 	public abstract class SppFactory<TVertex>

@@ -78,8 +78,7 @@ namespace AlgorithmLab.Graphs
 				// IEnumerable<T>, List<T>, T[] の順に高速になります。
 				foreach (var e in getNextEdges(v))
 				{
-					var nv = e.To;
-					var nc = costs[v] + e.Cost;
+					var (nv, nc) = (e.To, c + e.Cost);
 					if (costs[nv] <= nc) continue;
 					costs[nv] = nc;
 					inEdges[nv] = e;

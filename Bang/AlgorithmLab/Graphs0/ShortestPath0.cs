@@ -96,11 +96,70 @@ namespace AlgorithmLab.Graphs0
 
 				foreach (var e in map[v])
 				{
-					var nc = costs[v] + e[2];
-					if (costs[e[1]] <= nc) continue;
-					costs[e[1]] = nc;
-					inEdges[e[1]] = e;
-					q.Push(e[1]);
+					var (nv, nc) = (e[1], c + e[2]);
+					if (costs[nv] <= nc) continue;
+					costs[nv] = nc;
+					inEdges[nv] = e;
+					q.Push(nv);
+				}
+			}
+			return (costs, inEdges);
+		}
+
+		/// <summary>
+		/// 幅優先探索の拡張により、始点から各頂点への最短経路を求めます。<br/>
+		/// 例えば <paramref name="m"/> = 3 のとき、012-BFS を表します。
+		/// </summary>
+		/// <param name="vertexesCount">頂点の個数。これ未満の値を ID として使用できます。</param>
+		/// <param name="m">辺のコストの候補となる数。辺のコストはこれ未満の値に制限されます。</param>
+		/// <param name="edges">辺のリスト。edge: { from, to, cost }</param>
+		/// <param name="directed">有向グラフかどうかを示す値。</param>
+		/// <param name="startVertexId">始点の ID。</param>
+		/// <param name="endVertexId">終点の ID。終点を指定しない場合、-1。</param>
+		/// <returns>
+		/// 最小コストおよび入辺。<br/>
+		/// ある頂点に到達不可能の場合、最小コストは <see cref="long.MaxValue"/>、入辺は <see langword="null"/>。
+		/// </returns>
+		/// <remarks>
+		/// グラフの有向性、連結性、多重性、開閉を問いません。したがって、1-indexed でも利用できます。<br/>
+		/// 辺のコストは <c>0 &lt;= c &lt; m</c> を満たさなければなりません。
+		/// </remarks>
+		public static (long[] minCosts, int[][] inEdges) BfsM(int vertexesCount, int m, int[][] edges, bool directed, int startVertexId, int endVertexId = -1)
+		{
+			var n = vertexesCount;
+			if (edges == null) throw new ArgumentNullException(nameof(edges));
+
+			var map = Array.ConvertAll(new bool[n], _ => new List<int[]>());
+			foreach (var e in edges)
+			{
+				// 入力チェックは省略。
+				map[e[0]].Add(new[] { e[0], e[1], e[2] });
+				if (!directed) map[e[1]].Add(new[] { e[1], e[0], e[2] });
+			}
+
+			var costs = Array.ConvertAll(new bool[n], _ => long.MaxValue);
+			var inEdges = new int[n][];
+			var qs = Array.ConvertAll(new bool[m], _ => new Queue<int>());
+			costs[startVertexId] = 0;
+			qs[0].Enqueue(startVertexId);
+
+			for (long c = 0; Array.Exists(qs, q => q.Count > 0); ++c)
+			{
+				var q = qs[c % m];
+				while (q.Count > 0)
+				{
+					var v = q.Dequeue();
+					if (v == endVertexId) break;
+					if (costs[v] < c) continue;
+
+					foreach (var e in map[v])
+					{
+						var (nv, nc) = (e[1], c + e[2]);
+						if (costs[nv] <= nc) continue;
+						costs[nv] = nc;
+						inEdges[nv] = e;
+						qs[nc % m].Enqueue(nv);
+					}
 				}
 			}
 			return (costs, inEdges);

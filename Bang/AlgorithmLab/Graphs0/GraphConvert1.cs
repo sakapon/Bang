@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace AlgorithmLab.Graphs
+namespace AlgorithmLab.Graphs0
 {
-	public static class GraphConvert
+	public static class GraphConvert1
 	{
 		public static List<int>[] UnweightedEdgesToMap(int vertexesCount, int[][] edges, bool directed)
 		{

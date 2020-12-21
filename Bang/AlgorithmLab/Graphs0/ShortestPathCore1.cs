@@ -2,14 +2,13 @@
 using System.Collections.Generic;
 using AlgorithmLab.DataTrees;
 
-namespace AlgorithmLab.Graphs
+namespace AlgorithmLab.Graphs0
 {
 	/// <summary>
 	/// 最短経路アルゴリズムの核となる機能を提供します。
 	/// ここでは整数型の ID を使用します。
-	/// 整数型以外の ID を使用するには、<see cref="ShortestPath"/> クラスを呼び出します。
 	/// </summary>
-	public static class ShortestPathCore
+	public static class ShortestPathCore1
 	{
 		/// <summary>
 		/// 幅優先探索により、始点から各頂点への最短経路を求めます。

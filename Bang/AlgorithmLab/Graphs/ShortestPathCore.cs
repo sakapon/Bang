@@ -61,10 +61,10 @@ namespace AlgorithmLab.Graphs
 		/// グラフの有向性、連結性、多重性、開閉を問いません。したがって、1-indexed でも利用できます。<br/>
 		/// 辺のコストは非負でなければなりません。
 		/// </remarks>
-		public static WeightedResult Dijkstra(int vertexesCount, Func<int, WeightedEdge[]> getNextEdges, int startVertexId, int endVertexId = -1)
+		public static WeightedResult Dijkstra(int vertexesCount, Func<int, Edge[]> getNextEdges, int startVertexId, int endVertexId = -1)
 		{
 			var costs = Array.ConvertAll(new bool[vertexesCount], _ => long.MaxValue);
-			var inEdges = Array.ConvertAll(costs, _ => WeightedEdge.Invalid);
+			var inEdges = Array.ConvertAll(costs, _ => Edge.Invalid);
 			var q = PriorityQueue<int>.CreateWithKey(v => costs[v]);
 			costs[startVertexId] = 0;
 			q.Push(startVertexId);
@@ -86,6 +86,78 @@ namespace AlgorithmLab.Graphs
 				}
 			}
 			return new WeightedResult(costs, inEdges);
+		}
+	}
+
+	public struct Edge
+	{
+		public static Edge Invalid { get; } = new Edge(-1, -1, -1);
+
+		public int From { get; }
+		public int To { get; }
+		public long Cost { get; }
+
+		public Edge(int from, int to, long cost)
+		{
+			From = from;
+			To = to;
+			Cost = cost;
+		}
+		public Edge(int[] e) : this(e[0], e[1], e.Length > 2 ? e[2] : 0) { }
+		public Edge(long[] e) : this((int)e[0], (int)e[1], e.Length > 2 ? e[2] : 0) { }
+
+		public Edge Reverse() => new Edge(To, From, Cost);
+	}
+
+	public class UnweightedResult
+	{
+		public long[] RawCosts { get; }
+		public int[] RawInVertexes { get; }
+		public long this[int vertexId] => RawCosts[vertexId];
+		public bool IsConnected(int vertexId) => RawCosts[vertexId] != long.MaxValue;
+
+		public UnweightedResult(long[] costs, int[] inVertexes)
+		{
+			RawCosts = costs;
+			RawInVertexes = inVertexes;
+		}
+
+		public int[] GetPathVertexes(int endVertexId)
+		{
+			var path = new Stack<int>();
+			for (var v = endVertexId; v != -1; v = RawInVertexes[v])
+				path.Push(v);
+			return path.ToArray();
+		}
+	}
+
+	public class WeightedResult
+	{
+		public long[] RawCosts { get; }
+		public Edge[] RawInEdges { get; }
+		public long this[int vertexId] => RawCosts[vertexId];
+		public bool IsConnected(int vertexId) => RawCosts[vertexId] != long.MaxValue;
+
+		public WeightedResult(long[] costs, Edge[] inEdges)
+		{
+			RawCosts = costs;
+			RawInEdges = inEdges;
+		}
+
+		public int[] GetPathVertexes(int endVertexId)
+		{
+			var path = new Stack<int>();
+			for (var v = endVertexId; v != -1; v = RawInEdges[v].From)
+				path.Push(v);
+			return path.ToArray();
+		}
+
+		public Edge[] GetPathEdges(int endVertexId)
+		{
+			var path = new Stack<Edge>();
+			for (var e = RawInEdges[endVertexId]; e.From != -1; e = RawInEdges[e.From])
+				path.Push(e);
+			return path.ToArray();
 		}
 	}
 }

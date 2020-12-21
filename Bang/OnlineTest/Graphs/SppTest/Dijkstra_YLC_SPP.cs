@@ -14,9 +14,10 @@ namespace OnlineTest.Graphs.SppTest
 		{
 			var h = Read();
 			int n = h[0], m = h[1], s = h[2], t = h[3];
-			var es = GraphConsole.ReadEdges(m);
+			var es = GraphConsole.ReadWeightedEdges(m);
 
-			var r = ShortestPath.Dijkstra(n, es, true, s, t);
+			var r = ShortestPath2.Int(n).CreateWeighted(es, true);
+			r.Dijkstra(s, t);
 			if (!r.IsConnected(t)) { Console.WriteLine(-1); return; }
 
 			var path = r.GetPathEdges(t);

@@ -16,19 +16,23 @@ namespace OnlineTest.Graphs.SppTest
 			var s = GraphConsole.ReadEnclosedGrid(ref h, ref w);
 
 			var M = 0L;
+			var f = ShortestPath2.Grid(h, w);
+			var r = f.CreateUnweighted(v => Array.FindAll(GridHelper.Nexts(v), v => s.GetByP(v) != '#'));
 
 			for (int i = 0; i < h; i++)
 				for (int j = 0; j < w; j++)
 				{
 					if (s[i][j] == '#') continue;
 
-					var r = ShortestPath.Bfs(h * w,
-						v => GridHelper.ToId(v, w),
-						id => GridHelper.FromId(id, w),
-						v => Array.FindAll(GridHelper.Nexts(v), v => s.GetByP(v) != '#'),
-						(i, j), (0, -1));
+					r.Bfs((i, j), f.Invalid);
 
-					M = Math.Max(M, r.RawCosts.Where(x => x < long.MaxValue).Max());
+					for (int x = 0; x < h; x++)
+						for (int y = 0; y < w; y++)
+						{
+							if (s[x][y] == '#') continue;
+
+							M = Math.Max(M, r[(x, y)]);
+						}
 				}
 			Console.WriteLine(M);
 		}

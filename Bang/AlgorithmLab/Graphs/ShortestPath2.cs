@@ -4,7 +4,9 @@ namespace AlgorithmLab.Graphs
 {
 	public static class ShortestPath2
 	{
-
+		public static IntSppFactory Int(int vertexesCount) => new IntSppFactory(vertexesCount);
+		public static GridSppFactory Grid(int height, int width) => new GridSppFactory(height, width);
+		public static MappingSppFactory<TVertex> Hash<TVertex>(int vertexesCount, Func<TVertex, int> toId, TVertex invalid) => new MappingSppFactory<TVertex>(vertexesCount, toId, invalid);
 	}
 
 	/// <summary>
@@ -23,10 +25,22 @@ namespace AlgorithmLab.Graphs
 			return new UnweightedSppContext<TVertex>(this, map);
 		}
 
+		public WeightedSppContext<TVertex> CreateWeighted(Func<TVertex, WeightedEdge<TVertex>[]> getNextEdges)
+		{
+			var map = new FuncReadOnlyMap<TVertex, WeightedEdge<TVertex>[]>(getNextEdges);
+			return new WeightedSppContext<TVertex>(this, map);
+		}
+
 		public UnweightedSppContext<TVertex> CreateUnweighted(UnweightedEdge<TVertex>[] edges, bool directed)
 		{
 			var map = UnweightedEdgesToMap(edges, directed);
 			return new UnweightedSppContext<TVertex>(this, map);
+		}
+
+		public WeightedSppContext<TVertex> CreateWeighted(WeightedEdge<TVertex>[] edges, bool directed)
+		{
+			var map = WeightedEdgesToMap(edges, directed);
+			return new WeightedSppContext<TVertex>(this, map);
 		}
 
 		public ListMap<TVertex, TVertex> UnweightedEdgesToMap(UnweightedEdge<TVertex>[] edges, bool directed)
@@ -75,6 +89,11 @@ namespace AlgorithmLab.Graphs
 		public UnweightedSppContext<int> CreateUnweighted(int[][] edges, bool directed)
 		{
 			return CreateUnweighted(Array.ConvertAll(edges, EdgeHelper.Unweighted), directed);
+		}
+
+		public WeightedSppContext<int> CreateWeighted(int[][] edges, bool directed)
+		{
+			return CreateWeighted(Array.ConvertAll(edges, EdgeHelper.Weighted), directed);
 		}
 	}
 

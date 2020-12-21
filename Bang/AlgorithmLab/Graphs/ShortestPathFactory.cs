@@ -10,11 +10,40 @@ namespace AlgorithmLab.Graphs
 	{
 		public abstract TVertex Invalid { get; }
 		public abstract Map<TVertex, TValue> CreateMap<TValue>(TValue v0);
+		public abstract ListMap<TVertex, TValue> CreateListMap<TValue>();
 
 		public UnweightedSppContext<TVertex> CreateUnweighted(Func<TVertex, TVertex[]> getNextVertexes)
 		{
 			var map = new FuncReadOnlyMap<TVertex, TVertex[]>(getNextVertexes);
 			return new UnweightedSppContext<TVertex>(this, map);
+		}
+
+		public UnweightedSppContext<TVertex> CreateUnweighted(UnweightedEdge<TVertex>[] edges, bool directed)
+		{
+			var map = UnweightedEdgesToMap(edges, directed);
+			return new UnweightedSppContext<TVertex>(this, map);
+		}
+
+		public ListMap<TVertex, TVertex> UnweightedEdgesToMap(UnweightedEdge<TVertex>[] edges, bool directed)
+		{
+			var map = CreateListMap<TVertex>();
+			foreach (var e in edges)
+			{
+				map.Add(e.From, e.To);
+				if (!directed) map.Add(e.To, e.From);
+			}
+			return map;
+		}
+
+		public ListMap<TVertex, WeightedEdge<TVertex>> WeightedEdgesToMap(WeightedEdge<TVertex>[] edges, bool directed)
+		{
+			var map = CreateListMap<WeightedEdge<TVertex>>();
+			foreach (var e in edges)
+			{
+				map.Add(e.From, e);
+				if (!directed) map.Add(e.To, e.Reverse());
+			}
+			return map;
 		}
 	}
 
@@ -31,6 +60,16 @@ namespace AlgorithmLab.Graphs
 		public override Map<int, TValue> CreateMap<TValue>(TValue v0)
 		{
 			return new IntMap<TValue>(VertexesCount, v0);
+		}
+
+		public override ListMap<int, TValue> CreateListMap<TValue>()
+		{
+			return new IntListMap<TValue>(VertexesCount);
+		}
+
+		public UnweightedSppContext<int> CreateUnweighted(int[][] edges, bool directed)
+		{
+			return CreateUnweighted(Array.ConvertAll(edges, EdgeHelper.Unweighted), directed);
 		}
 	}
 
@@ -50,6 +89,11 @@ namespace AlgorithmLab.Graphs
 		{
 			return new GridMap<TValue>(Height, Width, v0);
 		}
+
+		public override ListMap<(int i, int j), TValue> CreateListMap<TValue>()
+		{
+			return new GridListMap<TValue>(Height, Width);
+		}
 	}
 
 	public class MappingSppFactory<TVertex> : SppFactory<TVertex>
@@ -68,6 +112,11 @@ namespace AlgorithmLab.Graphs
 		public override Map<TVertex, TValue> CreateMap<TValue>(TValue v0)
 		{
 			return new MappingMap<TVertex, TValue>(VertexesCount, v0, ToId);
+		}
+
+		public override ListMap<TVertex, TValue> CreateListMap<TValue>()
+		{
+			return new MappingListMap<TVertex, TValue>(VertexesCount, ToId);
 		}
 	}
 }

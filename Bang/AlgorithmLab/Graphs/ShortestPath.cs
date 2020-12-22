@@ -12,7 +12,7 @@ namespace AlgorithmLab.Graphs
 		/// この値は <c>0 &lt;= v &lt; <paramref name="vertexesCount"/></c> に制限されます。
 		/// </summary>
 		/// <param name="vertexesCount">頂点の個数。</param>
-		/// <returns><see cref="IntSppFactory"/> オブジェクト。</returns>
+		/// <returns>整数値に対する Factory オブジェクト。</returns>
 		/// <example>
 		/// 有向グラフ上での典型的な Dijkstra:
 		/// <code>
@@ -28,7 +28,7 @@ namespace AlgorithmLab.Graphs
 		/// </summary>
 		/// <param name="height">高さ。</param>
 		/// <param name="width">幅。</param>
-		/// <returns><see cref="GridSppFactory"/> オブジェクト。</returns>
+		/// <returns>2 次元グリッド上の点に対する Factory オブジェクト。</returns>
 		/// <example>
 		/// 無向グリッド上での典型的な BFS:
 		/// <code>
@@ -51,24 +51,46 @@ namespace AlgorithmLab.Graphs
 		public abstract Map<TVertex, TValue> CreateMap<TValue>(TValue v0);
 		public abstract ListMap<TVertex, TValue> CreateListMap<TValue>();
 
+		/// <summary>
+		/// 隣接頂点を動的に取得するための関数を指定します。
+		/// </summary>
+		/// <param name="getNextVertexes">指定された頂点からの行先となる頂点を取得するための関数。</param>
+		/// <returns>アルゴリズムを実行するためのオブジェクト。</returns>
 		public UnweightedSppContext<TVertex> WithUnweighted(Func<TVertex, TVertex[]> getNextVertexes)
 		{
 			var map = new FuncReadOnlyMap<TVertex, TVertex[]>(getNextVertexes);
 			return new UnweightedSppContext<TVertex>(this, map);
 		}
 
+		/// <summary>
+		/// 隣接辺を動的に取得するための関数を指定します。
+		/// </summary>
+		/// <param name="getNextEdges">指定された頂点からの出辺を取得するための関数。</param>
+		/// <returns>アルゴリズムを実行するためのオブジェクト。</returns>
 		public WeightedSppContext<TVertex> WithWeighted(Func<TVertex, WeightedEdge<TVertex>[]> getNextEdges)
 		{
 			var map = new FuncReadOnlyMap<TVertex, WeightedEdge<TVertex>[]>(getNextEdges);
 			return new WeightedSppContext<TVertex>(this, map);
 		}
 
+		/// <summary>
+		/// 重みなし辺のリストを静的に指定します。
+		/// </summary>
+		/// <param name="edges">辺のリスト。</param>
+		/// <param name="directed">有向グラフかどうかを示す値。</param>
+		/// <returns>アルゴリズムを実行するためのオブジェクト。</returns>
 		public UnweightedSppContext<TVertex> WithUnweighted(UnweightedEdge<TVertex>[] edges, bool directed)
 		{
 			var map = UnweightedEdgesToMap(edges, directed);
 			return new UnweightedSppContext<TVertex>(this, map);
 		}
 
+		/// <summary>
+		/// 重み付き辺のリストを静的に指定します。
+		/// </summary>
+		/// <param name="edges">辺のリスト。</param>
+		/// <param name="directed">有向グラフかどうかを示す値。</param>
+		/// <returns>アルゴリズムを実行するためのオブジェクト。</returns>
 		public WeightedSppContext<TVertex> WithWeighted(WeightedEdge<TVertex>[] edges, bool directed)
 		{
 			var map = WeightedEdgesToMap(edges, directed);

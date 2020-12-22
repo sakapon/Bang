@@ -30,8 +30,8 @@ namespace AlgorithmLab.Graphs
 			return (-1, -1);
 		}
 
-		public static int ToId((int i, int j) p, int w) => p.i * w + p.j;
-		public static (int i, int j) FromId(int id, int w) => (id / w, id % w);
+		public static int ToHash((int i, int j) p, int w) => p.i * w + p.j;
+		public static (int i, int j) FromHash(int id, int w) => (id / w, id % w);
 
 		public static readonly (int i, int j)[] NextsByDelta = new[] { (-1, 0), (1, 0), (0, -1), (0, 1) };
 		public static (int i, int j)[] Nexts((int i, int j) v)

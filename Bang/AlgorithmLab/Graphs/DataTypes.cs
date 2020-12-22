@@ -16,13 +16,7 @@ namespace AlgorithmLab.Graphs
 		public T From { get; }
 		public T To { get; }
 		public long Cost { get; }
-
-		public WeightedEdge(T from, T to, long cost)
-		{
-			From = from;
-			To = to;
-			Cost = cost;
-		}
+		public WeightedEdge(T from, T to, long cost) { From = from; To = to; Cost = cost; }
 		public WeightedEdge<T> Reverse() => new WeightedEdge<T>(To, From, Cost);
 	}
 
@@ -69,16 +63,16 @@ namespace AlgorithmLab.Graphs
 		public override TValue this[(int i, int j) key] { get => a[key.i][key.j]; set => a[key.i][key.j] = value; }
 	}
 
-	public class MappingMap<TKey, TValue> : Map<TKey, TValue>
+	public class HashMap<TKey, TValue> : Map<TKey, TValue>
 	{
 		TValue[] a;
-		Func<TKey, int> ToId;
-		public MappingMap(int count, TValue v0, Func<TKey, int> toId)
+		Func<TKey, int> ToHash;
+		public HashMap(int count, TValue v0, Func<TKey, int> toHash)
 		{
 			a = Array.ConvertAll(new bool[count], _ => v0);
-			ToId = toId;
+			ToHash = toHash;
 		}
-		public override TValue this[TKey key] { get => a[ToId(key)]; set => a[ToId(key)] = value; }
+		public override TValue this[TKey key] { get => a[ToHash(key)]; set => a[ToHash(key)] = value; }
 	}
 
 	public class FuncReadOnlyMap<TKey, TValue> : ReadOnlyMap<TKey, TValue>
@@ -113,16 +107,16 @@ namespace AlgorithmLab.Graphs
 		public override void Add((int i, int j) key, TValue value) => map[key.i][key.j].Add(value);
 	}
 
-	public class MappingListMap<TKey, TValue> : ListMap<TKey, TValue>
+	public class HashListMap<TKey, TValue> : ListMap<TKey, TValue>
 	{
 		List<TValue>[] map;
-		Func<TKey, int> ToId;
-		public MappingListMap(int count, Func<TKey, int> toId)
+		Func<TKey, int> ToHash;
+		public HashListMap(int count, Func<TKey, int> toHash)
 		{
 			map = Array.ConvertAll(new bool[count], _ => new List<TValue>());
-			ToId = toId;
+			ToHash = toHash;
 		}
-		public override TValue[] this[TKey key] => map[ToId(key)].ToArray();
-		public override void Add(TKey key, TValue value) => map[ToId(key)].Add(value);
+		public override TValue[] this[TKey key] => map[ToHash(key)].ToArray();
+		public override void Add(TKey key, TValue value) => map[ToHash(key)].Add(value);
 	}
 }

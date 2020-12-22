@@ -22,7 +22,7 @@ namespace AlgorithmLab.Graphs
 		/// </example>
 		public static IntSppFactory Int(int vertexesCount) => new IntSppFactory(vertexesCount);
 		public static GridSppFactory Grid(int height, int width) => new GridSppFactory(height, width);
-		public static MappingSppFactory<TVertex> Hash<TVertex>(int vertexesCount, Func<TVertex, int> toId, TVertex invalid) => new MappingSppFactory<TVertex>(vertexesCount, toId, invalid);
+		public static HashSppFactory<TVertex> Hash<TVertex>(int vertexesCount, Func<TVertex, int> toHash, TVertex invalid) => new HashSppFactory<TVertex>(vertexesCount, toHash, invalid);
 	}
 
 	/// <summary>
@@ -136,14 +136,14 @@ namespace AlgorithmLab.Graphs
 		}
 	}
 
-	public class MappingSppFactory<TVertex> : SppFactory<TVertex>
+	public class HashSppFactory<TVertex> : SppFactory<TVertex>
 	{
 		public int VertexesCount { get; }
-		public Func<TVertex, int> ToId { get; }
-		public MappingSppFactory(int vertexesCount, Func<TVertex, int> toId, TVertex invalid)
+		public Func<TVertex, int> ToHash { get; }
+		public HashSppFactory(int vertexesCount, Func<TVertex, int> toHash, TVertex invalid)
 		{
 			VertexesCount = vertexesCount;
-			ToId = toId;
+			ToHash = toHash;
 			Invalid = invalid;
 		}
 
@@ -151,12 +151,12 @@ namespace AlgorithmLab.Graphs
 
 		public override Map<TVertex, TValue> CreateMap<TValue>(TValue v0)
 		{
-			return new MappingMap<TVertex, TValue>(VertexesCount, v0, ToId);
+			return new HashMap<TVertex, TValue>(VertexesCount, v0, ToHash);
 		}
 
 		public override ListMap<TVertex, TValue> CreateListMap<TValue>()
 		{
-			return new MappingListMap<TVertex, TValue>(VertexesCount, ToId);
+			return new HashListMap<TVertex, TValue>(VertexesCount, ToHash);
 		}
 	}
 }

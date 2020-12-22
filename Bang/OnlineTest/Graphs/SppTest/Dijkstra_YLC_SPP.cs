@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using AlgorithmLab.DataTrees;
 using AlgorithmLab.Graphs;
 
 namespace OnlineTest.Graphs.SppTest
@@ -23,7 +21,7 @@ namespace OnlineTest.Graphs.SppTest
 
 			var path = r.GetPathEdges(t);
 			Console.WriteLine($"{r[t]} {path.Length}");
-			Console.WriteLine(string.Join("\n", path.Select(e => $"{e.From} {e.To}")));
+			Console.WriteLine(string.Join("\n", Array.ConvertAll(path, e => $"{e.From} {e.To}")));
 		}
 	}
 }

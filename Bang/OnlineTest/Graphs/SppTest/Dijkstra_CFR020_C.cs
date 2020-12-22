@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using AlgorithmLab.DataTrees;
 using AlgorithmLab.Graphs;
 
 namespace OnlineTest.Graphs.SppTest

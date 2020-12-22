@@ -16,13 +16,13 @@ namespace AlgorithmLab.Graphs
 		/// <example>
 		/// 有向グラフ上での典型的な Dijkstra:
 		/// <code>
-		/// var r = ShortestPath.Int(n).CreateWeighted(es, true);
+		/// var r = ShortestPath.WithInt(n).WithWeighted(es, true);
 		/// r.Dijkstra(sv, ev);
 		/// </code>
 		/// </example>
-		public static IntSppFactory Int(int vertexesCount) => new IntSppFactory(vertexesCount);
-		public static GridSppFactory Grid(int height, int width) => new GridSppFactory(height, width);
-		public static HashSppFactory<TVertex> Hash<TVertex>(int vertexesCount, Func<TVertex, int> toHash, TVertex invalid) => new HashSppFactory<TVertex>(vertexesCount, toHash, invalid);
+		public static IntSppFactory WithInt(int vertexesCount) => new IntSppFactory(vertexesCount);
+		public static GridSppFactory WithGrid(int height, int width) => new GridSppFactory(height, width);
+		public static HashSppFactory<TVertex> WithHash<TVertex>(int vertexesCount, Func<TVertex, int> toHash, TVertex invalid) => new HashSppFactory<TVertex>(vertexesCount, toHash, invalid);
 	}
 
 	/// <summary>
@@ -35,25 +35,25 @@ namespace AlgorithmLab.Graphs
 		public abstract Map<TVertex, TValue> CreateMap<TValue>(TValue v0);
 		public abstract ListMap<TVertex, TValue> CreateListMap<TValue>();
 
-		public UnweightedSppContext<TVertex> CreateUnweighted(Func<TVertex, TVertex[]> getNextVertexes)
+		public UnweightedSppContext<TVertex> WithUnweighted(Func<TVertex, TVertex[]> getNextVertexes)
 		{
 			var map = new FuncReadOnlyMap<TVertex, TVertex[]>(getNextVertexes);
 			return new UnweightedSppContext<TVertex>(this, map);
 		}
 
-		public WeightedSppContext<TVertex> CreateWeighted(Func<TVertex, WeightedEdge<TVertex>[]> getNextEdges)
+		public WeightedSppContext<TVertex> WithWeighted(Func<TVertex, WeightedEdge<TVertex>[]> getNextEdges)
 		{
 			var map = new FuncReadOnlyMap<TVertex, WeightedEdge<TVertex>[]>(getNextEdges);
 			return new WeightedSppContext<TVertex>(this, map);
 		}
 
-		public UnweightedSppContext<TVertex> CreateUnweighted(UnweightedEdge<TVertex>[] edges, bool directed)
+		public UnweightedSppContext<TVertex> WithUnweighted(UnweightedEdge<TVertex>[] edges, bool directed)
 		{
 			var map = UnweightedEdgesToMap(edges, directed);
 			return new UnweightedSppContext<TVertex>(this, map);
 		}
 
-		public WeightedSppContext<TVertex> CreateWeighted(WeightedEdge<TVertex>[] edges, bool directed)
+		public WeightedSppContext<TVertex> WithWeighted(WeightedEdge<TVertex>[] edges, bool directed)
 		{
 			var map = WeightedEdgesToMap(edges, directed);
 			return new WeightedSppContext<TVertex>(this, map);
@@ -102,14 +102,14 @@ namespace AlgorithmLab.Graphs
 			return new IntListMap<TValue>(VertexesCount);
 		}
 
-		public UnweightedSppContext<int> CreateUnweighted(int[][] edges, bool directed)
+		public UnweightedSppContext<int> WithUnweighted(int[][] edges, bool directed)
 		{
-			return CreateUnweighted(Array.ConvertAll(edges, EdgeHelper.Unweighted), directed);
+			return WithUnweighted(Array.ConvertAll(edges, EdgeHelper.Unweighted), directed);
 		}
 
-		public WeightedSppContext<int> CreateWeighted(int[][] edges, bool directed)
+		public WeightedSppContext<int> WithWeighted(int[][] edges, bool directed)
 		{
-			return CreateWeighted(Array.ConvertAll(edges, EdgeHelper.Weighted), directed);
+			return WithWeighted(Array.ConvertAll(edges, EdgeHelper.Weighted), directed);
 		}
 	}
 

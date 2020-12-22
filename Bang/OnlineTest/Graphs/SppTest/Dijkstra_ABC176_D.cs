@@ -23,7 +23,7 @@ namespace OnlineTest.Graphs.SppTest
 			GridHelper.EncloseGrid(ref h, ref w, ref s);
 
 			// WeightedEdge<T>[] を静的に構築する方法では TLE。
-			var r = ShortestPath.Grid(h, w).CreateWeighted(v =>
+			var r = ShortestPath.WithGrid(h, w).WithWeighted(v =>
 			{
 				var nids = new List<WeightedEdge<(int, int)>>();
 

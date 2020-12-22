@@ -23,26 +23,27 @@ namespace OnlineTest.Graphs.SppTest
 			GridHelper.EncloseGrid(ref h, ref w, ref s);
 
 			// WeightedEdge<T>[] を静的に構築する方法では TLE。
-			var r = ShortestPath.WithGrid(h, w).WithWeighted(v =>
-			{
-				var nids = new List<WeightedEdge<(int, int)>>();
-
-				foreach (var nv in GridHelper.Nexts(v))
+			var r = ShortestPath.WithGrid(h, w)
+				.WithWeighted(v =>
 				{
-					if (s.GetByP(nv) == '#') continue;
-					nids.Add(new WeightedEdge<(int, int)>(v, nv, 0));
-				}
+					var nids = new List<WeightedEdge<(int, int)>>();
 
-				for (int i = -2; i <= 2; i++)
-					for (int j = -2; j <= 2; j++)
+					foreach (var nv in GridHelper.Nexts(v))
 					{
-						var nv = (v.i + i, v.j + j);
 						if (s.GetByP(nv) == '#') continue;
-						nids.Add(new WeightedEdge<(int, int)>(v, nv, 1));
+						nids.Add(new WeightedEdge<(int, int)>(v, nv, 0));
 					}
-				return nids.ToArray();
-			});
-			r.Dijkstra(sv, ev);
+
+					for (int i = -2; i <= 2; i++)
+						for (int j = -2; j <= 2; j++)
+						{
+							var nv = (v.i + i, v.j + j);
+							if (s.GetByP(nv) == '#') continue;
+							nids.Add(new WeightedEdge<(int, int)>(v, nv, 1));
+						}
+					return nids.ToArray();
+				})
+				.Dijkstra(sv, ev);
 
 			Console.WriteLine(r.IsConnected(ev) ? r[ev] : -1);
 		}

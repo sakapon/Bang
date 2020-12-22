@@ -16,15 +16,15 @@ namespace OnlineTest.Graphs.SppTest
 			var s = GraphConsole.ReadEnclosedGrid(ref h, ref w);
 
 			var M = 0L;
-			var f = ShortestPath.WithGrid(h, w);
-			var r = f.WithUnweighted(v => Array.FindAll(GridHelper.Nexts(v), v => s.GetByP(v) != '#'));
+			var r = ShortestPath.WithGrid(h, w)
+				.WithUnweighted(v => Array.FindAll(GridHelper.Nexts(v), v => s.GetByP(v) != '#'));
 
 			for (int i = 0; i < h; i++)
 				for (int j = 0; j < w; j++)
 				{
 					if (s[i][j] == '#') continue;
 
-					r.Bfs((i, j), f.Invalid);
+					r.Bfs((i, j), r.Factory.Invalid);
 
 					for (int x = 0; x < h; x++)
 						for (int y = 0; y < w; y++)

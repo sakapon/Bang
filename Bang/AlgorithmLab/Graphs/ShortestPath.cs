@@ -3,7 +3,7 @@
 namespace AlgorithmLab.Graphs
 {
 	/// <summary>
-	/// 頂点を表すデータの種類に応じて、<see cref="SppFactory{}"/> オブジェクトを取得します。
+	/// 頂点を表すデータの種類に応じて、<see cref="SppFactory{TVertex}"/> オブジェクトを取得します。
 	/// </summary>
 	public static class ShortestPath
 	{
@@ -16,11 +16,27 @@ namespace AlgorithmLab.Graphs
 		/// <example>
 		/// 有向グラフ上での典型的な Dijkstra:
 		/// <code>
-		/// var r = ShortestPath.WithInt(n).WithWeighted(es, true);
-		/// r.Dijkstra(sv, ev);
+		/// var r = ShortestPath.WithInt(n)
+		/// 	.WithWeighted(es, true)
+		/// 	.Dijkstra(sv, ev);
 		/// </code>
 		/// </example>
 		public static IntSppFactory WithInt(int vertexesCount) => new IntSppFactory(vertexesCount);
+
+		/// <summary>
+		/// 2 次元グリッド上の点が頂点を表すグラフを使用します。
+		/// </summary>
+		/// <param name="height">高さ。</param>
+		/// <param name="width">幅。</param>
+		/// <returns><see cref="GridSppFactory"/> オブジェクト。</returns>
+		/// <example>
+		/// 無向グリッド上での典型的な BFS:
+		/// <code>
+		/// var r = ShortestPath.WithGrid(h, w)
+		/// 	.WithUnweighted(v => Array.FindAll(GridHelper.Nexts(v), v => s.GetByP(v) != '#'))
+		/// 	.Bfs(sv, ev);
+		/// </code>
+		/// </example>
 		public static GridSppFactory WithGrid(int height, int width) => new GridSppFactory(height, width);
 		public static HashSppFactory<TVertex> WithHash<TVertex>(int vertexesCount, Func<TVertex, int> toHash, TVertex invalid) => new HashSppFactory<TVertex>(vertexesCount, toHash, invalid);
 	}

@@ -18,8 +18,9 @@ namespace OnlineTest.Graphs.SppTest
 			var sv = GridHelper.FindChar(s, 's');
 			var ev = GridHelper.FindChar(s, 'g');
 
-			var r = ShortestPath.WithGrid(h, w).WithUnweighted(v => Array.FindAll(GridHelper.Nexts(v), v => s.GetByP(v) != '#'));
-			r.Bfs(sv, ev);
+			var r = ShortestPath.WithGrid(h, w)
+				.WithUnweighted(v => Array.FindAll(GridHelper.Nexts(v), v => s.GetByP(v) != '#'))
+				.Bfs(sv, ev);
 			return r.IsConnected(ev);
 		}
 	}

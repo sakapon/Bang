@@ -8,8 +8,8 @@ namespace AlgorithmLab.Graphs
 	{
 		static readonly Func<TVertex, TVertex, bool> TEquals = EqualityComparer<TVertex>.Default.Equals;
 
-		SppFactory<TVertex> Factory;
-		ReadOnlyMap<TVertex, WeightedEdge<TVertex>[]> NextEdgesMap;
+		public SppFactory<TVertex> Factory { get; }
+		public ReadOnlyMap<TVertex, WeightedEdge<TVertex>[]> NextEdgesMap { get; }
 
 		public WeightedSppContext(SppFactory<TVertex> factory, ReadOnlyMap<TVertex, WeightedEdge<TVertex>[]> nextEdgesMap)
 		{
@@ -22,6 +22,16 @@ namespace AlgorithmLab.Graphs
 		public TVertex StartVertex { get; private set; }
 		public TVertex EndVertex { get; private set; }
 
+		/// <summary>
+		/// Dijkstra 法により、始点から各頂点への最短経路を求めます。<br/>
+		/// 辺のコストは非負でなければなりません。
+		/// </summary>
+		/// <param name="startVertex">始点。</param>
+		/// <param name="endVertex">終点。終点を指定しない場合、<c>Factory.Invalid</c>。</param>
+		/// <returns>現在のオブジェクト。</returns>
+		/// <remarks>
+		/// グラフの有向性、連結性、多重性、開閉を問いません。
+		/// </remarks>
 		public WeightedSppContext<TVertex> Dijkstra(TVertex startVertex, TVertex endVertex)
 		{
 			StartVertex = startVertex;

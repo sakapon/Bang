@@ -6,6 +6,11 @@ namespace AlgorithmLab.Graphs
 	{
 		static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
 
+		public static Point ReadPoint()
+		{
+			return Point.Parse(Console.ReadLine());
+		}
+
 		public static UnweightedEdge<int>[] ReadUnweightedEdges(int count)
 		{
 			return Array.ConvertAll(new bool[count], _ => EdgeHelper.Unweighted(Read()));

@@ -36,6 +36,7 @@ namespace AlgorithmLab.Graphs
 		public T From { get; }
 		public T To { get; }
 		public UnweightedEdge(T from, T to) { From = from; To = to; }
+		public override string ToString() => $"{{{From}}} {{{To}}}";
 		public UnweightedEdge<T> Reverse() => new UnweightedEdge<T>(To, From);
 	}
 
@@ -45,6 +46,7 @@ namespace AlgorithmLab.Graphs
 		public T To { get; }
 		public long Cost { get; }
 		public WeightedEdge(T from, T to, long cost) { From = from; To = to; Cost = cost; }
+		public override string ToString() => $"{{{From}}} {{{To}}} {Cost}";
 		public WeightedEdge<T> Reverse() => new WeightedEdge<T>(To, From, Cost);
 	}
 

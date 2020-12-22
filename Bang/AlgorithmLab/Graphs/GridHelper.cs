@@ -16,6 +16,8 @@ namespace AlgorithmLab.Graphs
 			s = t;
 		}
 
+		public static T GetValue<T>(this T[,] a, Point p) => a[p.i, p.j];
+		public static void SetValue<T>(this T[,] a, Point p, T value) => a[p.i, p.j] = value;
 		public static T GetValue<T>(this T[][] a, Point p) => a[p.i][p.j];
 		public static void SetValue<T>(this T[][] a, Point p, T value) => a[p.i][p.j] = value;
 		public static char GetValue(this string[] s, Point p) => s[p.i][p.j];
@@ -35,6 +37,8 @@ namespace AlgorithmLab.Graphs
 
 	public static class TupleGridHelper
 	{
+		public static T GetValue<T>(this T[,] a, (int i, int j) p) => a[p.i, p.j];
+		public static void SetValue<T>(this T[,] a, (int i, int j) p, T value) => a[p.i, p.j] = value;
 		public static T GetValue<T>(this T[][] a, (int i, int j) p) => a[p.i][p.j];
 		public static void SetValue<T>(this T[][] a, (int i, int j) p, T value) => a[p.i][p.j] = value;
 		public static char GetValue(this string[] s, (int i, int j) p) => s[p.i][p.j];

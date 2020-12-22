@@ -21,7 +21,7 @@ namespace AlgorithmLab.Graphs
 		public TVertex StartVertex { get; private set; }
 		public TVertex EndVertex { get; private set; }
 
-		public void Bfs(TVertex startVertex, TVertex endVertex)
+		public UnweightedSppContext<TVertex> Bfs(TVertex startVertex, TVertex endVertex)
 		{
 			StartVertex = startVertex;
 			EndVertex = endVertex;
@@ -42,10 +42,11 @@ namespace AlgorithmLab.Graphs
 					if (Costs[nv] <= nc) continue;
 					Costs[nv] = nc;
 					InVertexes[nv] = v;
-					if (TEquals(nv, endVertex)) return;
+					if (TEquals(nv, endVertex)) return this;
 					q.Enqueue(nv);
 				}
 			}
+			return this;
 		}
 
 		public long this[TVertex vertex] => Costs[vertex];

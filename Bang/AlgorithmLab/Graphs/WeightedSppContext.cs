@@ -22,7 +22,7 @@ namespace AlgorithmLab.Graphs
 		public TVertex StartVertex { get; private set; }
 		public TVertex EndVertex { get; private set; }
 
-		public void Dijkstra(TVertex startVertex, TVertex endVertex)
+		public WeightedSppContext<TVertex> Dijkstra(TVertex startVertex, TVertex endVertex)
 		{
 			StartVertex = startVertex;
 			EndVertex = endVertex;
@@ -49,6 +49,7 @@ namespace AlgorithmLab.Graphs
 					q.Push(nv);
 				}
 			}
+			return this;
 		}
 
 		public long this[TVertex vertex] => Costs[vertex];

@@ -4,6 +4,22 @@ namespace AlgorithmLab.Graphs
 {
 	public static class GridHelper
 	{
+		public static T GetByP<T>(this T[][] a, P p) => a[p.i][p.j];
+		public static void SetByP<T>(this T[][] a, P p, T value) => a[p.i][p.j] = value;
+		public static char GetByP(this string[] s, P p) => s[p.i][p.j];
+
+		public static P FindChar(string[] s, char c)
+		{
+			var (h, w) = (s.Length, s[0].Length);
+			for (int i = 0; i < h; ++i)
+				for (int j = 0; j < w; ++j)
+					if (s[i][j] == c) return (i, j);
+			return (-1, -1);
+		}
+	}
+
+	public static class TupleGridHelper
+	{
 		const char Road = '.';
 		const char Wall = '#';
 

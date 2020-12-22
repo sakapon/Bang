@@ -19,7 +19,7 @@ namespace OnlineTest.Graphs.SppTest
 			var s = GraphConsole.ReadEnclosedGrid(ref h, ref w);
 
 			var r = ShortestPath.WithGrid(h, w)
-				.WithUnweighted(v => Array.FindAll(GridHelper.Nexts(v), v => s.GetByP(v) != '#'))
+				.WithUnweighted(v => Array.FindAll(TupleGridHelper.Nexts(v), v => s.GetByP(v) != '#'))
 				.Bfs(sv, ev);
 			return r[ev];
 		}

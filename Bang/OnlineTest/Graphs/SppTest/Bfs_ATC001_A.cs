@@ -15,11 +15,11 @@ namespace OnlineTest.Graphs.SppTest
 			var (h, w) = Read2();
 			var s = GraphConsole.ReadEnclosedGrid(ref h, ref w);
 
-			var sv = GridHelper.FindChar(s, 's');
-			var ev = GridHelper.FindChar(s, 'g');
+			var sv = TupleGridHelper.FindChar(s, 's');
+			var ev = TupleGridHelper.FindChar(s, 'g');
 
 			var r = ShortestPath.WithGrid(h, w)
-				.WithUnweighted(v => Array.FindAll(GridHelper.Nexts(v), v => s.GetByP(v) != '#'))
+				.WithUnweighted(v => Array.FindAll(TupleGridHelper.Nexts(v), v => s.GetByP(v) != '#'))
 				.Bfs(sv, ev);
 			return r.IsConnected(ev);
 		}

@@ -46,9 +46,9 @@ namespace AlgorithmLab.Graphs
 	public class IntMap<TValue> : Map<int, TValue>
 	{
 		TValue[] a;
-		public IntMap(int count, TValue v0)
+		public IntMap(int count, TValue iv)
 		{
-			a = Array.ConvertAll(new bool[count], _ => v0);
+			a = Array.ConvertAll(new bool[count], _ => iv);
 		}
 		public override TValue this[int key] { get => a[key]; set => a[key] = value; }
 	}
@@ -56,9 +56,9 @@ namespace AlgorithmLab.Graphs
 	public class GridMap<TValue> : Map<(int i, int j), TValue>
 	{
 		TValue[][] a;
-		public GridMap(int height, int width, TValue v0)
+		public GridMap(int height, int width, TValue iv)
 		{
-			a = Array.ConvertAll(new bool[height], _ => Array.ConvertAll(new bool[width], __ => v0));
+			a = Array.ConvertAll(new bool[height], _ => Array.ConvertAll(new bool[width], __ => iv));
 		}
 		public override TValue this[(int i, int j) key] { get => a[key.i][key.j]; set => a[key.i][key.j] = value; }
 	}
@@ -67,9 +67,9 @@ namespace AlgorithmLab.Graphs
 	{
 		TValue[] a;
 		Func<TKey, int> ToHash;
-		public HashMap(int count, TValue v0, Func<TKey, int> toHash)
+		public HashMap(int count, TValue iv, Func<TKey, int> toHash)
 		{
-			a = Array.ConvertAll(new bool[count], _ => v0);
+			a = Array.ConvertAll(new bool[count], _ => iv);
 			ToHash = toHash;
 		}
 		public override TValue this[TKey key] { get => a[ToHash(key)]; set => a[ToHash(key)] = value; }

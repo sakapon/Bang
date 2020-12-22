@@ -3,6 +3,34 @@ using System.Collections.Generic;
 
 namespace AlgorithmLab.Graphs
 {
+	public struct P : IEquatable<P>
+	{
+		public int i, j;
+		public P(int i, int j) { this.i = i; this.j = j; }
+		public void Deconstruct(out int i, out int j) { i = this.i; j = this.j; }
+		public override string ToString() => $"{i} {j}";
+		public static P Parse(string s) => Array.ConvertAll(s.Split(), int.Parse);
+
+		public static implicit operator P(int[] v) => (v[0], v[1]);
+		public static explicit operator int[](P v) => new[] { v.i, v.j };
+		public static implicit operator P((int i, int j) v) => new P(v.i, v.j);
+		public static explicit operator (int, int)(P v) => (v.i, v.j);
+
+		public bool Equals(P other) => i == other.i && j == other.j;
+		public static bool operator ==(P v1, P v2) => v1.Equals(v2);
+		public static bool operator !=(P v1, P v2) => !v1.Equals(v2);
+		public override bool Equals(object obj) => obj is P v && Equals(v);
+		public override int GetHashCode() => (i, j).GetHashCode();
+
+		public static P operator -(P v) => new P(-v.i, -v.j);
+		public static P operator +(P v1, P v2) => new P(v1.i + v2.i, v1.j + v2.j);
+		public static P operator -(P v1, P v2) => new P(v1.i - v2.i, v1.j - v2.j);
+
+		public bool IsInRange(int h, int w) => 0 <= i && i < h && 0 <= j && j < w;
+		public P[] Nexts() => new[] { new P(i - 1, j), new P(i + 1, j), new P(i, j - 1), new P(i, j + 1) };
+		public static P[] NextsByDelta { get; } = new[] { new P(-1, 0), new P(1, 0), new P(0, -1), new P(0, 1) };
+	}
+
 	public struct UnweightedEdge<T>
 	{
 		public T From { get; }

@@ -19,7 +19,7 @@ namespace OnlineTest.Graphs.SppTest
 			var ev = TupleGridHelper.FindChar(s, 'g');
 
 			var r = ShortestPath.WithGrid(h, w)
-				.WithUnweighted(v => Array.FindAll(TupleGridHelper.Nexts(v), v => s.GetByP(v) != '#'))
+				.WithUnweighted(v => Array.FindAll(TupleGridHelper.Nexts(v), v => s.GetValue(v) != '#'))
 				.Bfs(sv, ev);
 			return r.IsConnected(ev);
 		}

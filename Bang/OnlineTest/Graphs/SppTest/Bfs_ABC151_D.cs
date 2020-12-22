@@ -16,7 +16,7 @@ namespace OnlineTest.Graphs.SppTest
 
 			var M = 0L;
 			var r = ShortestPath.WithGrid(h, w)
-				.WithUnweighted(v => Array.FindAll(TupleGridHelper.Nexts(v), v => s.GetByP(v) != '#'));
+				.WithUnweighted(v => Array.FindAll(TupleGridHelper.Nexts(v), v => s.GetValue(v) != '#'));
 
 			for (int i = 0; i < h; i++)
 				for (int j = 0; j < w; j++)

@@ -19,7 +19,7 @@ namespace OnlineTest.Graphs.SppTest
 
 			sv = (sv.i + 1, sv.j + 1);
 			ev = (ev.i + 1, ev.j + 1);
-			TupleGridHelper.EncloseGrid(ref h, ref w, ref s);
+			GridHelper.EncloseGrid(ref h, ref w, ref s);
 
 			// WeightedEdge<T>[] を静的に構築する方法では TLE。
 			var r = ShortestPath.WithGrid(h, w)
@@ -29,7 +29,7 @@ namespace OnlineTest.Graphs.SppTest
 
 					foreach (var nv in TupleGridHelper.Nexts(v))
 					{
-						if (s.GetByP(nv) == '#') continue;
+						if (s.GetValue(nv) == '#') continue;
 						nids.Add(new WeightedEdge<(int, int)>(v, nv, 0));
 					}
 
@@ -37,7 +37,7 @@ namespace OnlineTest.Graphs.SppTest
 						for (int j = -2; j <= 2; j++)
 						{
 							var nv = (v.i + i, v.j + j);
-							if (s.GetByP(nv) == '#') continue;
+							if (s.GetValue(nv) == '#') continue;
 							nids.Add(new WeightedEdge<(int, int)>(v, nv, 1));
 						}
 					return nids.ToArray();

@@ -2,8 +2,24 @@
 
 namespace AlgorithmLab.Graphs
 {
-	public static class ShortestPath2
+	/// <summary>
+	/// 頂点を表すデータの種類に応じて、<see cref="SppFactory{}"/> オブジェクトを取得します。
+	/// </summary>
+	public static class ShortestPath
 	{
+		/// <summary>
+		/// 整数値が頂点を表すグラフを使用します。<br/>
+		/// この値は <c>0 &lt;= v &lt; <paramref name="vertexesCount"/></c> に制限されます。
+		/// </summary>
+		/// <param name="vertexesCount">頂点の個数。</param>
+		/// <returns><see cref="IntSppFactory"/> オブジェクト。</returns>
+		/// <example>
+		/// 有向グラフ上での典型的な Dijkstra:
+		/// <code>
+		/// var r = ShortestPath.Int(n).CreateWeighted(es, true);
+		/// r.Dijkstra(sv, ev);
+		/// </code>
+		/// </example>
 		public static IntSppFactory Int(int vertexesCount) => new IntSppFactory(vertexesCount);
 		public static GridSppFactory Grid(int height, int width) => new GridSppFactory(height, width);
 		public static MappingSppFactory<TVertex> Hash<TVertex>(int vertexesCount, Func<TVertex, int> toId, TVertex invalid) => new MappingSppFactory<TVertex>(vertexesCount, toId, invalid);

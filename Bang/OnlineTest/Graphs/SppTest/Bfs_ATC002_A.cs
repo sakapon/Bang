@@ -18,7 +18,7 @@ namespace OnlineTest.Graphs.SppTest
 			var ev = Read2();
 			var s = GraphConsole.ReadEnclosedGrid(ref h, ref w);
 
-			var r = ShortestPath2.Grid(h, w).CreateUnweighted(v => Array.FindAll(GridHelper.Nexts(v), v => s.GetByP(v) != '#'));
+			var r = ShortestPath.Grid(h, w).CreateUnweighted(v => Array.FindAll(GridHelper.Nexts(v), v => s.GetByP(v) != '#'));
 			r.Bfs(sv, ev);
 			return r[ev];
 		}

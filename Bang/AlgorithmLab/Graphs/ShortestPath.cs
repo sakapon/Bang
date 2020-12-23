@@ -8,8 +8,8 @@ namespace AlgorithmLab.Graphs
 	public static class ShortestPath
 	{
 		/// <summary>
-		/// 整数値が頂点を表すグラフを使用します。<br/>
-		/// この値は <c>0 &lt;= v &lt; <paramref name="vertexesCount"/></c> に制限されます。
+		/// 頂点が整数値で表されるグラフを使用します。<br/>
+		/// この値の範囲は [0, <paramref name="vertexesCount"/>) です。
 		/// </summary>
 		/// <param name="vertexesCount">頂点の個数。</param>
 		/// <returns>整数値に対する Factory オブジェクト。</returns>
@@ -24,7 +24,7 @@ namespace AlgorithmLab.Graphs
 		public static IntSppFactory WithInt(int vertexesCount) => new IntSppFactory(vertexesCount);
 
 		/// <summary>
-		/// 2 次元グリッド上の点が頂点を表すグラフを使用します。
+		/// 頂点が 2 次元グリッド上の点で表されるグラフを使用します。
 		/// </summary>
 		/// <param name="height">高さ。</param>
 		/// <param name="width">幅。</param>
@@ -40,14 +40,22 @@ namespace AlgorithmLab.Graphs
 		public static GridSppFactory WithGrid(int height, int width) => new GridSppFactory(height, width);
 
 		/// <summary>
-		/// ハッシュ関数により任意の値が頂点を表すグラフを使用します。<br/>
-		/// ハッシュ値は <c>0 &lt;= v &lt; <paramref name="vertexesCount"/></c> に制限されます。
+		/// ハッシュ関数により、頂点が任意の値で表されるグラフを使用します。<br/>
+		/// ハッシュ値の範囲は [0, <paramref name="vertexesCount"/>) です。
 		/// </summary>
 		/// <typeparam name="TVertex">頂点を表すオブジェクトの型。</typeparam>
 		/// <param name="vertexesCount">頂点の個数。</param>
 		/// <param name="toHash">ハッシュ関数。</param>
 		/// <param name="invalid">無効な頂点を表す値。</param>
 		/// <returns>ハッシュ関数を使用する場合の Factory オブジェクト。</returns>
+		/// <example>
+		/// 無向グリッド上での典型的な BFS:
+		/// <code>
+		/// var r = ShortestPath.WithHash(h * w, GridHelper.CreateToHash(w), (-1, -1))
+		/// 	.WithUnweighted(v => Array.FindAll(v.Nexts(), nv => s.GetValue(nv) != '#'))
+		/// 	.Bfs(sv, ev);
+		/// </code>
+		/// </example>
 		public static HashSppFactory<TVertex> WithHash<TVertex>(int vertexesCount, Func<TVertex, int> toHash, TVertex invalid) => new HashSppFactory<TVertex>(vertexesCount, toHash, invalid);
 	}
 

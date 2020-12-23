@@ -13,32 +13,29 @@ namespace OnlineTest.Graphs.SppTest
 		{
 			var (h, w) = Read2();
 			// 1-indexed に注意
-			var sv = Read2();
-			var ev = Read2();
+			var sv = GraphConsole.ReadPoint() + (1, 1);
+			var ev = GraphConsole.ReadPoint() + (1, 1);
 			var s = GraphConsole.ReadEnclosedGrid(ref h, ref w);
-
-			sv = (sv.i + 1, sv.j + 1);
-			ev = (ev.i + 1, ev.j + 1);
 			GridHelper.EncloseGrid(ref h, ref w, ref s);
 
 			// WeightedEdge<T>[] を静的に構築する方法では TLE。
 			var r = ShortestPath.WithGrid(h, w)
 				.WithWeighted(v =>
 				{
-					var nids = new List<WeightedEdge<(int, int)>>();
+					var nids = new List<WeightedEdge<Point>>();
 
-					foreach (var nv in TupleGridHelper.Nexts(v))
+					foreach (var nv in v.Nexts())
 					{
 						if (s.GetValue(nv) == '#') continue;
-						nids.Add(new WeightedEdge<(int, int)>(v, nv, 0));
+						nids.Add(new WeightedEdge<Point>(v, nv, 0));
 					}
 
 					for (int i = -2; i <= 2; i++)
 						for (int j = -2; j <= 2; j++)
 						{
-							var nv = (v.i + i, v.j + j);
+							var nv = v + (i, j);
 							if (s.GetValue(nv) == '#') continue;
-							nids.Add(new WeightedEdge<(int, int)>(v, nv, 1));
+							nids.Add(new WeightedEdge<Point>(v, nv, 1));
 						}
 					return nids.ToArray();
 				})

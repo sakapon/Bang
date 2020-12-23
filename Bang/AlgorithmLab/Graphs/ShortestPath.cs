@@ -151,7 +151,7 @@ namespace AlgorithmLab.Graphs
 		}
 	}
 
-	public class GridSppFactory : SppFactory<(int i, int j)>
+	public class GridSppFactory : SppFactory<Point>
 	{
 		public int Height { get; }
 		public int Width { get; }
@@ -161,14 +161,14 @@ namespace AlgorithmLab.Graphs
 			Width = width;
 		}
 
-		public override (int i, int j) Invalid => (-1, -1);
+		public override Point Invalid => (-1, -1);
 
-		public override Map<(int i, int j), TValue> CreateMap<TValue>(TValue iv)
+		public override Map<Point, TValue> CreateMap<TValue>(TValue iv)
 		{
 			return new GridMap<TValue>(Height, Width, iv);
 		}
 
-		public override ListMap<(int i, int j), TValue> CreateListMap<TValue>()
+		public override ListMap<Point, TValue> CreateListMap<TValue>()
 		{
 			return new GridListMap<TValue>(Height, Width);
 		}

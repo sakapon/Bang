@@ -83,14 +83,14 @@ namespace AlgorithmLab.Graphs
 		public override TValue this[int key] { get => a[key]; set => a[key] = value; }
 	}
 
-	public class GridMap<TValue> : Map<(int i, int j), TValue>
+	public class GridMap<TValue> : Map<Point, TValue>
 	{
 		TValue[][] a;
 		public GridMap(int height, int width, TValue iv)
 		{
 			a = Array.ConvertAll(new bool[height], _ => Array.ConvertAll(new bool[width], __ => iv));
 		}
-		public override TValue this[(int i, int j) key] { get => a[key.i][key.j]; set => a[key.i][key.j] = value; }
+		public override TValue this[Point key] { get => a[key.i][key.j]; set => a[key.i][key.j] = value; }
 	}
 
 	public class HashMap<TKey, TValue> : Map<TKey, TValue>
@@ -126,15 +126,15 @@ namespace AlgorithmLab.Graphs
 		public override void Add(int key, TValue value) => map[key].Add(value);
 	}
 
-	public class GridListMap<TValue> : ListMap<(int i, int j), TValue>
+	public class GridListMap<TValue> : ListMap<Point, TValue>
 	{
 		List<TValue>[][] map;
 		public GridListMap(int height, int width)
 		{
 			map = Array.ConvertAll(new bool[height], _ => Array.ConvertAll(new bool[width], __ => new List<TValue>()));
 		}
-		public override TValue[] this[(int i, int j) key] => map[key.i][key.j].ToArray();
-		public override void Add((int i, int j) key, TValue value) => map[key.i][key.j].Add(value);
+		public override TValue[] this[Point key] => map[key.i][key.j].ToArray();
+		public override void Add(Point key, TValue value) => map[key.i][key.j].Add(value);
 	}
 
 	public class HashListMap<TKey, TValue> : ListMap<TKey, TValue>

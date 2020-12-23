@@ -16,10 +16,12 @@ namespace AlgorithmLab.Graphs
 			NextVertexesMap = nextVertexesMap;
 		}
 
-		public Map<TVertex, long> Costs { get; private set; }
-		public Map<TVertex, TVertex> InVertexes { get; private set; }
 		public TVertex StartVertex { get; private set; }
 		public TVertex EndVertex { get; private set; }
+		public Map<TVertex, long> Costs { get; private set; }
+		public Map<TVertex, TVertex> InVertexes { get; private set; }
+		public long this[TVertex vertex] => Costs[vertex];
+		public bool IsConnected(TVertex vertex) => Costs[vertex] != long.MaxValue;
 
 		/// <summary>
 		/// 幅優先探索により、始点から各頂点への最短経路を求めます。<br/>
@@ -58,9 +60,6 @@ namespace AlgorithmLab.Graphs
 			}
 			return this;
 		}
-
-		public long this[TVertex vertex] => Costs[vertex];
-		public bool IsConnected(TVertex vertex) => Costs[vertex] != long.MaxValue;
 
 		public TVertex[] GetPathVertexes(TVertex endVertex)
 		{

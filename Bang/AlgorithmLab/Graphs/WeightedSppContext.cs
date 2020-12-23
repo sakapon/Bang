@@ -17,10 +17,12 @@ namespace AlgorithmLab.Graphs
 			NextEdgesMap = nextEdgesMap;
 		}
 
-		public Map<TVertex, long> Costs { get; private set; }
-		public Map<TVertex, WeightedEdge<TVertex>> InEdges { get; private set; }
 		public TVertex StartVertex { get; private set; }
 		public TVertex EndVertex { get; private set; }
+		public Map<TVertex, long> Costs { get; private set; }
+		public Map<TVertex, WeightedEdge<TVertex>> InEdges { get; private set; }
+		public long this[TVertex vertex] => Costs[vertex];
+		public bool IsConnected(TVertex vertex) => Costs[vertex] != long.MaxValue;
 
 		/// <summary>
 		/// Dijkstra 法により、始点から各頂点への最短経路を求めます。<br/>
@@ -38,7 +40,7 @@ namespace AlgorithmLab.Graphs
 			EndVertex = endVertex;
 
 			Costs = Factory.CreateMap(long.MaxValue);
-			InEdges = Factory.CreateMap(new WeightedEdge<TVertex>(Factory.Invalid, Factory.Invalid, -1));
+			InEdges = Factory.CreateMap(new WeightedEdge<TVertex>(Factory.Invalid, Factory.Invalid, long.MinValue));
 			var q = PriorityQueue<TVertex>.CreateWithKey(v => Costs[v]);
 			Costs[startVertex] = 0;
 			q.Push(startVertex);
@@ -62,8 +64,38 @@ namespace AlgorithmLab.Graphs
 			return this;
 		}
 
-		public long this[TVertex vertex] => Costs[vertex];
-		public bool IsConnected(TVertex vertex) => Costs[vertex] != long.MaxValue;
+		public WeightedSppContext<TVertex> BfsMod(int m, TVertex startVertex, TVertex endVertex)
+		{
+			StartVertex = startVertex;
+			EndVertex = endVertex;
+
+			Costs = Factory.CreateMap(long.MaxValue);
+			InEdges = Factory.CreateMap(new WeightedEdge<TVertex>(Factory.Invalid, Factory.Invalid, long.MinValue));
+			var qs = Array.ConvertAll(new bool[m], _ => new Queue<TVertex>());
+			Costs[startVertex] = 0;
+			qs[0].Enqueue(startVertex);
+
+			for (long c = 0; Array.Exists(qs, q => q.Count > 0); ++c)
+			{
+				var q = qs[c % m];
+				while (q.Count > 0)
+				{
+					var v = q.Dequeue();
+					if (TEquals(v, endVertex)) break;
+					if (Costs[v] < c) continue;
+
+					foreach (var e in NextEdgesMap[v])
+					{
+						var (nv, nc) = (e.To, c + e.Cost);
+						if (Costs[nv] <= nc) continue;
+						Costs[nv] = nc;
+						InEdges[nv] = e;
+						qs[nc % m].Enqueue(nv);
+					}
+				}
+			}
+			return this;
+		}
 
 		public TVertex[] GetPathVertexes(TVertex endVertex)
 		{

@@ -33,11 +33,21 @@ namespace AlgorithmLab.Graphs
 		/// 無向グリッド上での典型的な BFS:
 		/// <code>
 		/// var r = ShortestPath.WithGrid(h, w)
-		/// 	.WithUnweighted(v => Array.FindAll(GridHelper.Nexts(v), v => s.GetByP(v) != '#'))
+		/// 	.WithUnweighted(v => Array.FindAll(v.Nexts(), nv => s.GetValue(nv) != '#'))
 		/// 	.Bfs(sv, ev);
 		/// </code>
 		/// </example>
 		public static GridSppFactory WithGrid(int height, int width) => new GridSppFactory(height, width);
+
+		/// <summary>
+		/// ハッシュ関数により任意の値が頂点を表すグラフを使用します。<br/>
+		/// ハッシュ値は <c>0 &lt;= v &lt; <paramref name="vertexesCount"/></c> に制限されます。
+		/// </summary>
+		/// <typeparam name="TVertex">頂点を表すオブジェクトの型。</typeparam>
+		/// <param name="vertexesCount">頂点の個数。</param>
+		/// <param name="toHash">ハッシュ関数。</param>
+		/// <param name="invalid">無効な頂点を表す値。</param>
+		/// <returns>ハッシュ関数を使用する場合の Factory オブジェクト。</returns>
 		public static HashSppFactory<TVertex> WithHash<TVertex>(int vertexesCount, Func<TVertex, int> toHash, TVertex invalid) => new HashSppFactory<TVertex>(vertexesCount, toHash, invalid);
 	}
 

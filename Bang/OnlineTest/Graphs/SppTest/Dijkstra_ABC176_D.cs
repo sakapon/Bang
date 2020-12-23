@@ -26,7 +26,7 @@ namespace OnlineTest.Graphs.SppTest
 					foreach (var nv in v.Nexts())
 					{
 						if (s.GetValue(nv) == '#') continue;
-						nids.Add(new WeightedEdge<Point>(v, nv, 0));
+						nids.Add((v, nv, 0));
 					}
 
 					for (int i = -2; i <= 2; i++)
@@ -34,7 +34,7 @@ namespace OnlineTest.Graphs.SppTest
 						{
 							var nv = v + (i, j);
 							if (s.GetValue(nv) == '#') continue;
-							nids.Add(new WeightedEdge<Point>(v, nv, 1));
+							nids.Add((v, nv, 1));
 						}
 					return nids.ToArray();
 				})

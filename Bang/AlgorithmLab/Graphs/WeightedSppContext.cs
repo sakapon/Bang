@@ -64,6 +64,18 @@ namespace AlgorithmLab.Graphs
 			return this;
 		}
 
+		/// <summary>
+		/// 幅優先探索の拡張により、始点から各頂点への最短経路を求めます。<br/>
+		/// 例えば <paramref name="m"/> = 3 のとき、012-BFS を表します。<br/>
+		/// 辺のコストの範囲は [0, <paramref name="m"/>) です。
+		/// </summary>
+		/// <param name="m">辺のコストの候補となる数。</param>
+		/// <param name="startVertex">始点。</param>
+		/// <param name="endVertex">終点。終点を指定しない場合、<c>Factory.Invalid</c>。</param>
+		/// <returns>現在のオブジェクト。</returns>
+		/// <remarks>
+		/// グラフの有向性、連結性、多重性、開閉を問いません。
+		/// </remarks>
 		public WeightedSppContext<TVertex> BfsMod(int m, TVertex startVertex, TVertex endVertex)
 		{
 			StartVertex = startVertex;

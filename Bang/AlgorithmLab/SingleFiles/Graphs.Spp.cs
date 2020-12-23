@@ -243,8 +243,8 @@ namespace AlgorithmLab.Graphs.Spp
 	public static class ShortestPath
 	{
 		/// <summary>
-		/// 整数値が頂点を表すグラフを使用します。<br/>
-		/// この値は <c>0 &lt;= v &lt; <paramref name="vertexesCount"/></c> に制限されます。
+		/// 頂点が整数値で表されるグラフを使用します。<br/>
+		/// この値の範囲は [0, <paramref name="vertexesCount"/>) です。
 		/// </summary>
 		/// <param name="vertexesCount">頂点の個数。</param>
 		/// <returns>整数値に対する Factory オブジェクト。</returns>
@@ -259,7 +259,7 @@ namespace AlgorithmLab.Graphs.Spp
 		public static IntSppFactory WithInt(int vertexesCount) => new IntSppFactory(vertexesCount);
 
 		/// <summary>
-		/// 2 次元グリッド上の点が頂点を表すグラフを使用します。
+		/// 頂点が 2 次元グリッド上の点で表されるグラフを使用します。
 		/// </summary>
 		/// <param name="height">高さ。</param>
 		/// <param name="width">幅。</param>
@@ -275,14 +275,22 @@ namespace AlgorithmLab.Graphs.Spp
 		public static GridSppFactory WithGrid(int height, int width) => new GridSppFactory(height, width);
 
 		/// <summary>
-		/// ハッシュ関数により任意の値が頂点を表すグラフを使用します。<br/>
-		/// ハッシュ値は <c>0 &lt;= v &lt; <paramref name="vertexesCount"/></c> に制限されます。
+		/// ハッシュ関数により、頂点が任意の値で表されるグラフを使用します。<br/>
+		/// ハッシュ値の範囲は [0, <paramref name="vertexesCount"/>) です。
 		/// </summary>
 		/// <typeparam name="TVertex">頂点を表すオブジェクトの型。</typeparam>
 		/// <param name="vertexesCount">頂点の個数。</param>
 		/// <param name="toHash">ハッシュ関数。</param>
 		/// <param name="invalid">無効な頂点を表す値。</param>
 		/// <returns>ハッシュ関数を使用する場合の Factory オブジェクト。</returns>
+		/// <example>
+		/// 無向グリッド上での典型的な BFS:
+		/// <code>
+		/// var r = ShortestPath.WithHash(h * w, GridHelper.CreateToHash(w), (-1, -1))
+		/// 	.WithUnweighted(v => Array.FindAll(v.Nexts(), nv => s.GetValue(nv) != '#'))
+		/// 	.Bfs(sv, ev);
+		/// </code>
+		/// </example>
 		public static HashSppFactory<TVertex> WithHash<TVertex>(int vertexesCount, Func<TVertex, int> toHash, TVertex invalid) => new HashSppFactory<TVertex>(vertexesCount, toHash, invalid);
 	}
 
@@ -456,10 +464,12 @@ namespace AlgorithmLab.Graphs.Spp
 			NextVertexesMap = nextVertexesMap;
 		}
 
-		public Map<TVertex, long> Costs { get; private set; }
-		public Map<TVertex, TVertex> InVertexes { get; private set; }
 		public TVertex StartVertex { get; private set; }
 		public TVertex EndVertex { get; private set; }
+		public Map<TVertex, long> Costs { get; private set; }
+		public Map<TVertex, TVertex> InVertexes { get; private set; }
+		public long this[TVertex vertex] => Costs[vertex];
+		public bool IsConnected(TVertex vertex) => Costs[vertex] != long.MaxValue;
 
 		/// <summary>
 		/// 幅優先探索により、始点から各頂点への最短経路を求めます。<br/>
@@ -499,9 +509,6 @@ namespace AlgorithmLab.Graphs.Spp
 			return this;
 		}
 
-		public long this[TVertex vertex] => Costs[vertex];
-		public bool IsConnected(TVertex vertex) => Costs[vertex] != long.MaxValue;
-
 		public TVertex[] GetPathVertexes(TVertex endVertex)
 		{
 			if (InVertexes == null) throw new InvalidOperationException("No Result.");
@@ -526,10 +533,12 @@ namespace AlgorithmLab.Graphs.Spp
 			NextEdgesMap = nextEdgesMap;
 		}
 
-		public Map<TVertex, long> Costs { get; private set; }
-		public Map<TVertex, WeightedEdge<TVertex>> InEdges { get; private set; }
 		public TVertex StartVertex { get; private set; }
 		public TVertex EndVertex { get; private set; }
+		public Map<TVertex, long> Costs { get; private set; }
+		public Map<TVertex, WeightedEdge<TVertex>> InEdges { get; private set; }
+		public long this[TVertex vertex] => Costs[vertex];
+		public bool IsConnected(TVertex vertex) => Costs[vertex] != long.MaxValue;
 
 		/// <summary>
 		/// Dijkstra 法により、始点から各頂点への最短経路を求めます。<br/>
@@ -547,7 +556,7 @@ namespace AlgorithmLab.Graphs.Spp
 			EndVertex = endVertex;
 
 			Costs = Factory.CreateMap(long.MaxValue);
-			InEdges = Factory.CreateMap(new WeightedEdge<TVertex>(Factory.Invalid, Factory.Invalid, -1));
+			InEdges = Factory.CreateMap(new WeightedEdge<TVertex>(Factory.Invalid, Factory.Invalid, long.MinValue));
 			var q = PriorityQueue<TVertex>.CreateWithKey(v => Costs[v]);
 			Costs[startVertex] = 0;
 			q.Push(startVertex);
@@ -571,8 +580,50 @@ namespace AlgorithmLab.Graphs.Spp
 			return this;
 		}
 
-		public long this[TVertex vertex] => Costs[vertex];
-		public bool IsConnected(TVertex vertex) => Costs[vertex] != long.MaxValue;
+		/// <summary>
+		/// 幅優先探索の拡張により、始点から各頂点への最短経路を求めます。<br/>
+		/// 例えば <paramref name="m"/> = 3 のとき、012-BFS を表します。<br/>
+		/// 辺のコストの範囲は [0, <paramref name="m"/>) です。
+		/// </summary>
+		/// <param name="m">辺のコストの候補となる数。</param>
+		/// <param name="startVertex">始点。</param>
+		/// <param name="endVertex">終点。終点を指定しない場合、<c>Factory.Invalid</c>。</param>
+		/// <returns>現在のオブジェクト。</returns>
+		/// <remarks>
+		/// グラフの有向性、連結性、多重性、開閉を問いません。
+		/// </remarks>
+		public WeightedSppContext<TVertex> BfsMod(int m, TVertex startVertex, TVertex endVertex)
+		{
+			StartVertex = startVertex;
+			EndVertex = endVertex;
+
+			Costs = Factory.CreateMap(long.MaxValue);
+			InEdges = Factory.CreateMap(new WeightedEdge<TVertex>(Factory.Invalid, Factory.Invalid, long.MinValue));
+			var qs = Array.ConvertAll(new bool[m], _ => new Queue<TVertex>());
+			Costs[startVertex] = 0;
+			qs[0].Enqueue(startVertex);
+
+			for (long c = 0; Array.Exists(qs, q => q.Count > 0); ++c)
+			{
+				var q = qs[c % m];
+				while (q.Count > 0)
+				{
+					var v = q.Dequeue();
+					if (TEquals(v, endVertex)) break;
+					if (Costs[v] < c) continue;
+
+					foreach (var e in NextEdgesMap[v])
+					{
+						var (nv, nc) = (e.To, c + e.Cost);
+						if (Costs[nv] <= nc) continue;
+						Costs[nv] = nc;
+						InEdges[nv] = e;
+						qs[nc % m].Enqueue(nv);
+					}
+				}
+			}
+			return this;
+		}
 
 		public TVertex[] GetPathVertexes(TVertex endVertex)
 		{

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace AlgorithmLab.Graphs0.Spp2
+namespace AlgorithmLab.Graphs.Spp
 {
 	public struct Point : IEquatable<Point>
 	{

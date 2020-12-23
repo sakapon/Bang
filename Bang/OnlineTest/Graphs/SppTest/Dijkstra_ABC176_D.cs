@@ -15,8 +15,7 @@ namespace OnlineTest.Graphs.SppTest
 			// 1-indexed に注意
 			var sv = GraphConsole.ReadPoint() + (1, 1);
 			var ev = GraphConsole.ReadPoint() + (1, 1);
-			var s = GraphConsole.ReadEnclosedGrid(ref h, ref w);
-			GridHelper.EncloseGrid(ref h, ref w, ref s);
+			var s = GraphConsole.ReadEnclosedGrid(ref h, ref w, delta: 2);
 
 			// WeightedEdge<T>[] を静的に構築する方法では TLE。
 			var r = ShortestPath.WithGrid(h, w)

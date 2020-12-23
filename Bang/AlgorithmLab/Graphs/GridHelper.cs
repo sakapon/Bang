@@ -4,15 +4,15 @@ namespace AlgorithmLab.Graphs
 {
 	public static class GridHelper
 	{
-		const char Road = '.';
-		const char Wall = '#';
-
-		public static void EncloseGrid(ref int h, ref int w, ref string[] s, char c = Wall)
+		public static void EncloseGrid(ref int height, ref int width, ref string[] s, char c = '#', int delta = 1)
 		{
-			var t = new string[h + 2];
-			t[h + 1] = t[0] = new string(c, w += 2);
-			for (int i = 1; i <= h; ++i) t[i] = c + s[i - 1] + c;
-			h += 2;
+			var cl = new string(c, width += 2 * delta);
+			var cd = new string(c, delta);
+
+			var t = new string[height + 2 * delta];
+			for (int i = 0; i < delta; ++i) t[delta + height + i] = t[i] = cl;
+			for (int i = 0; i < height; ++i) t[delta + i] = cd + s[i] + cd;
+			height = t.Length;
 			s = t;
 		}
 
@@ -27,12 +27,14 @@ namespace AlgorithmLab.Graphs
 			var (h, w) = (s.Length, s[0].Length);
 			for (int i = 0; i < h; ++i)
 				for (int j = 0; j < w; ++j)
-					if (s[i][j] == c) return (i, j);
-			return (-1, -1);
+					if (s[i][j] == c) return new Point(i, j);
+			return new Point(-1, -1);
 		}
 
 		public static int ToHash(Point p, int width) => p.i * width + p.j;
-		public static Point FromHash(int hash, int width) => (hash / width, hash % width);
+		public static Point FromHash(int hash, int width) => new Point(hash / width, hash % width);
+		public static Func<Point, int> CreateToHash(int width) => p => p.i * width + p.j;
+		public static Func<int, Point> CreateFromHash(int width) => hash => new Point(hash / width, hash % width);
 	}
 
 	public static class TupleGridHelper
@@ -54,6 +56,8 @@ namespace AlgorithmLab.Graphs
 
 		public static int ToHash((int i, int j) p, int width) => p.i * width + p.j;
 		public static (int i, int j) FromHash(int hash, int width) => (hash / width, hash % width);
+		public static Func<(int i, int j), int> CreateToHash(int width) => p => p.i * width + p.j;
+		public static Func<int, (int i, int j)> CreateFromHash(int width) => hash => (hash / width, hash % width);
 
 		public static (int i, int j)[] NextsByDelta { get; } = new[] { (-1, 0), (1, 0), (0, -1), (0, 1) };
 		public static (int i, int j)[] Nexts((int i, int j) v)

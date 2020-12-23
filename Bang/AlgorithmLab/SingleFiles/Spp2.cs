@@ -3,11 +3,41 @@ using System.Collections.Generic;
 
 namespace AlgorithmLab.Graphs0.Spp2
 {
+	public struct Point : IEquatable<Point>
+	{
+		public int i, j;
+		public Point(int i, int j) { this.i = i; this.j = j; }
+		public void Deconstruct(out int i, out int j) { i = this.i; j = this.j; }
+		public override string ToString() => $"{i} {j}";
+		public static Point Parse(string s) => Array.ConvertAll(s.Split(), int.Parse);
+
+		public static implicit operator Point(int[] v) => (v[0], v[1]);
+		public static explicit operator int[](Point v) => new[] { v.i, v.j };
+		public static implicit operator Point((int i, int j) v) => new Point(v.i, v.j);
+		public static explicit operator (int, int)(Point v) => (v.i, v.j);
+
+		public bool Equals(Point other) => i == other.i && j == other.j;
+		public static bool operator ==(Point v1, Point v2) => v1.Equals(v2);
+		public static bool operator !=(Point v1, Point v2) => !v1.Equals(v2);
+		public override bool Equals(object obj) => obj is Point v && Equals(v);
+		public override int GetHashCode() => (i, j).GetHashCode();
+
+		public static Point operator -(Point v) => new Point(-v.i, -v.j);
+		public static Point operator +(Point v1, Point v2) => new Point(v1.i + v2.i, v1.j + v2.j);
+		public static Point operator -(Point v1, Point v2) => new Point(v1.i - v2.i, v1.j - v2.j);
+
+		public bool IsInRange(int height, int width) => 0 <= i && i < height && 0 <= j && j < width;
+		public Point[] Nexts() => new[] { new Point(i - 1, j), new Point(i + 1, j), new Point(i, j - 1), new Point(i, j + 1) };
+		public static Point[] NextsByDelta { get; } = new[] { new Point(-1, 0), new Point(1, 0), new Point(0, -1), new Point(0, 1) };
+	}
+
 	public struct UnweightedEdge<T>
 	{
 		public T From { get; }
 		public T To { get; }
 		public UnweightedEdge(T from, T to) { From = from; To = to; }
+		public override string ToString() => $"{{{From}}} {{{To}}}";
+		public static implicit operator UnweightedEdge<T>((T from, T to) v) => new UnweightedEdge<T>(v.from, v.to);
 		public UnweightedEdge<T> Reverse() => new UnweightedEdge<T>(To, From);
 	}
 
@@ -17,6 +47,8 @@ namespace AlgorithmLab.Graphs0.Spp2
 		public T To { get; }
 		public long Cost { get; }
 		public WeightedEdge(T from, T to, long cost) { From = from; To = to; Cost = cost; }
+		public override string ToString() => $"{{{From}}} {{{To}}} {Cost}";
+		public static implicit operator WeightedEdge<T>((T from, T to, long cost) v) => new WeightedEdge<T>(v.from, v.to, v.cost);
 		public WeightedEdge<T> Reverse() => new WeightedEdge<T>(To, From, Cost);
 	}
 
@@ -53,14 +85,14 @@ namespace AlgorithmLab.Graphs0.Spp2
 		public override TValue this[int key] { get => a[key]; set => a[key] = value; }
 	}
 
-	public class GridMap<TValue> : Map<(int i, int j), TValue>
+	public class GridMap<TValue> : Map<Point, TValue>
 	{
 		TValue[][] a;
 		public GridMap(int height, int width, TValue iv)
 		{
 			a = Array.ConvertAll(new bool[height], _ => Array.ConvertAll(new bool[width], __ => iv));
 		}
-		public override TValue this[(int i, int j) key] { get => a[key.i][key.j]; set => a[key.i][key.j] = value; }
+		public override TValue this[Point key] { get => a[key.i][key.j]; set => a[key.i][key.j] = value; }
 	}
 
 	public class HashMap<TKey, TValue> : Map<TKey, TValue>
@@ -96,15 +128,15 @@ namespace AlgorithmLab.Graphs0.Spp2
 		public override void Add(int key, TValue value) => map[key].Add(value);
 	}
 
-	public class GridListMap<TValue> : ListMap<(int i, int j), TValue>
+	public class GridListMap<TValue> : ListMap<Point, TValue>
 	{
 		List<TValue>[][] map;
 		public GridListMap(int height, int width)
 		{
 			map = Array.ConvertAll(new bool[height], _ => Array.ConvertAll(new bool[width], __ => new List<TValue>()));
 		}
-		public override TValue[] this[(int i, int j) key] => map[key.i][key.j].ToArray();
-		public override void Add((int i, int j) key, TValue value) => map[key.i][key.j].Add(value);
+		public override TValue[] this[Point key] => map[key.i][key.j].ToArray();
+		public override void Add(Point key, TValue value) => map[key.i][key.j].Add(value);
 	}
 
 	public class HashListMap<TKey, TValue> : ListMap<TKey, TValue>
@@ -122,7 +154,15 @@ namespace AlgorithmLab.Graphs0.Spp2
 
 	public static class GraphConsole
 	{
+		const char Road = '.';
+		const char Wall = '#';
+
 		static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
+
+		public static Point ReadPoint()
+		{
+			return Point.Parse(Console.ReadLine());
+		}
 
 		public static UnweightedEdge<int>[] ReadUnweightedEdges(int count)
 		{
@@ -149,53 +189,52 @@ namespace AlgorithmLab.Graphs0.Spp2
 			return Array.ConvertAll(new bool[h], _ => Read());
 		}
 
-		public static string[] ReadEnclosedGrid(ref int h, ref int w, char c = '#')
+		public static string[] ReadEnclosedGrid(ref int height, ref int width, char c = '#', int delta = 1)
 		{
-			var s = new string[h + 2];
-			s[h + 1] = s[0] = new string(c, w += 2);
-			for (int i = 1; i <= h; ++i) s[i] = c + Console.ReadLine() + c;
-			h += 2;
+			var cl = new string(c, width += 2 * delta);
+			var cd = new string(c, delta);
+
+			var s = new string[height + 2 * delta];
+			for (int i = 0; i < delta; ++i) s[delta + height + i] = s[i] = cl;
+			for (int i = 0; i < height; ++i) s[delta + i] = cd + Console.ReadLine() + cd;
+			height = s.Length;
 			return s;
 		}
 	}
 
 	public static class GridHelper
 	{
-		const char Road = '.';
-		const char Wall = '#';
-
-		// 2 次元配列に 2 次元インデックスでアクセスします。
-		public static T GetByP<T>(this T[][] a, (int i, int j) p) => a[p.i][p.j];
-		public static void SetByP<T>(this T[][] a, (int i, int j) p, T value) => a[p.i][p.j] = value;
-		public static char GetByP(this string[] s, (int i, int j) p) => s[p.i][p.j];
-
-		public static void EncloseGrid(ref int h, ref int w, ref string[] s, char c = Wall)
+		public static void EncloseGrid(ref int height, ref int width, ref string[] s, char c = '#', int delta = 1)
 		{
-			var t = new string[h + 2];
-			t[h + 1] = t[0] = new string(c, w += 2);
-			for (int i = 1; i <= h; ++i) t[i] = c + s[i - 1] + c;
-			h += 2;
+			var cl = new string(c, width += 2 * delta);
+			var cd = new string(c, delta);
+
+			var t = new string[height + 2 * delta];
+			for (int i = 0; i < delta; ++i) t[delta + height + i] = t[i] = cl;
+			for (int i = 0; i < height; ++i) t[delta + i] = cd + s[i] + cd;
+			height = t.Length;
 			s = t;
 		}
 
-		public static (int i, int j) FindChar(string[] s, char c)
+		public static T GetValue<T>(this T[,] a, Point p) => a[p.i, p.j];
+		public static void SetValue<T>(this T[,] a, Point p, T value) => a[p.i, p.j] = value;
+		public static T GetValue<T>(this T[][] a, Point p) => a[p.i][p.j];
+		public static void SetValue<T>(this T[][] a, Point p, T value) => a[p.i][p.j] = value;
+		public static char GetValue(this string[] s, Point p) => s[p.i][p.j];
+
+		public static Point FindChar(string[] s, char c)
 		{
 			var (h, w) = (s.Length, s[0].Length);
 			for (int i = 0; i < h; ++i)
 				for (int j = 0; j < w; ++j)
-					if (s[i][j] == c) return (i, j);
-			return (-1, -1);
+					if (s[i][j] == c) return new Point(i, j);
+			return new Point(-1, -1);
 		}
 
-		public static int ToHash((int i, int j) p, int w) => p.i * w + p.j;
-		public static (int i, int j) FromHash(int id, int w) => (id / w, id % w);
-
-		public static readonly (int i, int j)[] NextsByDelta = new[] { (-1, 0), (1, 0), (0, -1), (0, 1) };
-		public static (int i, int j)[] Nexts((int i, int j) v)
-		{
-			var (i, j) = v;
-			return new[] { (i - 1, j), (i + 1, j), (i, j - 1), (i, j + 1) };
-		}
+		public static int ToHash(Point p, int width) => p.i * width + p.j;
+		public static Point FromHash(int hash, int width) => new Point(hash / width, hash % width);
+		public static Func<Point, int> CreateToHash(int width) => p => p.i * width + p.j;
+		public static Func<int, Point> CreateFromHash(int width) => hash => new Point(hash / width, hash % width);
 	}
 
 	/// <summary>
@@ -229,11 +268,21 @@ namespace AlgorithmLab.Graphs0.Spp2
 		/// 無向グリッド上での典型的な BFS:
 		/// <code>
 		/// var r = ShortestPath.WithGrid(h, w)
-		/// 	.WithUnweighted(v => Array.FindAll(GridHelper.Nexts(v), v => s.GetByP(v) != '#'))
+		/// 	.WithUnweighted(v => Array.FindAll(v.Nexts(), nv => s.GetValue(nv) != '#'))
 		/// 	.Bfs(sv, ev);
 		/// </code>
 		/// </example>
 		public static GridSppFactory WithGrid(int height, int width) => new GridSppFactory(height, width);
+
+		/// <summary>
+		/// ハッシュ関数により任意の値が頂点を表すグラフを使用します。<br/>
+		/// ハッシュ値は <c>0 &lt;= v &lt; <paramref name="vertexesCount"/></c> に制限されます。
+		/// </summary>
+		/// <typeparam name="TVertex">頂点を表すオブジェクトの型。</typeparam>
+		/// <param name="vertexesCount">頂点の個数。</param>
+		/// <param name="toHash">ハッシュ関数。</param>
+		/// <param name="invalid">無効な頂点を表す値。</param>
+		/// <returns>ハッシュ関数を使用する場合の Factory オブジェクト。</returns>
 		public static HashSppFactory<TVertex> WithHash<TVertex>(int vertexesCount, Func<TVertex, int> toHash, TVertex invalid) => new HashSppFactory<TVertex>(vertexesCount, toHash, invalid);
 	}
 
@@ -347,7 +396,7 @@ namespace AlgorithmLab.Graphs0.Spp2
 		}
 	}
 
-	public class GridSppFactory : SppFactory<(int i, int j)>
+	public class GridSppFactory : SppFactory<Point>
 	{
 		public int Height { get; }
 		public int Width { get; }
@@ -357,14 +406,14 @@ namespace AlgorithmLab.Graphs0.Spp2
 			Width = width;
 		}
 
-		public override (int i, int j) Invalid => (-1, -1);
+		public override Point Invalid => (-1, -1);
 
-		public override Map<(int i, int j), TValue> CreateMap<TValue>(TValue iv)
+		public override Map<Point, TValue> CreateMap<TValue>(TValue iv)
 		{
 			return new GridMap<TValue>(Height, Width, iv);
 		}
 
-		public override ListMap<(int i, int j), TValue> CreateListMap<TValue>()
+		public override ListMap<Point, TValue> CreateListMap<TValue>()
 		{
 			return new GridListMap<TValue>(Height, Width);
 		}

@@ -21,12 +21,12 @@ namespace OnlineTest.Graphs.SppTest
 			var r = ShortestPath.WithGrid(h, w)
 				.WithWeighted(v =>
 				{
-					var nvs = new List<WeightedEdge<Point>>();
+					var nes = new List<WeightedEdge<Point>>();
 
 					foreach (var nv in v.Nexts())
 					{
 						if (s.GetValue(nv) == '#') continue;
-						nvs.Add(new WeightedEdge<Point>(v, nv, 0));
+						nes.Add(new WeightedEdge<Point>(v, nv, 0));
 					}
 
 					for (int i = -2; i <= 2; i++)
@@ -34,9 +34,9 @@ namespace OnlineTest.Graphs.SppTest
 						{
 							var nv = v + new Point(i, j);
 							if (s.GetValue(nv) == '#') continue;
-							nvs.Add(new WeightedEdge<Point>(v, nv, 1));
+							nes.Add(new WeightedEdge<Point>(v, nv, 1));
 						}
-					return nvs.ToArray();
+					return nes.ToArray();
 				})
 				.BfsMod(2, sv, ev);
 

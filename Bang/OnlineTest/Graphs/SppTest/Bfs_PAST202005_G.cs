@@ -14,18 +14,14 @@ namespace OnlineTest.Graphs.SppTest
 			var (n, x, y) = Read3();
 			var ps = Array.ConvertAll(new bool[n], _ => GraphConsole.ReadPoint());
 
-			var (h, w) = (405, 405);
+			var (h, w) = (403, 403);
 			Point d = (202, 202);
 			var ev = (x, y) + d;
 
 			var s = NewArray2<bool>(h, w);
+			GridHelper.EncloseGrid(ref h, ref w, ref s, true);
 			foreach (var p in ps)
 				s.SetValue(p + d, true);
-			for (int i = 0; i < 405; i++)
-			{
-				s[0][i] = s[404][i] = true;
-				s[i][0] = s[i][404] = true;
-			}
 
 			var r = ShortestPath.WithGrid(h, w)
 				.WithUnweighted(v =>

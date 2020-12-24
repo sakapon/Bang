@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace AlgorithmLab.Graphs0
 {
@@ -10,12 +11,22 @@ namespace AlgorithmLab.Graphs0
 		public static void SetValue<T>(this T[][] a, (int i, int j) p, T value) => a[p.i][p.j] = value;
 		public static char GetValue(this string[] s, (int i, int j) p) => s[p.i][p.j];
 
-		public static (int i, int j) FindChar(string[] s, char c)
+		public static (int i, int j) FindValue<T>(T[][] a, T value)
+		{
+			var ec = EqualityComparer<T>.Default;
+			var (h, w) = (a.Length, a[0].Length);
+			for (int i = 0; i < h; ++i)
+				for (int j = 0; j < w; ++j)
+					if (ec.Equals(a[i][j], value)) return (i, j);
+			return (-1, -1);
+		}
+
+		public static (int i, int j) FindValue(string[] s, char value)
 		{
 			var (h, w) = (s.Length, s[0].Length);
 			for (int i = 0; i < h; ++i)
 				for (int j = 0; j < w; ++j)
-					if (s[i][j] == c) return (i, j);
+					if (s[i][j] == value) return (i, j);
 			return (-1, -1);
 		}
 

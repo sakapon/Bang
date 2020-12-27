@@ -23,5 +23,29 @@ namespace OnlineTest.Graphs.SppTest
 				.Bfs(sv, ev);
 			return r.IsConnected(ev);
 		}
+
+		static bool Solve2()
+		{
+			var (h, w) = Read2();
+			var s = GraphConsole.ReadEnclosedGrid(ref h, ref w);
+
+			var sv = GridHelper.FindValue(s, 's');
+			var ev = GridHelper.FindValue(s, 'g');
+
+			var es = new List<UnweightedEdge<Point>>();
+			for (int i = 0; i < h; i++)
+				for (int j = 0; j < w; j++)
+				{
+					if (s[i][j] == '#') continue;
+					Point v = new Point(i, j), nv;
+					if (s.GetValue(nv = v + (-1, 0)) != '#') es.Add(new UnweightedEdge<Point>(v, nv));
+					if (s.GetValue(nv = v + (0, -1)) != '#') es.Add(new UnweightedEdge<Point>(v, nv));
+				}
+
+			var r = ShortestPath.WithGrid(h, w)
+				.WithUnweighted(es.ToArray(), false)
+				.Bfs(sv, ev);
+			return r.IsConnected(ev);
+		}
 	}
 }

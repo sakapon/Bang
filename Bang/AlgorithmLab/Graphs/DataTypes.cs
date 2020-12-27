@@ -29,6 +29,9 @@ namespace AlgorithmLab.Graphs
 		public bool IsInRange(int height, int width) => 0 <= i && i < height && 0 <= j && j < width;
 		public Point[] Nexts() => new[] { new Point(i - 1, j), new Point(i + 1, j), new Point(i, j - 1), new Point(i, j + 1) };
 		public static Point[] NextsByDelta { get; } = new[] { new Point(-1, 0), new Point(1, 0), new Point(0, -1), new Point(0, 1) };
+
+		public int NormL1 => Math.Abs(i) + Math.Abs(j);
+		public double Norm => Math.Sqrt(i * i + j * j);
 	}
 
 	public struct UnweightedEdge<T>

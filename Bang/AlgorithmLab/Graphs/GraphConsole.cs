@@ -19,30 +19,32 @@ namespace AlgorithmLab.Graphs
 			return Array.ConvertAll(new bool[count], _ => EdgeHelper.ToEdge(Read()));
 		}
 
-		public static string[] ReadGrid(int h)
+		public static string[] ReadGrid(int height)
 		{
-			return Array.ConvertAll(new bool[h], _ => Console.ReadLine());
+			return Array.ConvertAll(new bool[height], _ => Console.ReadLine());
 		}
 
-		public static char[][] ReadGridAsChar(int h)
+		public static char[][] ReadGridAsChar(int height)
 		{
-			return Array.ConvertAll(new bool[h], _ => Console.ReadLine().ToCharArray());
+			return Array.ConvertAll(new bool[height], _ => Console.ReadLine().ToCharArray());
 		}
 
-		public static int[][] ReadGridAsInt(int h)
+		public static int[][] ReadGridAsInt(int height)
 		{
-			return Array.ConvertAll(new bool[h], _ => Read());
+			return Array.ConvertAll(new bool[height], _ => Read());
 		}
 
 		public static string[] ReadEnclosedGrid(ref int height, ref int width, char c = '#', int delta = 1)
 		{
-			var cl = new string(c, width += 2 * delta);
+			var h = height + 2 * delta;
+			var w = width + 2 * delta;
+			var cw = new string(c, w);
 			var cd = new string(c, delta);
 
-			var s = new string[height + 2 * delta];
-			for (int i = 0; i < delta; ++i) s[delta + height + i] = s[i] = cl;
+			var s = new string[h];
+			for (int i = 0; i < delta; ++i) s[delta + height + i] = s[i] = cw;
 			for (int i = 0; i < height; ++i) s[delta + i] = cd + Console.ReadLine() + cd;
-			height = s.Length;
+			(height, width) = (h, w);
 			return s;
 		}
 	}

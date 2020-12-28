@@ -97,7 +97,7 @@ namespace AlgorithmLab.Graphs
 		/// <param name="edges">辺のリスト。</param>
 		/// <param name="directed">有向グラフかどうかを示す値。</param>
 		/// <returns>アルゴリズムを実行するためのオブジェクト。</returns>
-		public UnweightedSppContext<TVertex> WithUnweighted(UnweightedEdge<TVertex>[] edges, bool directed)
+		public UnweightedSppContext<TVertex> WithUnweighted(WeightedEdge<TVertex>[] edges, bool directed)
 		{
 			var map = UnweightedEdgesToMap(edges, directed);
 			return new UnweightedSppContext<TVertex>(this, map);
@@ -115,7 +115,7 @@ namespace AlgorithmLab.Graphs
 			return new WeightedSppContext<TVertex>(this, map);
 		}
 
-		public ListMap<TVertex, TVertex> UnweightedEdgesToMap(UnweightedEdge<TVertex>[] edges, bool directed)
+		public ListMap<TVertex, TVertex> UnweightedEdgesToMap(WeightedEdge<TVertex>[] edges, bool directed)
 		{
 			var map = CreateListMap<TVertex>();
 			foreach (var e in edges)
@@ -160,7 +160,7 @@ namespace AlgorithmLab.Graphs
 
 		public UnweightedSppContext<int> WithUnweighted(int[][] edges, bool directed)
 		{
-			return WithUnweighted(Array.ConvertAll(edges, EdgeHelper.Unweighted), directed);
+			return WithUnweighted(Array.ConvertAll(edges, EdgeHelper.Weighted), directed);
 		}
 
 		public WeightedSppContext<int> WithWeighted(int[][] edges, bool directed)

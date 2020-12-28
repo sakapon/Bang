@@ -32,14 +32,14 @@ namespace OnlineTest.Graphs.SppTest
 			var sv = GridHelper.FindValue(s, 's');
 			var ev = GridHelper.FindValue(s, 'g');
 
-			var es = new List<UnweightedEdge<Point>>();
+			var es = new List<WeightedEdge<Point>>();
 			for (int i = 0; i < h; i++)
 				for (int j = 0; j < w; j++)
 				{
 					if (s[i][j] == '#') continue;
 					Point v = new Point(i, j), nv;
-					if (s.GetValue(nv = v + (-1, 0)) != '#') es.Add(new UnweightedEdge<Point>(v, nv));
-					if (s.GetValue(nv = v + (0, -1)) != '#') es.Add(new UnweightedEdge<Point>(v, nv));
+					if (s.GetValue(nv = v + (-1, 0)) != '#') es.Add(new WeightedEdge<Point>(v, nv));
+					if (s.GetValue(nv = v + (0, -1)) != '#') es.Add(new WeightedEdge<Point>(v, nv));
 				}
 
 			var r = ShortestPath.WithGrid(h, w)

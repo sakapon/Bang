@@ -34,22 +34,22 @@ namespace AlgorithmLab.Graphs
 		public double Norm => Math.Sqrt(i * i + j * j);
 	}
 
-	public struct WeightedEdge<T>
+	public struct Edge<T>
 	{
 		public T From { get; }
 		public T To { get; }
 		public long Cost { get; }
-		public WeightedEdge(T from, T to, long cost = 1) { From = from; To = to; Cost = cost; }
+		public Edge(T from, T to, long cost = 1) { From = from; To = to; Cost = cost; }
 		public override string ToString() => $"{{{From}}} {{{To}}} {Cost}";
-		public static implicit operator WeightedEdge<T>((T from, T to) v) => new WeightedEdge<T>(v.from, v.to);
-		public static implicit operator WeightedEdge<T>((T from, T to, long cost) v) => new WeightedEdge<T>(v.from, v.to, v.cost);
-		public WeightedEdge<T> Reverse() => new WeightedEdge<T>(To, From, Cost);
+		public static implicit operator Edge<T>((T from, T to) v) => new Edge<T>(v.from, v.to);
+		public static implicit operator Edge<T>((T from, T to, long cost) v) => new Edge<T>(v.from, v.to, v.cost);
+		public Edge<T> Reverse() => new Edge<T>(To, From, Cost);
 	}
 
 	public static class EdgeHelper
 	{
-		public static WeightedEdge<int> Weighted(int[] e) => new WeightedEdge<int>(e[0], e[1], e.Length > 2 ? e[2] : 1);
-		public static WeightedEdge<int> Weighted(long[] e) => new WeightedEdge<int>((int)e[0], (int)e[1], e.Length > 2 ? e[2] : 1);
+		public static Edge<int> ToEdge(int[] e) => new Edge<int>(e[0], e[1], e.Length > 2 ? e[2] : 1);
+		public static Edge<int> ToEdge(long[] e) => new Edge<int>((int)e[0], (int)e[1], e.Length > 2 ? e[2] : 1);
 	}
 
 	public abstract class Map<TKey, TValue>

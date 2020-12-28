@@ -12,7 +12,7 @@ namespace OnlineTest.Graphs.SppTest
 		{
 			var h = Read();
 			int n = h[0], m = h[1], s = h[2], t = h[3];
-			var es = GraphConsole.ReadWeightedEdges(m);
+			var es = GraphConsole.ReadEdges(m);
 
 			var r = ShortestPath.WithInt(n)
 				.WithWeighted(es, true)

@@ -14,9 +14,9 @@ namespace AlgorithmLab.Graphs
 			return Point.Parse(Console.ReadLine());
 		}
 
-		public static WeightedEdge<int>[] ReadWeightedEdges(int count)
+		public static Edge<int>[] ReadEdges(int count)
 		{
-			return Array.ConvertAll(new bool[count], _ => EdgeHelper.Weighted(Read()));
+			return Array.ConvertAll(new bool[count], _ => EdgeHelper.ToEdge(Read()));
 		}
 
 		public static string[] ReadGrid(int h)

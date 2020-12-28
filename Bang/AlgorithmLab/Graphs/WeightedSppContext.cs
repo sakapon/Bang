@@ -9,9 +9,9 @@ namespace AlgorithmLab.Graphs
 		static readonly Func<TVertex, TVertex, bool> TEquals = EqualityComparer<TVertex>.Default.Equals;
 
 		public SppFactory<TVertex> Factory { get; }
-		public ReadOnlyMap<TVertex, WeightedEdge<TVertex>[]> NextEdgesMap { get; }
+		public ReadOnlyMap<TVertex, Edge<TVertex>[]> NextEdgesMap { get; }
 
-		public WeightedSppContext(SppFactory<TVertex> factory, ReadOnlyMap<TVertex, WeightedEdge<TVertex>[]> nextEdgesMap)
+		public WeightedSppContext(SppFactory<TVertex> factory, ReadOnlyMap<TVertex, Edge<TVertex>[]> nextEdgesMap)
 		{
 			Factory = factory;
 			NextEdgesMap = nextEdgesMap;
@@ -20,7 +20,7 @@ namespace AlgorithmLab.Graphs
 		public TVertex StartVertex { get; private set; }
 		public TVertex EndVertex { get; private set; }
 		public Map<TVertex, long> Costs { get; private set; }
-		public Map<TVertex, WeightedEdge<TVertex>> InEdges { get; private set; }
+		public Map<TVertex, Edge<TVertex>> InEdges { get; private set; }
 		public long this[TVertex vertex] => Costs[vertex];
 		public bool IsConnected(TVertex vertex) => Costs[vertex] != long.MaxValue;
 
@@ -40,7 +40,7 @@ namespace AlgorithmLab.Graphs
 			EndVertex = endVertex;
 
 			Costs = Factory.CreateMap(long.MaxValue);
-			InEdges = Factory.CreateMap(new WeightedEdge<TVertex>(Factory.Invalid, Factory.Invalid, long.MinValue));
+			InEdges = Factory.CreateMap(new Edge<TVertex>(Factory.Invalid, Factory.Invalid, long.MinValue));
 			var q = PriorityQueue<TVertex>.CreateWithKey(v => Costs[v]);
 			Costs[startVertex] = 0;
 			q.Push(startVertex);
@@ -82,7 +82,7 @@ namespace AlgorithmLab.Graphs
 			EndVertex = endVertex;
 
 			Costs = Factory.CreateMap(long.MaxValue);
-			InEdges = Factory.CreateMap(new WeightedEdge<TVertex>(Factory.Invalid, Factory.Invalid, long.MinValue));
+			InEdges = Factory.CreateMap(new Edge<TVertex>(Factory.Invalid, Factory.Invalid, long.MinValue));
 			var qs = Array.ConvertAll(new bool[m], _ => new Queue<TVertex>());
 			Costs[startVertex] = 0;
 			qs[0].Enqueue(startVertex);
@@ -119,11 +119,11 @@ namespace AlgorithmLab.Graphs
 			return path.ToArray();
 		}
 
-		public WeightedEdge<TVertex>[] GetPathEdges(TVertex endVertex)
+		public Edge<TVertex>[] GetPathEdges(TVertex endVertex)
 		{
 			if (InEdges == null) throw new InvalidOperationException("No Result.");
 
-			var path = new Stack<WeightedEdge<TVertex>>();
+			var path = new Stack<Edge<TVertex>>();
 			for (var e = InEdges[endVertex]; !TEquals(e.From, Factory.Invalid); e = InEdges[e.From])
 				path.Push(e);
 			return path.ToArray();

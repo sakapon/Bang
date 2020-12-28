@@ -26,6 +26,7 @@ namespace OnlineTest.Graphs.SppTest
 					map.Add(c, new Point(i, j));
 				}
 
+			// 01-BFS でも AC。ただし、Edge<T>[] を静的に構築する方法では TLE。
 			var r = ShortestPath.WithGrid(h, w)
 				.WithUnweighted(v =>
 				{

@@ -85,9 +85,9 @@ namespace AlgorithmLab.Graphs
 		/// </summary>
 		/// <param name="getNextEdges">指定された頂点からの出辺を取得するための関数。</param>
 		/// <returns>アルゴリズムを実行するためのオブジェクト。</returns>
-		public WeightedSppContext<TVertex> WithWeighted(Func<TVertex, WeightedEdge<TVertex>[]> getNextEdges)
+		public WeightedSppContext<TVertex> WithWeighted(Func<TVertex, Edge<TVertex>[]> getNextEdges)
 		{
-			var map = new FuncReadOnlyMap<TVertex, WeightedEdge<TVertex>[]>(getNextEdges);
+			var map = new FuncReadOnlyMap<TVertex, Edge<TVertex>[]>(getNextEdges);
 			return new WeightedSppContext<TVertex>(this, map);
 		}
 
@@ -97,7 +97,7 @@ namespace AlgorithmLab.Graphs
 		/// <param name="edges">辺のリスト。</param>
 		/// <param name="directed">有向グラフかどうかを示す値。</param>
 		/// <returns>アルゴリズムを実行するためのオブジェクト。</returns>
-		public UnweightedSppContext<TVertex> WithUnweighted(WeightedEdge<TVertex>[] edges, bool directed)
+		public UnweightedSppContext<TVertex> WithUnweighted(Edge<TVertex>[] edges, bool directed)
 		{
 			var map = UnweightedEdgesToMap(edges, directed);
 			return new UnweightedSppContext<TVertex>(this, map);
@@ -109,13 +109,13 @@ namespace AlgorithmLab.Graphs
 		/// <param name="edges">辺のリスト。</param>
 		/// <param name="directed">有向グラフかどうかを示す値。</param>
 		/// <returns>アルゴリズムを実行するためのオブジェクト。</returns>
-		public WeightedSppContext<TVertex> WithWeighted(WeightedEdge<TVertex>[] edges, bool directed)
+		public WeightedSppContext<TVertex> WithWeighted(Edge<TVertex>[] edges, bool directed)
 		{
 			var map = WeightedEdgesToMap(edges, directed);
 			return new WeightedSppContext<TVertex>(this, map);
 		}
 
-		public ListMap<TVertex, TVertex> UnweightedEdgesToMap(WeightedEdge<TVertex>[] edges, bool directed)
+		public ListMap<TVertex, TVertex> UnweightedEdgesToMap(Edge<TVertex>[] edges, bool directed)
 		{
 			var map = CreateListMap<TVertex>();
 			foreach (var e in edges)
@@ -126,9 +126,9 @@ namespace AlgorithmLab.Graphs
 			return map;
 		}
 
-		public ListMap<TVertex, WeightedEdge<TVertex>> WeightedEdgesToMap(WeightedEdge<TVertex>[] edges, bool directed)
+		public ListMap<TVertex, Edge<TVertex>> WeightedEdgesToMap(Edge<TVertex>[] edges, bool directed)
 		{
-			var map = CreateListMap<WeightedEdge<TVertex>>();
+			var map = CreateListMap<Edge<TVertex>>();
 			foreach (var e in edges)
 			{
 				map.Add(e.From, e);
@@ -160,12 +160,12 @@ namespace AlgorithmLab.Graphs
 
 		public UnweightedSppContext<int> WithUnweighted(int[][] edges, bool directed)
 		{
-			return WithUnweighted(Array.ConvertAll(edges, EdgeHelper.Weighted), directed);
+			return WithUnweighted(Array.ConvertAll(edges, EdgeHelper.ToEdge), directed);
 		}
 
 		public WeightedSppContext<int> WithWeighted(int[][] edges, bool directed)
 		{
-			return WithWeighted(Array.ConvertAll(edges, EdgeHelper.Weighted), directed);
+			return WithWeighted(Array.ConvertAll(edges, EdgeHelper.ToEdge), directed);
 		}
 	}
 

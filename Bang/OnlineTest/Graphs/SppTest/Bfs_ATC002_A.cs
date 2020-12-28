@@ -32,14 +32,14 @@ namespace OnlineTest.Graphs.SppTest
 			var ev = Read2();
 			var s = GraphConsole.ReadEnclosedGrid(ref h, ref w);
 
-			var es = new List<WeightedEdge<Point>>();
+			var es = new List<Edge<Point>>();
 			for (int i = 0; i < h; i++)
 				for (int j = 0; j < w; j++)
 				{
 					if (s[i][j] == '#') continue;
 					Point v = new Point(i, j), nv;
-					if (s.GetValue(nv = v + (-1, 0)) != '#') es.Add(new WeightedEdge<Point>(v, nv));
-					if (s.GetValue(nv = v + (0, -1)) != '#') es.Add(new WeightedEdge<Point>(v, nv));
+					if (s.GetValue(nv = v + (-1, 0)) != '#') es.Add(new Edge<Point>(v, nv));
+					if (s.GetValue(nv = v + (0, -1)) != '#') es.Add(new Edge<Point>(v, nv));
 				}
 
 			var r = ShortestPath.WithGrid(h, w)

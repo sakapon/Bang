@@ -17,16 +17,16 @@ namespace OnlineTest.Graphs.SppTest
 			var ev = GraphConsole.ReadPoint() + (1, 1);
 			var s = GraphConsole.ReadEnclosedGrid(ref h, ref w, delta: 2);
 
-			// Dijkstra でも AC。ただし、WeightedEdge<T>[] を静的に構築する方法では TLE。
+			// Dijkstra でも AC。ただし、Edge<T>[] を静的に構築する方法では TLE。
 			var r = ShortestPath.WithGrid(h, w)
 				.WithWeighted(v =>
 				{
-					var nes = new List<WeightedEdge<Point>>();
+					var nes = new List<Edge<Point>>();
 
 					foreach (var nv in v.Nexts())
 					{
 						if (s.GetValue(nv) == '#') continue;
-						nes.Add(new WeightedEdge<Point>(v, nv, 0));
+						nes.Add(new Edge<Point>(v, nv, 0));
 					}
 
 					for (int i = -2; i <= 2; i++)
@@ -34,7 +34,7 @@ namespace OnlineTest.Graphs.SppTest
 						{
 							var nv = v + new Point(i, j);
 							if (s.GetValue(nv) == '#') continue;
-							nes.Add(new WeightedEdge<Point>(v, nv, 1));
+							nes.Add(new Edge<Point>(v, nv, 1));
 						}
 					return nes.ToArray();
 				})

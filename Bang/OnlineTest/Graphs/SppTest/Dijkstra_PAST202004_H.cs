@@ -31,8 +31,8 @@ namespace OnlineTest.Graphs.SppTest
 				.WithWeighted(v =>
 				{
 					var c = s.GetValue(v);
-					if (c == '9') return new[] { new WeightedEdge<Point>(v, ev, (ev - v).NormL1) };
-					return Array.ConvertAll(map[c == 'S' ? 1 : c - '0' + 1].ToArray(), nv => new WeightedEdge<Point>(v, nv, (nv - v).NormL1));
+					if (c == '9') return new[] { new Edge<Point>(v, ev, (ev - v).NormL1) };
+					return Array.ConvertAll(map[c == 'S' ? 1 : c - '0' + 1].ToArray(), nv => new Edge<Point>(v, nv, (nv - v).NormL1));
 				})
 				.Dijkstra(sv, ev);
 			Console.WriteLine(r.IsConnected(ev) ? r[ev] : -1);

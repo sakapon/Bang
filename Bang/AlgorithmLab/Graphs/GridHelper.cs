@@ -59,5 +59,76 @@ namespace AlgorithmLab.Graphs
 			for (int i = 0; i < height; ++i) t[delta + i] = cd + s[i] + cd;
 			(height, width, s) = (h, w, t);
 		}
+
+		public static T[][] Rotate180<T>(T[][] a)
+		{
+			var (h, w) = (a.Length, a[0].Length);
+			var r = Array.ConvertAll(new bool[h], _ => new T[w]);
+			for (int i = 0; i < h; ++i)
+				for (int j = 0; j < w; ++j)
+					r[i][j] = a[h - 1 - i][w - 1 - j];
+			return r;
+		}
+
+		public static T[][] RotateLeft<T>(T[][] a)
+		{
+			var (h, w) = (a.Length, a[0].Length);
+			var r = Array.ConvertAll(new bool[w], _ => new T[h]);
+			for (int i = 0; i < w; ++i)
+				for (int j = 0; j < h; ++j)
+					r[i][j] = a[j][w - 1 - i];
+			return r;
+		}
+
+		public static T[][] RotateRight<T>(T[][] a)
+		{
+			var (h, w) = (a.Length, a[0].Length);
+			var r = Array.ConvertAll(new bool[w], _ => new T[h]);
+			for (int i = 0; i < w; ++i)
+				for (int j = 0; j < h; ++j)
+					r[i][j] = a[h - 1 - j][i];
+			return r;
+		}
+
+		public static string[] Rotate180(string[] s)
+		{
+			var h = s.Length;
+			var r = new string[h];
+			for (int i = 0; i < h; ++i)
+			{
+				var cs = s[h - 1 - i].ToCharArray();
+				Array.Reverse(cs);
+				r[i] = new string(cs);
+			}
+			return r;
+		}
+
+		public static string[] RotateLeft(string[] s)
+		{
+			var (h, w) = (s.Length, s[0].Length);
+			var r = new string[w];
+			for (int i = 0; i < w; ++i)
+			{
+				var cs = new char[h];
+				for (int j = 0; j < h; ++j)
+					cs[j] = s[j][w - 1 - i];
+				r[i] = new string(cs);
+			}
+			return r;
+		}
+
+		public static string[] RotateRight(string[] s)
+		{
+			var (h, w) = (s.Length, s[0].Length);
+			var r = new string[w];
+			for (int i = 0; i < w; ++i)
+			{
+				var cs = new char[h];
+				for (int j = 0; j < h; ++j)
+					cs[j] = s[h - 1 - j][i];
+				r[i] = new string(cs);
+			}
+			return r;
+		}
 	}
 }

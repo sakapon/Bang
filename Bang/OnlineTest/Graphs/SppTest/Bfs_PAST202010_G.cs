@@ -36,7 +36,7 @@ namespace OnlineTest.Graphs.SppTest
 				}
 			Console.WriteLine(count);
 
-			bool IsAllConnected(UnweightedSppContext<Point> r)
+			bool IsAllConnected(UnweightedMapSpp<Point> r)
 			{
 				for (int i = 0; i < h; i++)
 					for (int j = 0; j < w; j++)

@@ -74,10 +74,10 @@ namespace AlgorithmLab.Graphs
 		/// </summary>
 		/// <param name="getNextVertexes">指定された頂点からの行先となる頂点を取得するための関数。</param>
 		/// <returns>アルゴリズムを実行するためのオブジェクト。</returns>
-		public UnweightedSppContext<TVertex> WithUnweighted(Func<TVertex, TVertex[]> getNextVertexes)
+		public UnweightedFuncMapSpp<TVertex> WithUnweighted(Func<TVertex, TVertex[]> getNextVertexes)
 		{
 			var map = new FuncReadOnlyMap<TVertex, TVertex[]>(getNextVertexes);
-			return new UnweightedSppContext<TVertex>(this, map);
+			return new UnweightedFuncMapSpp<TVertex>(this, map);
 		}
 
 		/// <summary>
@@ -97,10 +97,10 @@ namespace AlgorithmLab.Graphs
 		/// <param name="edges">辺のリスト。</param>
 		/// <param name="directed">有向グラフかどうかを示す値。</param>
 		/// <returns>アルゴリズムを実行するためのオブジェクト。</returns>
-		public UnweightedSppContext<TVertex> WithUnweighted(Edge<TVertex>[] edges, bool directed)
+		public UnweightedListMapSpp<TVertex> WithUnweighted(Edge<TVertex>[] edges, bool directed)
 		{
 			var map = UnweightedEdgesToMap(edges, directed);
-			return new UnweightedSppContext<TVertex>(this, map);
+			return new UnweightedListMapSpp<TVertex>(this, map);
 		}
 
 		/// <summary>
@@ -158,7 +158,7 @@ namespace AlgorithmLab.Graphs
 			return new IntListMap<TValue>(VertexesCount);
 		}
 
-		public UnweightedSppContext<int> WithUnweighted(int[][] edges, bool directed)
+		public UnweightedListMapSpp<int> WithUnweighted(int[][] edges, bool directed)
 		{
 			return WithUnweighted(Array.ConvertAll(edges, EdgeHelper.ToEdge), directed);
 		}

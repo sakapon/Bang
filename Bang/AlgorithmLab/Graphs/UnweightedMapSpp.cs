@@ -3,17 +3,16 @@ using System.Collections.Generic;
 
 namespace AlgorithmLab.Graphs
 {
-	public class UnweightedSppContext<TVertex>
+	public abstract class UnweightedMapSpp<TVertex>
 	{
 		static readonly Func<TVertex, TVertex, bool> TEquals = EqualityComparer<TVertex>.Default.Equals;
 
 		public SppFactory<TVertex> Factory { get; }
-		public ReadOnlyMap<TVertex, TVertex[]> NextVertexesMap { get; }
+		public abstract ReadOnlyMap<TVertex, TVertex[]> NextVertexesMap { get; }
 
-		public UnweightedSppContext(SppFactory<TVertex> factory, ReadOnlyMap<TVertex, TVertex[]> nextVertexesMap)
+		protected UnweightedMapSpp(SppFactory<TVertex> factory)
 		{
 			Factory = factory;
-			NextVertexesMap = nextVertexesMap;
 		}
 
 		public TVertex StartVertex { get; private set; }
@@ -33,7 +32,7 @@ namespace AlgorithmLab.Graphs
 		/// <remarks>
 		/// グラフの有向性、連結性、多重性、開閉を問いません。
 		/// </remarks>
-		public UnweightedSppContext<TVertex> Bfs(TVertex startVertex, TVertex endVertex)
+		public UnweightedMapSpp<TVertex> Bfs(TVertex startVertex, TVertex endVertex)
 		{
 			StartVertex = startVertex;
 			EndVertex = endVertex;
@@ -69,6 +68,39 @@ namespace AlgorithmLab.Graphs
 			for (var v = endVertex; !TEquals(v, Factory.Invalid); v = InVertexes[v])
 				path.Push(v);
 			return path.ToArray();
+		}
+	}
+
+	public class UnweightedFuncMapSpp<TVertex> : UnweightedMapSpp<TVertex>
+	{
+		public override ReadOnlyMap<TVertex, TVertex[]> NextVertexesMap { get; }
+
+		public UnweightedFuncMapSpp(SppFactory<TVertex> factory, FuncReadOnlyMap<TVertex, TVertex[]> nextVertexesMap) : base(factory)
+		{
+			NextVertexesMap = nextVertexesMap;
+		}
+	}
+
+	public class UnweightedListMapSpp<TVertex> : UnweightedMapSpp<TVertex>
+	{
+		ListMap<TVertex, TVertex> map;
+		public override ReadOnlyMap<TVertex, TVertex[]> NextVertexesMap => map;
+
+		public UnweightedListMapSpp(SppFactory<TVertex> factory, ListMap<TVertex, TVertex> nextVertexesMap) : base(factory)
+		{
+			map = nextVertexesMap;
+		}
+
+		public void AddEdge(Edge<TVertex> edge, bool directed)
+		{
+			map.Add(edge.From, edge.To);
+			if (!directed) map.Add(edge.To, edge.From);
+		}
+
+		public void AddEdge(TVertex from, TVertex to, bool directed)
+		{
+			map.Add(from, to);
+			if (!directed) map.Add(to, from);
 		}
 	}
 }

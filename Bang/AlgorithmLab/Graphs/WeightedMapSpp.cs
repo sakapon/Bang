@@ -4,17 +4,16 @@ using AlgorithmLab.DataTrees;
 
 namespace AlgorithmLab.Graphs
 {
-	public class WeightedSppContext<TVertex>
+	public abstract class WeightedMapSpp<TVertex>
 	{
 		static readonly Func<TVertex, TVertex, bool> TEquals = EqualityComparer<TVertex>.Default.Equals;
 
 		public SppFactory<TVertex> Factory { get; }
-		public ReadOnlyMap<TVertex, Edge<TVertex>[]> NextEdgesMap { get; }
+		public abstract ReadOnlyMap<TVertex, Edge<TVertex>[]> NextEdgesMap { get; }
 
-		public WeightedSppContext(SppFactory<TVertex> factory, ReadOnlyMap<TVertex, Edge<TVertex>[]> nextEdgesMap)
+		protected WeightedMapSpp(SppFactory<TVertex> factory)
 		{
 			Factory = factory;
-			NextEdgesMap = nextEdgesMap;
 		}
 
 		public TVertex StartVertex { get; private set; }
@@ -34,7 +33,7 @@ namespace AlgorithmLab.Graphs
 		/// <remarks>
 		/// グラフの有向性、連結性、多重性、開閉を問いません。
 		/// </remarks>
-		public WeightedSppContext<TVertex> Dijkstra(TVertex startVertex, TVertex endVertex)
+		public WeightedMapSpp<TVertex> Dijkstra(TVertex startVertex, TVertex endVertex)
 		{
 			StartVertex = startVertex;
 			EndVertex = endVertex;
@@ -76,7 +75,7 @@ namespace AlgorithmLab.Graphs
 		/// <remarks>
 		/// グラフの有向性、連結性、多重性、開閉を問いません。
 		/// </remarks>
-		public WeightedSppContext<TVertex> BfsMod(int m, TVertex startVertex, TVertex endVertex)
+		public WeightedMapSpp<TVertex> BfsMod(int m, TVertex startVertex, TVertex endVertex)
 		{
 			StartVertex = startVertex;
 			EndVertex = endVertex;
@@ -127,6 +126,39 @@ namespace AlgorithmLab.Graphs
 			for (var e = InEdges[endVertex]; !TEquals(e.From, Factory.Invalid); e = InEdges[e.From])
 				path.Push(e);
 			return path.ToArray();
+		}
+	}
+
+	public class WeightedFuncMapSpp<TVertex> : WeightedMapSpp<TVertex>
+	{
+		public override ReadOnlyMap<TVertex, Edge<TVertex>[]> NextEdgesMap { get; }
+
+		public WeightedFuncMapSpp(SppFactory<TVertex> factory, FuncReadOnlyMap<TVertex, Edge<TVertex>[]> nextEdgesMap) : base(factory)
+		{
+			NextEdgesMap = nextEdgesMap;
+		}
+	}
+
+	public class WeightedListMapSpp<TVertex> : WeightedMapSpp<TVertex>
+	{
+		ListMap<TVertex, Edge<TVertex>> map;
+		public override ReadOnlyMap<TVertex, Edge<TVertex>[]> NextEdgesMap => map;
+
+		public WeightedListMapSpp(SppFactory<TVertex> factory, ListMap<TVertex, Edge<TVertex>> nextEdgesMap) : base(factory)
+		{
+			map = nextEdgesMap;
+		}
+
+		public void AddEdge(Edge<TVertex> edge, bool directed)
+		{
+			map.Add(edge.From, edge);
+			if (!directed) map.Add(edge.To, edge.Reverse());
+		}
+
+		public void AddEdge(TVertex from, TVertex to, long cost, bool directed)
+		{
+			map.Add(from, new Edge<TVertex>(from, to, cost));
+			if (!directed) map.Add(to, new Edge<TVertex>(to, from, cost));
 		}
 	}
 }

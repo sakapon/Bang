@@ -3,344 +3,6 @@ using System.Collections.Generic;
 
 namespace AlgorithmLab.Graphs.Spp
 {
-	public struct Point : IEquatable<Point>
-	{
-		public int i, j;
-		public Point(int i, int j) { this.i = i; this.j = j; }
-		public void Deconstruct(out int i, out int j) { i = this.i; j = this.j; }
-		public override string ToString() => $"{i} {j}";
-		public static Point Parse(string s) => Array.ConvertAll(s.Split(), int.Parse);
-
-		public static implicit operator Point(int[] v) => (v[0], v[1]);
-		public static explicit operator int[](Point v) => new[] { v.i, v.j };
-		public static implicit operator Point((int i, int j) v) => new Point(v.i, v.j);
-		public static explicit operator (int, int)(Point v) => (v.i, v.j);
-
-		public bool Equals(Point other) => i == other.i && j == other.j;
-		public static bool operator ==(Point v1, Point v2) => v1.Equals(v2);
-		public static bool operator !=(Point v1, Point v2) => !v1.Equals(v2);
-		public override bool Equals(object obj) => obj is Point v && Equals(v);
-		public override int GetHashCode() => (i, j).GetHashCode();
-
-		public static Point operator -(Point v) => new Point(-v.i, -v.j);
-		public static Point operator +(Point v1, Point v2) => new Point(v1.i + v2.i, v1.j + v2.j);
-		public static Point operator -(Point v1, Point v2) => new Point(v1.i - v2.i, v1.j - v2.j);
-
-		public bool IsInRange(int height, int width) => 0 <= i && i < height && 0 <= j && j < width;
-		public Point[] Nexts() => new[] { new Point(i - 1, j), new Point(i + 1, j), new Point(i, j - 1), new Point(i, j + 1) };
-		public static Point[] NextsByDelta { get; } = new[] { new Point(-1, 0), new Point(1, 0), new Point(0, -1), new Point(0, 1) };
-
-		public int NormL1 => Math.Abs(i) + Math.Abs(j);
-		public double Norm => Math.Sqrt(i * i + j * j);
-	}
-
-	public struct Edge<T>
-	{
-		public T From { get; }
-		public T To { get; }
-		public long Cost { get; }
-		public Edge(T from, T to, long cost = 1) { From = from; To = to; Cost = cost; }
-		public override string ToString() => $"{{{From}}} {{{To}}} {Cost}";
-		public static implicit operator Edge<T>((T from, T to) v) => new Edge<T>(v.from, v.to);
-		public static implicit operator Edge<T>((T from, T to, long cost) v) => new Edge<T>(v.from, v.to, v.cost);
-		public Edge<T> Reverse() => new Edge<T>(To, From, Cost);
-	}
-
-	public static class EdgeHelper
-	{
-		public static Edge<int> ToEdge(int[] e) => new Edge<int>(e[0], e[1], e.Length > 2 ? e[2] : 1);
-		public static Edge<int> ToEdge(long[] e) => new Edge<int>((int)e[0], (int)e[1], e.Length > 2 ? e[2] : 1);
-	}
-
-	public abstract class Map<TKey, TValue>
-	{
-		public abstract TValue this[TKey key] { get; set; }
-	}
-
-	public abstract class ReadOnlyMap<TKey, TValue>
-	{
-		public abstract TValue this[TKey key] { get; }
-	}
-
-	public abstract class ListMap<TKey, TValue> : ReadOnlyMap<TKey, TValue[]>
-	{
-		public abstract void Add(TKey key, TValue value);
-	}
-
-	public class IntMap<TValue> : Map<int, TValue>
-	{
-		TValue[] a;
-		public IntMap(int count, TValue iv)
-		{
-			a = Array.ConvertAll(new bool[count], _ => iv);
-		}
-		public override TValue this[int key] { get => a[key]; set => a[key] = value; }
-	}
-
-	public class GridMap<TValue> : Map<Point, TValue>
-	{
-		TValue[][] a;
-		public GridMap(int height, int width, TValue iv)
-		{
-			a = Array.ConvertAll(new bool[height], _ => Array.ConvertAll(new bool[width], __ => iv));
-		}
-		public override TValue this[Point key] { get => a[key.i][key.j]; set => a[key.i][key.j] = value; }
-	}
-
-	public class HashMap<TKey, TValue> : Map<TKey, TValue>
-	{
-		TValue[] a;
-		Func<TKey, int> ToHash;
-		public HashMap(int count, TValue iv, Func<TKey, int> toHash)
-		{
-			a = Array.ConvertAll(new bool[count], _ => iv);
-			ToHash = toHash;
-		}
-		public override TValue this[TKey key] { get => a[ToHash(key)]; set => a[ToHash(key)] = value; }
-	}
-
-	public class FuncReadOnlyMap<TKey, TValue> : ReadOnlyMap<TKey, TValue>
-	{
-		Func<TKey, TValue> GetValue;
-		public FuncReadOnlyMap(Func<TKey, TValue> getValue)
-		{
-			GetValue = getValue;
-		}
-		public override TValue this[TKey key] => GetValue(key);
-	}
-
-	public class IntListMap<TValue> : ListMap<int, TValue>
-	{
-		List<TValue>[] map;
-		public IntListMap(int count)
-		{
-			map = Array.ConvertAll(new bool[count], _ => new List<TValue>());
-		}
-		public override TValue[] this[int key] => map[key].ToArray();
-		public override void Add(int key, TValue value) => map[key].Add(value);
-	}
-
-	public class GridListMap<TValue> : ListMap<Point, TValue>
-	{
-		List<TValue>[][] map;
-		public GridListMap(int height, int width)
-		{
-			map = Array.ConvertAll(new bool[height], _ => Array.ConvertAll(new bool[width], __ => new List<TValue>()));
-		}
-		public override TValue[] this[Point key] => map[key.i][key.j].ToArray();
-		public override void Add(Point key, TValue value) => map[key.i][key.j].Add(value);
-	}
-
-	public class HashListMap<TKey, TValue> : ListMap<TKey, TValue>
-	{
-		List<TValue>[] map;
-		Func<TKey, int> ToHash;
-		public HashListMap(int count, Func<TKey, int> toHash)
-		{
-			map = Array.ConvertAll(new bool[count], _ => new List<TValue>());
-			ToHash = toHash;
-		}
-		public override TValue[] this[TKey key] => map[ToHash(key)].ToArray();
-		public override void Add(TKey key, TValue value) => map[ToHash(key)].Add(value);
-	}
-
-	public static class GraphConsole
-	{
-		const char Road = '.';
-		const char Wall = '#';
-
-		static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-
-		public static Point ReadPoint()
-		{
-			return Point.Parse(Console.ReadLine());
-		}
-
-		public static Edge<int>[] ReadEdges(int count)
-		{
-			return Array.ConvertAll(new bool[count], _ => EdgeHelper.ToEdge(Read()));
-		}
-
-		public static string[] ReadGrid(int height)
-		{
-			return Array.ConvertAll(new bool[height], _ => Console.ReadLine());
-		}
-
-		public static char[][] ReadGridAsChar(int height)
-		{
-			return Array.ConvertAll(new bool[height], _ => Console.ReadLine().ToCharArray());
-		}
-
-		public static int[][] ReadGridAsInt(int height)
-		{
-			return Array.ConvertAll(new bool[height], _ => Read());
-		}
-
-		public static string[] ReadEnclosedGrid(ref int height, ref int width, char c = '#', int delta = 1)
-		{
-			var h = height + 2 * delta;
-			var w = width + 2 * delta;
-			var cw = new string(c, w);
-			var cd = new string(c, delta);
-
-			var s = new string[h];
-			for (int i = 0; i < delta; ++i) s[delta + height + i] = s[i] = cw;
-			for (int i = 0; i < height; ++i) s[delta + i] = cd + Console.ReadLine() + cd;
-			(height, width) = (h, w);
-			return s;
-		}
-	}
-
-	public static class GraphConvert
-	{
-		public static void UnweightedEdgesToMap<TVertex>(ListMap<TVertex, TVertex> map, Edge<TVertex>[] edges, bool directed)
-		{
-			foreach (var e in edges)
-			{
-				map.Add(e.From, e.To);
-				if (!directed) map.Add(e.To, e.From);
-			}
-		}
-
-		public static void WeightedEdgesToMap<TVertex>(ListMap<TVertex, Edge<TVertex>> map, Edge<TVertex>[] edges, bool directed)
-		{
-			foreach (var e in edges)
-			{
-				map.Add(e.From, e);
-				if (!directed) map.Add(e.To, e.Reverse());
-			}
-		}
-	}
-
-	public static class GridHelper
-	{
-		public static T GetValue<T>(this T[,] a, Point p) => a[p.i, p.j];
-		public static void SetValue<T>(this T[,] a, Point p, T value) => a[p.i, p.j] = value;
-		public static T GetValue<T>(this T[][] a, Point p) => a[p.i][p.j];
-		public static void SetValue<T>(this T[][] a, Point p, T value) => a[p.i][p.j] = value;
-		public static char GetValue(this string[] s, Point p) => s[p.i][p.j];
-
-		public static Point FindValue<T>(T[][] a, T value)
-		{
-			var ec = EqualityComparer<T>.Default;
-			var (h, w) = (a.Length, a[0].Length);
-			for (int i = 0; i < h; ++i)
-				for (int j = 0; j < w; ++j)
-					if (ec.Equals(a[i][j], value)) return new Point(i, j);
-			return new Point(-1, -1);
-		}
-
-		public static Point FindValue(string[] s, char c)
-		{
-			var (h, w) = (s.Length, s[0].Length);
-			for (int i = 0; i < h; ++i)
-				for (int j = 0; j < w; ++j)
-					if (s[i][j] == c) return new Point(i, j);
-			return new Point(-1, -1);
-		}
-
-		public static int ToHash(Point p, int width) => p.i * width + p.j;
-		public static Point FromHash(int hash, int width) => new Point(hash / width, hash % width);
-		public static Func<Point, int> CreateToHash(int width) => p => p.i * width + p.j;
-		public static Func<int, Point> CreateFromHash(int width) => hash => new Point(hash / width, hash % width);
-
-		public static void EncloseGrid<T>(ref int height, ref int width, ref T[][] a, T value, int delta = 1)
-		{
-			var h = height + 2 * delta;
-			var w = width + 2 * delta;
-
-			var t = Array.ConvertAll(new bool[h], _ => Array.ConvertAll(new bool[w], __ => value));
-			for (int i = 0; i < height; ++i)
-				for (int j = 0; j < width; ++j)
-					t[delta + i][delta + j] = a[i][j];
-			(height, width, a) = (h, w, t);
-		}
-
-		public static void EncloseGrid(ref int height, ref int width, ref string[] s, char c = '#', int delta = 1)
-		{
-			var h = height + 2 * delta;
-			var w = width + 2 * delta;
-			var cw = new string(c, w);
-			var cd = new string(c, delta);
-
-			var t = new string[h];
-			for (int i = 0; i < delta; ++i) t[delta + height + i] = t[i] = cw;
-			for (int i = 0; i < height; ++i) t[delta + i] = cd + s[i] + cd;
-			(height, width, s) = (h, w, t);
-		}
-
-		public static T[][] Rotate180<T>(T[][] a)
-		{
-			var (h, w) = (a.Length, a[0].Length);
-			var r = Array.ConvertAll(new bool[h], _ => new T[w]);
-			for (int i = 0; i < h; ++i)
-				for (int j = 0; j < w; ++j)
-					r[i][j] = a[h - 1 - i][w - 1 - j];
-			return r;
-		}
-
-		public static T[][] RotateLeft<T>(T[][] a)
-		{
-			var (h, w) = (a.Length, a[0].Length);
-			var r = Array.ConvertAll(new bool[w], _ => new T[h]);
-			for (int i = 0; i < w; ++i)
-				for (int j = 0; j < h; ++j)
-					r[i][j] = a[j][w - 1 - i];
-			return r;
-		}
-
-		public static T[][] RotateRight<T>(T[][] a)
-		{
-			var (h, w) = (a.Length, a[0].Length);
-			var r = Array.ConvertAll(new bool[w], _ => new T[h]);
-			for (int i = 0; i < w; ++i)
-				for (int j = 0; j < h; ++j)
-					r[i][j] = a[h - 1 - j][i];
-			return r;
-		}
-
-		public static string[] Rotate180(string[] s)
-		{
-			var h = s.Length;
-			var r = new string[h];
-			for (int i = 0; i < h; ++i)
-			{
-				var cs = s[h - 1 - i].ToCharArray();
-				Array.Reverse(cs);
-				r[i] = new string(cs);
-			}
-			return r;
-		}
-
-		public static string[] RotateLeft(string[] s)
-		{
-			var (h, w) = (s.Length, s[0].Length);
-			var r = new string[w];
-			for (int i = 0; i < w; ++i)
-			{
-				var cs = new char[h];
-				for (int j = 0; j < h; ++j)
-					cs[j] = s[j][w - 1 - i];
-				r[i] = new string(cs);
-			}
-			return r;
-		}
-
-		public static string[] RotateRight(string[] s)
-		{
-			var (h, w) = (s.Length, s[0].Length);
-			var r = new string[w];
-			for (int i = 0; i < w; ++i)
-			{
-				var cs = new char[h];
-				for (int j = 0; j < h; ++j)
-					cs[j] = s[h - 1 - j][i];
-				r[i] = new string(cs);
-			}
-			return r;
-		}
-	}
-
 	/// <summary>
 	/// 頂点を表すデータの種類に応じて、<see cref="SppFactory{TVertex}"/> オブジェクトを取得します。
 	/// </summary>
@@ -803,6 +465,344 @@ namespace AlgorithmLab.Graphs.Spp
 		{
 			map.Add(from, new Edge<TVertex>(from, to, cost));
 			if (!directed) map.Add(to, new Edge<TVertex>(to, from, cost));
+		}
+	}
+
+	public struct Point : IEquatable<Point>
+	{
+		public int i, j;
+		public Point(int i, int j) { this.i = i; this.j = j; }
+		public void Deconstruct(out int i, out int j) { i = this.i; j = this.j; }
+		public override string ToString() => $"{i} {j}";
+		public static Point Parse(string s) => Array.ConvertAll(s.Split(), int.Parse);
+
+		public static implicit operator Point(int[] v) => (v[0], v[1]);
+		public static explicit operator int[](Point v) => new[] { v.i, v.j };
+		public static implicit operator Point((int i, int j) v) => new Point(v.i, v.j);
+		public static explicit operator (int, int)(Point v) => (v.i, v.j);
+
+		public bool Equals(Point other) => i == other.i && j == other.j;
+		public static bool operator ==(Point v1, Point v2) => v1.Equals(v2);
+		public static bool operator !=(Point v1, Point v2) => !v1.Equals(v2);
+		public override bool Equals(object obj) => obj is Point v && Equals(v);
+		public override int GetHashCode() => (i, j).GetHashCode();
+
+		public static Point operator -(Point v) => new Point(-v.i, -v.j);
+		public static Point operator +(Point v1, Point v2) => new Point(v1.i + v2.i, v1.j + v2.j);
+		public static Point operator -(Point v1, Point v2) => new Point(v1.i - v2.i, v1.j - v2.j);
+
+		public bool IsInRange(int height, int width) => 0 <= i && i < height && 0 <= j && j < width;
+		public Point[] Nexts() => new[] { new Point(i - 1, j), new Point(i + 1, j), new Point(i, j - 1), new Point(i, j + 1) };
+		public static Point[] NextsByDelta { get; } = new[] { new Point(-1, 0), new Point(1, 0), new Point(0, -1), new Point(0, 1) };
+
+		public int NormL1 => Math.Abs(i) + Math.Abs(j);
+		public double Norm => Math.Sqrt(i * i + j * j);
+	}
+
+	public struct Edge<T>
+	{
+		public T From { get; }
+		public T To { get; }
+		public long Cost { get; }
+		public Edge(T from, T to, long cost = 1) { From = from; To = to; Cost = cost; }
+		public override string ToString() => $"{{{From}}} {{{To}}} {Cost}";
+		public static implicit operator Edge<T>((T from, T to) v) => new Edge<T>(v.from, v.to);
+		public static implicit operator Edge<T>((T from, T to, long cost) v) => new Edge<T>(v.from, v.to, v.cost);
+		public Edge<T> Reverse() => new Edge<T>(To, From, Cost);
+	}
+
+	public static class EdgeHelper
+	{
+		public static Edge<int> ToEdge(int[] e) => new Edge<int>(e[0], e[1], e.Length > 2 ? e[2] : 1);
+		public static Edge<int> ToEdge(long[] e) => new Edge<int>((int)e[0], (int)e[1], e.Length > 2 ? e[2] : 1);
+	}
+
+	public abstract class Map<TKey, TValue>
+	{
+		public abstract TValue this[TKey key] { get; set; }
+	}
+
+	public abstract class ReadOnlyMap<TKey, TValue>
+	{
+		public abstract TValue this[TKey key] { get; }
+	}
+
+	public abstract class ListMap<TKey, TValue> : ReadOnlyMap<TKey, TValue[]>
+	{
+		public abstract void Add(TKey key, TValue value);
+	}
+
+	public class IntMap<TValue> : Map<int, TValue>
+	{
+		TValue[] a;
+		public IntMap(int count, TValue iv)
+		{
+			a = Array.ConvertAll(new bool[count], _ => iv);
+		}
+		public override TValue this[int key] { get => a[key]; set => a[key] = value; }
+	}
+
+	public class GridMap<TValue> : Map<Point, TValue>
+	{
+		TValue[][] a;
+		public GridMap(int height, int width, TValue iv)
+		{
+			a = Array.ConvertAll(new bool[height], _ => Array.ConvertAll(new bool[width], __ => iv));
+		}
+		public override TValue this[Point key] { get => a[key.i][key.j]; set => a[key.i][key.j] = value; }
+	}
+
+	public class HashMap<TKey, TValue> : Map<TKey, TValue>
+	{
+		TValue[] a;
+		Func<TKey, int> ToHash;
+		public HashMap(int count, TValue iv, Func<TKey, int> toHash)
+		{
+			a = Array.ConvertAll(new bool[count], _ => iv);
+			ToHash = toHash;
+		}
+		public override TValue this[TKey key] { get => a[ToHash(key)]; set => a[ToHash(key)] = value; }
+	}
+
+	public class FuncReadOnlyMap<TKey, TValue> : ReadOnlyMap<TKey, TValue>
+	{
+		Func<TKey, TValue> GetValue;
+		public FuncReadOnlyMap(Func<TKey, TValue> getValue)
+		{
+			GetValue = getValue;
+		}
+		public override TValue this[TKey key] => GetValue(key);
+	}
+
+	public class IntListMap<TValue> : ListMap<int, TValue>
+	{
+		List<TValue>[] map;
+		public IntListMap(int count)
+		{
+			map = Array.ConvertAll(new bool[count], _ => new List<TValue>());
+		}
+		public override TValue[] this[int key] => map[key].ToArray();
+		public override void Add(int key, TValue value) => map[key].Add(value);
+	}
+
+	public class GridListMap<TValue> : ListMap<Point, TValue>
+	{
+		List<TValue>[][] map;
+		public GridListMap(int height, int width)
+		{
+			map = Array.ConvertAll(new bool[height], _ => Array.ConvertAll(new bool[width], __ => new List<TValue>()));
+		}
+		public override TValue[] this[Point key] => map[key.i][key.j].ToArray();
+		public override void Add(Point key, TValue value) => map[key.i][key.j].Add(value);
+	}
+
+	public class HashListMap<TKey, TValue> : ListMap<TKey, TValue>
+	{
+		List<TValue>[] map;
+		Func<TKey, int> ToHash;
+		public HashListMap(int count, Func<TKey, int> toHash)
+		{
+			map = Array.ConvertAll(new bool[count], _ => new List<TValue>());
+			ToHash = toHash;
+		}
+		public override TValue[] this[TKey key] => map[ToHash(key)].ToArray();
+		public override void Add(TKey key, TValue value) => map[ToHash(key)].Add(value);
+	}
+
+	public static class GraphConsole
+	{
+		const char Road = '.';
+		const char Wall = '#';
+
+		static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
+
+		public static Point ReadPoint()
+		{
+			return Point.Parse(Console.ReadLine());
+		}
+
+		public static Edge<int>[] ReadEdges(int count)
+		{
+			return Array.ConvertAll(new bool[count], _ => EdgeHelper.ToEdge(Read()));
+		}
+
+		public static string[] ReadGrid(int height)
+		{
+			return Array.ConvertAll(new bool[height], _ => Console.ReadLine());
+		}
+
+		public static char[][] ReadGridAsChar(int height)
+		{
+			return Array.ConvertAll(new bool[height], _ => Console.ReadLine().ToCharArray());
+		}
+
+		public static int[][] ReadGridAsInt(int height)
+		{
+			return Array.ConvertAll(new bool[height], _ => Read());
+		}
+
+		public static string[] ReadEnclosedGrid(ref int height, ref int width, char c = '#', int delta = 1)
+		{
+			var h = height + 2 * delta;
+			var w = width + 2 * delta;
+			var cw = new string(c, w);
+			var cd = new string(c, delta);
+
+			var s = new string[h];
+			for (int i = 0; i < delta; ++i) s[delta + height + i] = s[i] = cw;
+			for (int i = 0; i < height; ++i) s[delta + i] = cd + Console.ReadLine() + cd;
+			(height, width) = (h, w);
+			return s;
+		}
+	}
+
+	public static class GraphConvert
+	{
+		public static void UnweightedEdgesToMap<TVertex>(ListMap<TVertex, TVertex> map, Edge<TVertex>[] edges, bool directed)
+		{
+			foreach (var e in edges)
+			{
+				map.Add(e.From, e.To);
+				if (!directed) map.Add(e.To, e.From);
+			}
+		}
+
+		public static void WeightedEdgesToMap<TVertex>(ListMap<TVertex, Edge<TVertex>> map, Edge<TVertex>[] edges, bool directed)
+		{
+			foreach (var e in edges)
+			{
+				map.Add(e.From, e);
+				if (!directed) map.Add(e.To, e.Reverse());
+			}
+		}
+	}
+
+	public static class GridHelper
+	{
+		public static T GetValue<T>(this T[,] a, Point p) => a[p.i, p.j];
+		public static void SetValue<T>(this T[,] a, Point p, T value) => a[p.i, p.j] = value;
+		public static T GetValue<T>(this T[][] a, Point p) => a[p.i][p.j];
+		public static void SetValue<T>(this T[][] a, Point p, T value) => a[p.i][p.j] = value;
+		public static char GetValue(this string[] s, Point p) => s[p.i][p.j];
+
+		public static Point FindValue<T>(T[][] a, T value)
+		{
+			var ec = EqualityComparer<T>.Default;
+			var (h, w) = (a.Length, a[0].Length);
+			for (int i = 0; i < h; ++i)
+				for (int j = 0; j < w; ++j)
+					if (ec.Equals(a[i][j], value)) return new Point(i, j);
+			return new Point(-1, -1);
+		}
+
+		public static Point FindValue(string[] s, char c)
+		{
+			var (h, w) = (s.Length, s[0].Length);
+			for (int i = 0; i < h; ++i)
+				for (int j = 0; j < w; ++j)
+					if (s[i][j] == c) return new Point(i, j);
+			return new Point(-1, -1);
+		}
+
+		public static int ToHash(Point p, int width) => p.i * width + p.j;
+		public static Point FromHash(int hash, int width) => new Point(hash / width, hash % width);
+		public static Func<Point, int> CreateToHash(int width) => p => p.i * width + p.j;
+		public static Func<int, Point> CreateFromHash(int width) => hash => new Point(hash / width, hash % width);
+
+		public static void EncloseGrid<T>(ref int height, ref int width, ref T[][] a, T value, int delta = 1)
+		{
+			var h = height + 2 * delta;
+			var w = width + 2 * delta;
+
+			var t = Array.ConvertAll(new bool[h], _ => Array.ConvertAll(new bool[w], __ => value));
+			for (int i = 0; i < height; ++i)
+				for (int j = 0; j < width; ++j)
+					t[delta + i][delta + j] = a[i][j];
+			(height, width, a) = (h, w, t);
+		}
+
+		public static void EncloseGrid(ref int height, ref int width, ref string[] s, char c = '#', int delta = 1)
+		{
+			var h = height + 2 * delta;
+			var w = width + 2 * delta;
+			var cw = new string(c, w);
+			var cd = new string(c, delta);
+
+			var t = new string[h];
+			for (int i = 0; i < delta; ++i) t[delta + height + i] = t[i] = cw;
+			for (int i = 0; i < height; ++i) t[delta + i] = cd + s[i] + cd;
+			(height, width, s) = (h, w, t);
+		}
+
+		public static T[][] Rotate180<T>(T[][] a)
+		{
+			var (h, w) = (a.Length, a[0].Length);
+			var r = Array.ConvertAll(new bool[h], _ => new T[w]);
+			for (int i = 0; i < h; ++i)
+				for (int j = 0; j < w; ++j)
+					r[i][j] = a[h - 1 - i][w - 1 - j];
+			return r;
+		}
+
+		public static T[][] RotateLeft<T>(T[][] a)
+		{
+			var (h, w) = (a.Length, a[0].Length);
+			var r = Array.ConvertAll(new bool[w], _ => new T[h]);
+			for (int i = 0; i < w; ++i)
+				for (int j = 0; j < h; ++j)
+					r[i][j] = a[j][w - 1 - i];
+			return r;
+		}
+
+		public static T[][] RotateRight<T>(T[][] a)
+		{
+			var (h, w) = (a.Length, a[0].Length);
+			var r = Array.ConvertAll(new bool[w], _ => new T[h]);
+			for (int i = 0; i < w; ++i)
+				for (int j = 0; j < h; ++j)
+					r[i][j] = a[h - 1 - j][i];
+			return r;
+		}
+
+		public static string[] Rotate180(string[] s)
+		{
+			var h = s.Length;
+			var r = new string[h];
+			for (int i = 0; i < h; ++i)
+			{
+				var cs = s[h - 1 - i].ToCharArray();
+				Array.Reverse(cs);
+				r[i] = new string(cs);
+			}
+			return r;
+		}
+
+		public static string[] RotateLeft(string[] s)
+		{
+			var (h, w) = (s.Length, s[0].Length);
+			var r = new string[w];
+			for (int i = 0; i < w; ++i)
+			{
+				var cs = new char[h];
+				for (int j = 0; j < h; ++j)
+					cs[j] = s[j][w - 1 - i];
+				r[i] = new string(cs);
+			}
+			return r;
+		}
+
+		public static string[] RotateRight(string[] s)
+		{
+			var (h, w) = (s.Length, s[0].Length);
+			var r = new string[w];
+			for (int i = 0; i < w; ++i)
+			{
+				var cs = new char[h];
+				for (int j = 0; j < h; ++j)
+					cs[j] = s[h - 1 - j][i];
+				r[i] = new string(cs);
+			}
+			return r;
 		}
 	}
 

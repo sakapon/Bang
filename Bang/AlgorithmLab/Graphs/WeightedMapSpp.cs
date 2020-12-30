@@ -92,7 +92,7 @@ namespace AlgorithmLab.Graphs
 				while (q.Count > 0)
 				{
 					var v = q.Dequeue();
-					if (TEquals(v, endVertex)) break;
+					if (TEquals(v, endVertex)) return this;
 					if (Costs[v] < c) continue;
 
 					foreach (var e in NextEdgesMap[v])

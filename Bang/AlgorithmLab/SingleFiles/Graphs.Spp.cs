@@ -34,33 +34,22 @@ namespace AlgorithmLab.Graphs.Spp
 		public double Norm => Math.Sqrt(i * i + j * j);
 	}
 
-	public struct UnweightedEdge<T>
-	{
-		public T From { get; }
-		public T To { get; }
-		public UnweightedEdge(T from, T to) { From = from; To = to; }
-		public override string ToString() => $"{{{From}}} {{{To}}}";
-		public static implicit operator UnweightedEdge<T>((T from, T to) v) => new UnweightedEdge<T>(v.from, v.to);
-		public UnweightedEdge<T> Reverse() => new UnweightedEdge<T>(To, From);
-	}
-
-	public struct WeightedEdge<T>
+	public struct Edge<T>
 	{
 		public T From { get; }
 		public T To { get; }
 		public long Cost { get; }
-		public WeightedEdge(T from, T to, long cost) { From = from; To = to; Cost = cost; }
+		public Edge(T from, T to, long cost = 1) { From = from; To = to; Cost = cost; }
 		public override string ToString() => $"{{{From}}} {{{To}}} {Cost}";
-		public static implicit operator WeightedEdge<T>((T from, T to, long cost) v) => new WeightedEdge<T>(v.from, v.to, v.cost);
-		public WeightedEdge<T> Reverse() => new WeightedEdge<T>(To, From, Cost);
+		public static implicit operator Edge<T>((T from, T to) v) => new Edge<T>(v.from, v.to);
+		public static implicit operator Edge<T>((T from, T to, long cost) v) => new Edge<T>(v.from, v.to, v.cost);
+		public Edge<T> Reverse() => new Edge<T>(To, From, Cost);
 	}
 
 	public static class EdgeHelper
 	{
-		public static UnweightedEdge<int> Unweighted(int[] e) => new UnweightedEdge<int>(e[0], e[1]);
-		public static UnweightedEdge<int> Unweighted(long[] e) => new UnweightedEdge<int>((int)e[0], (int)e[1]);
-		public static WeightedEdge<int> Weighted(int[] e) => new WeightedEdge<int>(e[0], e[1], e.Length > 2 ? e[2] : 0);
-		public static WeightedEdge<int> Weighted(long[] e) => new WeightedEdge<int>((int)e[0], (int)e[1], e.Length > 2 ? e[2] : 0);
+		public static Edge<int> ToEdge(int[] e) => new Edge<int>(e[0], e[1], e.Length > 2 ? e[2] : 1);
+		public static Edge<int> ToEdge(long[] e) => new Edge<int>((int)e[0], (int)e[1], e.Length > 2 ? e[2] : 1);
 	}
 
 	public abstract class Map<TKey, TValue>
@@ -167,41 +156,59 @@ namespace AlgorithmLab.Graphs.Spp
 			return Point.Parse(Console.ReadLine());
 		}
 
-		public static UnweightedEdge<int>[] ReadUnweightedEdges(int count)
+		public static Edge<int>[] ReadEdges(int count)
 		{
-			return Array.ConvertAll(new bool[count], _ => EdgeHelper.Unweighted(Read()));
+			return Array.ConvertAll(new bool[count], _ => EdgeHelper.ToEdge(Read()));
 		}
 
-		public static WeightedEdge<int>[] ReadWeightedEdges(int count)
+		public static string[] ReadGrid(int height)
 		{
-			return Array.ConvertAll(new bool[count], _ => EdgeHelper.Weighted(Read()));
+			return Array.ConvertAll(new bool[height], _ => Console.ReadLine());
 		}
 
-		public static string[] ReadGrid(int h)
+		public static char[][] ReadGridAsChar(int height)
 		{
-			return Array.ConvertAll(new bool[h], _ => Console.ReadLine());
+			return Array.ConvertAll(new bool[height], _ => Console.ReadLine().ToCharArray());
 		}
 
-		public static char[][] ReadGridAsChar(int h)
+		public static int[][] ReadGridAsInt(int height)
 		{
-			return Array.ConvertAll(new bool[h], _ => Console.ReadLine().ToCharArray());
-		}
-
-		public static int[][] ReadGridAsInt(int h)
-		{
-			return Array.ConvertAll(new bool[h], _ => Read());
+			return Array.ConvertAll(new bool[height], _ => Read());
 		}
 
 		public static string[] ReadEnclosedGrid(ref int height, ref int width, char c = '#', int delta = 1)
 		{
-			var cl = new string(c, width += 2 * delta);
+			var h = height + 2 * delta;
+			var w = width + 2 * delta;
+			var cw = new string(c, w);
 			var cd = new string(c, delta);
 
-			var s = new string[height + 2 * delta];
-			for (int i = 0; i < delta; ++i) s[delta + height + i] = s[i] = cl;
+			var s = new string[h];
+			for (int i = 0; i < delta; ++i) s[delta + height + i] = s[i] = cw;
 			for (int i = 0; i < height; ++i) s[delta + i] = cd + Console.ReadLine() + cd;
-			height = s.Length;
+			(height, width) = (h, w);
 			return s;
+		}
+	}
+
+	public static class GraphConvert
+	{
+		public static void UnweightedEdgesToMap<TVertex>(ListMap<TVertex, TVertex> map, Edge<TVertex>[] edges, bool directed)
+		{
+			foreach (var e in edges)
+			{
+				map.Add(e.From, e.To);
+				if (!directed) map.Add(e.To, e.From);
+			}
+		}
+
+		public static void WeightedEdgesToMap<TVertex>(ListMap<TVertex, Edge<TVertex>> map, Edge<TVertex>[] edges, bool directed)
+		{
+			foreach (var e in edges)
+			{
+				map.Add(e.From, e);
+				if (!directed) map.Add(e.To, e.Reverse());
+			}
 		}
 	}
 
@@ -223,12 +230,12 @@ namespace AlgorithmLab.Graphs.Spp
 			return new Point(-1, -1);
 		}
 
-		public static Point FindValue(string[] s, char value)
+		public static Point FindValue(string[] s, char c)
 		{
 			var (h, w) = (s.Length, s[0].Length);
 			for (int i = 0; i < h; ++i)
 				for (int j = 0; j < w; ++j)
-					if (s[i][j] == value) return new Point(i, j);
+					if (s[i][j] == c) return new Point(i, j);
 			return new Point(-1, -1);
 		}
 
@@ -261,6 +268,77 @@ namespace AlgorithmLab.Graphs.Spp
 			for (int i = 0; i < height; ++i) t[delta + i] = cd + s[i] + cd;
 			(height, width, s) = (h, w, t);
 		}
+
+		public static T[][] Rotate180<T>(T[][] a)
+		{
+			var (h, w) = (a.Length, a[0].Length);
+			var r = Array.ConvertAll(new bool[h], _ => new T[w]);
+			for (int i = 0; i < h; ++i)
+				for (int j = 0; j < w; ++j)
+					r[i][j] = a[h - 1 - i][w - 1 - j];
+			return r;
+		}
+
+		public static T[][] RotateLeft<T>(T[][] a)
+		{
+			var (h, w) = (a.Length, a[0].Length);
+			var r = Array.ConvertAll(new bool[w], _ => new T[h]);
+			for (int i = 0; i < w; ++i)
+				for (int j = 0; j < h; ++j)
+					r[i][j] = a[j][w - 1 - i];
+			return r;
+		}
+
+		public static T[][] RotateRight<T>(T[][] a)
+		{
+			var (h, w) = (a.Length, a[0].Length);
+			var r = Array.ConvertAll(new bool[w], _ => new T[h]);
+			for (int i = 0; i < w; ++i)
+				for (int j = 0; j < h; ++j)
+					r[i][j] = a[h - 1 - j][i];
+			return r;
+		}
+
+		public static string[] Rotate180(string[] s)
+		{
+			var h = s.Length;
+			var r = new string[h];
+			for (int i = 0; i < h; ++i)
+			{
+				var cs = s[h - 1 - i].ToCharArray();
+				Array.Reverse(cs);
+				r[i] = new string(cs);
+			}
+			return r;
+		}
+
+		public static string[] RotateLeft(string[] s)
+		{
+			var (h, w) = (s.Length, s[0].Length);
+			var r = new string[w];
+			for (int i = 0; i < w; ++i)
+			{
+				var cs = new char[h];
+				for (int j = 0; j < h; ++j)
+					cs[j] = s[j][w - 1 - i];
+				r[i] = new string(cs);
+			}
+			return r;
+		}
+
+		public static string[] RotateRight(string[] s)
+		{
+			var (h, w) = (s.Length, s[0].Length);
+			var r = new string[w];
+			for (int i = 0; i < w; ++i)
+			{
+				var cs = new char[h];
+				for (int j = 0; j < h; ++j)
+					cs[j] = s[h - 1 - j][i];
+				r[i] = new string(cs);
+			}
+			return r;
+		}
 	}
 
 	/// <summary>
@@ -277,12 +355,12 @@ namespace AlgorithmLab.Graphs.Spp
 		/// <example>
 		/// 有向グラフ上での典型的な Dijkstra:
 		/// <code>
-		/// var r = ShortestPath.WithInt(n)
-		/// 	.WithWeighted(es, true)
+		/// var r = ShortestPath.ForInt(n)
+		/// 	.ForWeightedMap(es, true)
 		/// 	.Dijkstra(sv, ev);
 		/// </code>
 		/// </example>
-		public static IntSppFactory WithInt(int vertexesCount) => new IntSppFactory(vertexesCount);
+		public static IntSppFactory ForInt(int vertexesCount) => new IntSppFactory(vertexesCount);
 
 		/// <summary>
 		/// 頂点が 2 次元グリッド上の点で表されるグラフを使用します。
@@ -293,12 +371,12 @@ namespace AlgorithmLab.Graphs.Spp
 		/// <example>
 		/// 無向グリッド上での典型的な BFS:
 		/// <code>
-		/// var r = ShortestPath.WithGrid(h, w)
-		/// 	.WithUnweighted(v => Array.FindAll(v.Nexts(), nv => s.GetValue(nv) != '#'))
+		/// var r = ShortestPath.ForGrid(h, w)
+		/// 	.ForUnweightedMap(v => Array.FindAll(v.Nexts(), nv => s.GetValue(nv) != '#'))
 		/// 	.Bfs(sv, ev);
 		/// </code>
 		/// </example>
-		public static GridSppFactory WithGrid(int height, int width) => new GridSppFactory(height, width);
+		public static GridSppFactory ForGrid(int height, int width) => new GridSppFactory(height, width);
 
 		/// <summary>
 		/// ハッシュ関数により、頂点が任意の値で表されるグラフを使用します。<br/>
@@ -312,12 +390,12 @@ namespace AlgorithmLab.Graphs.Spp
 		/// <example>
 		/// 無向グリッド上での典型的な BFS:
 		/// <code>
-		/// var r = ShortestPath.WithHash(h * w, GridHelper.CreateToHash(w), (-1, -1))
-		/// 	.WithUnweighted(v => Array.FindAll(v.Nexts(), nv => s.GetValue(nv) != '#'))
+		/// var r = ShortestPath.ForHash(h * w, GridHelper.CreateToHash(w), (-1, -1))
+		/// 	.ForUnweightedMap(v => Array.FindAll(v.Nexts(), nv => s.GetValue(nv) != '#'))
 		/// 	.Bfs(sv, ev);
 		/// </code>
 		/// </example>
-		public static HashSppFactory<TVertex> WithHash<TVertex>(int vertexesCount, Func<TVertex, int> toHash, TVertex invalid) => new HashSppFactory<TVertex>(vertexesCount, toHash, invalid);
+		public static HashSppFactory<TVertex> ForHash<TVertex>(int vertexesCount, Func<TVertex, int> toHash, TVertex invalid) => new HashSppFactory<TVertex>(vertexesCount, toHash, invalid);
 	}
 
 	/// <summary>
@@ -335,10 +413,10 @@ namespace AlgorithmLab.Graphs.Spp
 		/// </summary>
 		/// <param name="getNextVertexes">指定された頂点からの行先となる頂点を取得するための関数。</param>
 		/// <returns>アルゴリズムを実行するためのオブジェクト。</returns>
-		public UnweightedSppContext<TVertex> WithUnweighted(Func<TVertex, TVertex[]> getNextVertexes)
+		public UnweightedFuncMapSpp<TVertex> ForUnweightedMap(Func<TVertex, TVertex[]> getNextVertexes)
 		{
 			var map = new FuncReadOnlyMap<TVertex, TVertex[]>(getNextVertexes);
-			return new UnweightedSppContext<TVertex>(this, map);
+			return new UnweightedFuncMapSpp<TVertex>(this, map);
 		}
 
 		/// <summary>
@@ -346,10 +424,22 @@ namespace AlgorithmLab.Graphs.Spp
 		/// </summary>
 		/// <param name="getNextEdges">指定された頂点からの出辺を取得するための関数。</param>
 		/// <returns>アルゴリズムを実行するためのオブジェクト。</returns>
-		public WeightedSppContext<TVertex> WithWeighted(Func<TVertex, WeightedEdge<TVertex>[]> getNextEdges)
+		public WeightedFuncMapSpp<TVertex> ForWeightedMap(Func<TVertex, Edge<TVertex>[]> getNextEdges)
 		{
-			var map = new FuncReadOnlyMap<TVertex, WeightedEdge<TVertex>[]>(getNextEdges);
-			return new WeightedSppContext<TVertex>(this, map);
+			var map = new FuncReadOnlyMap<TVertex, Edge<TVertex>[]>(getNextEdges);
+			return new WeightedFuncMapSpp<TVertex>(this, map);
+		}
+
+		public UnweightedListMapSpp<TVertex> ForUnweightedMap()
+		{
+			var map = CreateListMap<TVertex>();
+			return new UnweightedListMapSpp<TVertex>(this, map);
+		}
+
+		public WeightedListMapSpp<TVertex> ForWeightedMap()
+		{
+			var map = CreateListMap<Edge<TVertex>>();
+			return new WeightedListMapSpp<TVertex>(this, map);
 		}
 
 		/// <summary>
@@ -358,10 +448,11 @@ namespace AlgorithmLab.Graphs.Spp
 		/// <param name="edges">辺のリスト。</param>
 		/// <param name="directed">有向グラフかどうかを示す値。</param>
 		/// <returns>アルゴリズムを実行するためのオブジェクト。</returns>
-		public UnweightedSppContext<TVertex> WithUnweighted(UnweightedEdge<TVertex>[] edges, bool directed)
+		public UnweightedListMapSpp<TVertex> ForUnweightedMap(Edge<TVertex>[] edges, bool directed)
 		{
-			var map = UnweightedEdgesToMap(edges, directed);
-			return new UnweightedSppContext<TVertex>(this, map);
+			var map = CreateListMap<TVertex>();
+			GraphConvert.UnweightedEdgesToMap(map, edges, directed);
+			return new UnweightedListMapSpp<TVertex>(this, map);
 		}
 
 		/// <summary>
@@ -370,32 +461,11 @@ namespace AlgorithmLab.Graphs.Spp
 		/// <param name="edges">辺のリスト。</param>
 		/// <param name="directed">有向グラフかどうかを示す値。</param>
 		/// <returns>アルゴリズムを実行するためのオブジェクト。</returns>
-		public WeightedSppContext<TVertex> WithWeighted(WeightedEdge<TVertex>[] edges, bool directed)
+		public WeightedListMapSpp<TVertex> ForWeightedMap(Edge<TVertex>[] edges, bool directed)
 		{
-			var map = WeightedEdgesToMap(edges, directed);
-			return new WeightedSppContext<TVertex>(this, map);
-		}
-
-		public ListMap<TVertex, TVertex> UnweightedEdgesToMap(UnweightedEdge<TVertex>[] edges, bool directed)
-		{
-			var map = CreateListMap<TVertex>();
-			foreach (var e in edges)
-			{
-				map.Add(e.From, e.To);
-				if (!directed) map.Add(e.To, e.From);
-			}
-			return map;
-		}
-
-		public ListMap<TVertex, WeightedEdge<TVertex>> WeightedEdgesToMap(WeightedEdge<TVertex>[] edges, bool directed)
-		{
-			var map = CreateListMap<WeightedEdge<TVertex>>();
-			foreach (var e in edges)
-			{
-				map.Add(e.From, e);
-				if (!directed) map.Add(e.To, e.Reverse());
-			}
-			return map;
+			var map = CreateListMap<Edge<TVertex>>();
+			GraphConvert.WeightedEdgesToMap(map, edges, directed);
+			return new WeightedListMapSpp<TVertex>(this, map);
 		}
 	}
 
@@ -419,14 +489,14 @@ namespace AlgorithmLab.Graphs.Spp
 			return new IntListMap<TValue>(VertexesCount);
 		}
 
-		public UnweightedSppContext<int> WithUnweighted(int[][] edges, bool directed)
+		public UnweightedListMapSpp<int> ForUnweightedMap(int[][] edges, bool directed)
 		{
-			return WithUnweighted(Array.ConvertAll(edges, EdgeHelper.Unweighted), directed);
+			return ForUnweightedMap(Array.ConvertAll(edges, EdgeHelper.ToEdge), directed);
 		}
 
-		public WeightedSppContext<int> WithWeighted(int[][] edges, bool directed)
+		public WeightedListMapSpp<int> ForWeightedMap(int[][] edges, bool directed)
 		{
-			return WithWeighted(Array.ConvertAll(edges, EdgeHelper.Weighted), directed);
+			return ForWeightedMap(Array.ConvertAll(edges, EdgeHelper.ToEdge), directed);
 		}
 	}
 
@@ -477,17 +547,16 @@ namespace AlgorithmLab.Graphs.Spp
 		}
 	}
 
-	public class UnweightedSppContext<TVertex>
+	public abstract class UnweightedMapSpp<TVertex>
 	{
 		static readonly Func<TVertex, TVertex, bool> TEquals = EqualityComparer<TVertex>.Default.Equals;
 
 		public SppFactory<TVertex> Factory { get; }
-		public ReadOnlyMap<TVertex, TVertex[]> NextVertexesMap { get; }
+		public abstract ReadOnlyMap<TVertex, TVertex[]> NextVertexesMap { get; }
 
-		public UnweightedSppContext(SppFactory<TVertex> factory, ReadOnlyMap<TVertex, TVertex[]> nextVertexesMap)
+		protected UnweightedMapSpp(SppFactory<TVertex> factory)
 		{
 			Factory = factory;
-			NextVertexesMap = nextVertexesMap;
 		}
 
 		public TVertex StartVertex { get; private set; }
@@ -507,7 +576,7 @@ namespace AlgorithmLab.Graphs.Spp
 		/// <remarks>
 		/// グラフの有向性、連結性、多重性、開閉を問いません。
 		/// </remarks>
-		public UnweightedSppContext<TVertex> Bfs(TVertex startVertex, TVertex endVertex)
+		public UnweightedMapSpp<TVertex> Bfs(TVertex startVertex, TVertex endVertex)
 		{
 			StartVertex = startVertex;
 			EndVertex = endVertex;
@@ -546,23 +615,55 @@ namespace AlgorithmLab.Graphs.Spp
 		}
 	}
 
-	public class WeightedSppContext<TVertex>
+	public class UnweightedFuncMapSpp<TVertex> : UnweightedMapSpp<TVertex>
+	{
+		public override ReadOnlyMap<TVertex, TVertex[]> NextVertexesMap { get; }
+
+		public UnweightedFuncMapSpp(SppFactory<TVertex> factory, FuncReadOnlyMap<TVertex, TVertex[]> nextVertexesMap) : base(factory)
+		{
+			NextVertexesMap = nextVertexesMap;
+		}
+	}
+
+	public class UnweightedListMapSpp<TVertex> : UnweightedMapSpp<TVertex>
+	{
+		ListMap<TVertex, TVertex> map;
+		public override ReadOnlyMap<TVertex, TVertex[]> NextVertexesMap => map;
+
+		public UnweightedListMapSpp(SppFactory<TVertex> factory, ListMap<TVertex, TVertex> nextVertexesMap) : base(factory)
+		{
+			map = nextVertexesMap;
+		}
+
+		public void AddEdge(Edge<TVertex> edge, bool directed)
+		{
+			map.Add(edge.From, edge.To);
+			if (!directed) map.Add(edge.To, edge.From);
+		}
+
+		public void AddEdge(TVertex from, TVertex to, bool directed)
+		{
+			map.Add(from, to);
+			if (!directed) map.Add(to, from);
+		}
+	}
+
+	public abstract class WeightedMapSpp<TVertex>
 	{
 		static readonly Func<TVertex, TVertex, bool> TEquals = EqualityComparer<TVertex>.Default.Equals;
 
 		public SppFactory<TVertex> Factory { get; }
-		public ReadOnlyMap<TVertex, WeightedEdge<TVertex>[]> NextEdgesMap { get; }
+		public abstract ReadOnlyMap<TVertex, Edge<TVertex>[]> NextEdgesMap { get; }
 
-		public WeightedSppContext(SppFactory<TVertex> factory, ReadOnlyMap<TVertex, WeightedEdge<TVertex>[]> nextEdgesMap)
+		protected WeightedMapSpp(SppFactory<TVertex> factory)
 		{
 			Factory = factory;
-			NextEdgesMap = nextEdgesMap;
 		}
 
 		public TVertex StartVertex { get; private set; }
 		public TVertex EndVertex { get; private set; }
 		public Map<TVertex, long> Costs { get; private set; }
-		public Map<TVertex, WeightedEdge<TVertex>> InEdges { get; private set; }
+		public Map<TVertex, Edge<TVertex>> InEdges { get; private set; }
 		public long this[TVertex vertex] => Costs[vertex];
 		public bool IsConnected(TVertex vertex) => Costs[vertex] != long.MaxValue;
 
@@ -576,13 +677,13 @@ namespace AlgorithmLab.Graphs.Spp
 		/// <remarks>
 		/// グラフの有向性、連結性、多重性、開閉を問いません。
 		/// </remarks>
-		public WeightedSppContext<TVertex> Dijkstra(TVertex startVertex, TVertex endVertex)
+		public WeightedMapSpp<TVertex> Dijkstra(TVertex startVertex, TVertex endVertex)
 		{
 			StartVertex = startVertex;
 			EndVertex = endVertex;
 
 			Costs = Factory.CreateMap(long.MaxValue);
-			InEdges = Factory.CreateMap(new WeightedEdge<TVertex>(Factory.Invalid, Factory.Invalid, long.MinValue));
+			InEdges = Factory.CreateMap(new Edge<TVertex>(Factory.Invalid, Factory.Invalid, long.MinValue));
 			var q = PriorityQueue<TVertex>.CreateWithKey(v => Costs[v]);
 			Costs[startVertex] = 0;
 			q.Push(startVertex);
@@ -618,13 +719,13 @@ namespace AlgorithmLab.Graphs.Spp
 		/// <remarks>
 		/// グラフの有向性、連結性、多重性、開閉を問いません。
 		/// </remarks>
-		public WeightedSppContext<TVertex> BfsMod(int m, TVertex startVertex, TVertex endVertex)
+		public WeightedMapSpp<TVertex> BfsMod(int m, TVertex startVertex, TVertex endVertex)
 		{
 			StartVertex = startVertex;
 			EndVertex = endVertex;
 
 			Costs = Factory.CreateMap(long.MaxValue);
-			InEdges = Factory.CreateMap(new WeightedEdge<TVertex>(Factory.Invalid, Factory.Invalid, long.MinValue));
+			InEdges = Factory.CreateMap(new Edge<TVertex>(Factory.Invalid, Factory.Invalid, long.MinValue));
 			var qs = Array.ConvertAll(new bool[m], _ => new Queue<TVertex>());
 			Costs[startVertex] = 0;
 			qs[0].Enqueue(startVertex);
@@ -635,7 +736,7 @@ namespace AlgorithmLab.Graphs.Spp
 				while (q.Count > 0)
 				{
 					var v = q.Dequeue();
-					if (TEquals(v, endVertex)) break;
+					if (TEquals(v, endVertex)) return this;
 					if (Costs[v] < c) continue;
 
 					foreach (var e in NextEdgesMap[v])
@@ -661,14 +762,47 @@ namespace AlgorithmLab.Graphs.Spp
 			return path.ToArray();
 		}
 
-		public WeightedEdge<TVertex>[] GetPathEdges(TVertex endVertex)
+		public Edge<TVertex>[] GetPathEdges(TVertex endVertex)
 		{
 			if (InEdges == null) throw new InvalidOperationException("No Result.");
 
-			var path = new Stack<WeightedEdge<TVertex>>();
+			var path = new Stack<Edge<TVertex>>();
 			for (var e = InEdges[endVertex]; !TEquals(e.From, Factory.Invalid); e = InEdges[e.From])
 				path.Push(e);
 			return path.ToArray();
+		}
+	}
+
+	public class WeightedFuncMapSpp<TVertex> : WeightedMapSpp<TVertex>
+	{
+		public override ReadOnlyMap<TVertex, Edge<TVertex>[]> NextEdgesMap { get; }
+
+		public WeightedFuncMapSpp(SppFactory<TVertex> factory, FuncReadOnlyMap<TVertex, Edge<TVertex>[]> nextEdgesMap) : base(factory)
+		{
+			NextEdgesMap = nextEdgesMap;
+		}
+	}
+
+	public class WeightedListMapSpp<TVertex> : WeightedMapSpp<TVertex>
+	{
+		ListMap<TVertex, Edge<TVertex>> map;
+		public override ReadOnlyMap<TVertex, Edge<TVertex>[]> NextEdgesMap => map;
+
+		public WeightedListMapSpp(SppFactory<TVertex> factory, ListMap<TVertex, Edge<TVertex>> nextEdgesMap) : base(factory)
+		{
+			map = nextEdgesMap;
+		}
+
+		public void AddEdge(Edge<TVertex> edge, bool directed)
+		{
+			map.Add(edge.From, edge);
+			if (!directed) map.Add(edge.To, edge.Reverse());
+		}
+
+		public void AddEdge(TVertex from, TVertex to, long cost, bool directed)
+		{
+			map.Add(from, new Edge<TVertex>(from, to, cost));
+			if (!directed) map.Add(to, new Edge<TVertex>(to, from, cost));
 		}
 	}
 

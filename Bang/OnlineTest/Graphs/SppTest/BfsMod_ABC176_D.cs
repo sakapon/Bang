@@ -19,7 +19,7 @@ namespace OnlineTest.Graphs.SppTest
 
 			// Dijkstra でも AC。ただし、Edge<T>[] を静的に構築する方法では TLE。
 			var r = ShortestPath.ForGrid(h, w)
-				.ForWeighted(v =>
+				.ForWeightedMap(v =>
 				{
 					var nes = new List<Edge<Point>>();
 

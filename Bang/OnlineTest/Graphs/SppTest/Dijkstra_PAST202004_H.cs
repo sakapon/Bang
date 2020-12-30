@@ -28,7 +28,7 @@ namespace OnlineTest.Graphs.SppTest
 				}
 
 			var r = ShortestPath.ForGrid(n, m)
-				.ForWeighted(v =>
+				.ForWeightedMap(v =>
 				{
 					var c = s.GetValue(v);
 					if (c == '9') return new[] { new Edge<Point>(v, ev, (ev - v).NormL1) };

@@ -16,7 +16,7 @@ namespace OnlineTest.Graphs.SppTest
 
 			var M = 0L;
 			var r = ShortestPath.ForGrid(h, w)
-				.ForUnweighted(v => Array.FindAll(v.Nexts(), nv => s.GetValue(nv) != '#'));
+				.ForUnweightedMap(v => Array.FindAll(v.Nexts(), nv => s.GetValue(nv) != '#'));
 
 			for (int i = 0; i < h; i++)
 				for (int j = 0; j < w; j++)

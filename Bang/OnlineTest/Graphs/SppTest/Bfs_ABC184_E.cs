@@ -28,7 +28,7 @@ namespace OnlineTest.Graphs.SppTest
 
 			// 01-BFS でも AC。ただし、Edge<T>[] を静的に構築する方法では TLE。
 			var r = ShortestPath.ForGrid(h, w)
-				.ForUnweighted(v =>
+				.ForUnweightedMap(v =>
 				{
 					var nvs = Array.FindAll(v.Nexts(), nv => s.GetValue(nv) != '#');
 					var c = s.GetValue(v);

@@ -17,7 +17,7 @@ namespace AlgorithmLab.Graphs
 		/// 有向グラフ上での典型的な Dijkstra:
 		/// <code>
 		/// var r = ShortestPath.ForInt(n)
-		/// 	.ForWeighted(es, true)
+		/// 	.ForWeightedMap(es, true)
 		/// 	.Dijkstra(sv, ev);
 		/// </code>
 		/// </example>
@@ -33,7 +33,7 @@ namespace AlgorithmLab.Graphs
 		/// 無向グリッド上での典型的な BFS:
 		/// <code>
 		/// var r = ShortestPath.ForGrid(h, w)
-		/// 	.ForUnweighted(v => Array.FindAll(v.Nexts(), nv => s.GetValue(nv) != '#'))
+		/// 	.ForUnweightedMap(v => Array.FindAll(v.Nexts(), nv => s.GetValue(nv) != '#'))
 		/// 	.Bfs(sv, ev);
 		/// </code>
 		/// </example>
@@ -52,7 +52,7 @@ namespace AlgorithmLab.Graphs
 		/// 無向グリッド上での典型的な BFS:
 		/// <code>
 		/// var r = ShortestPath.ForHash(h * w, GridHelper.CreateToHash(w), (-1, -1))
-		/// 	.ForUnweighted(v => Array.FindAll(v.Nexts(), nv => s.GetValue(nv) != '#'))
+		/// 	.ForUnweightedMap(v => Array.FindAll(v.Nexts(), nv => s.GetValue(nv) != '#'))
 		/// 	.Bfs(sv, ev);
 		/// </code>
 		/// </example>
@@ -74,7 +74,7 @@ namespace AlgorithmLab.Graphs
 		/// </summary>
 		/// <param name="getNextVertexes">指定された頂点からの行先となる頂点を取得するための関数。</param>
 		/// <returns>アルゴリズムを実行するためのオブジェクト。</returns>
-		public UnweightedFuncMapSpp<TVertex> ForUnweighted(Func<TVertex, TVertex[]> getNextVertexes)
+		public UnweightedFuncMapSpp<TVertex> ForUnweightedMap(Func<TVertex, TVertex[]> getNextVertexes)
 		{
 			var map = new FuncReadOnlyMap<TVertex, TVertex[]>(getNextVertexes);
 			return new UnweightedFuncMapSpp<TVertex>(this, map);
@@ -85,19 +85,19 @@ namespace AlgorithmLab.Graphs
 		/// </summary>
 		/// <param name="getNextEdges">指定された頂点からの出辺を取得するための関数。</param>
 		/// <returns>アルゴリズムを実行するためのオブジェクト。</returns>
-		public WeightedFuncMapSpp<TVertex> ForWeighted(Func<TVertex, Edge<TVertex>[]> getNextEdges)
+		public WeightedFuncMapSpp<TVertex> ForWeightedMap(Func<TVertex, Edge<TVertex>[]> getNextEdges)
 		{
 			var map = new FuncReadOnlyMap<TVertex, Edge<TVertex>[]>(getNextEdges);
 			return new WeightedFuncMapSpp<TVertex>(this, map);
 		}
 
-		public UnweightedListMapSpp<TVertex> ForUnweighted()
+		public UnweightedListMapSpp<TVertex> ForUnweightedMap()
 		{
 			var map = CreateListMap<TVertex>();
 			return new UnweightedListMapSpp<TVertex>(this, map);
 		}
 
-		public WeightedListMapSpp<TVertex> ForWeighted()
+		public WeightedListMapSpp<TVertex> ForWeightedMap()
 		{
 			var map = CreateListMap<Edge<TVertex>>();
 			return new WeightedListMapSpp<TVertex>(this, map);
@@ -109,7 +109,7 @@ namespace AlgorithmLab.Graphs
 		/// <param name="edges">辺のリスト。</param>
 		/// <param name="directed">有向グラフかどうかを示す値。</param>
 		/// <returns>アルゴリズムを実行するためのオブジェクト。</returns>
-		public UnweightedListMapSpp<TVertex> ForUnweighted(Edge<TVertex>[] edges, bool directed)
+		public UnweightedListMapSpp<TVertex> ForUnweightedMap(Edge<TVertex>[] edges, bool directed)
 		{
 			var map = CreateListMap<TVertex>();
 			GraphConvert.UnweightedEdgesToMap(map, edges, directed);
@@ -122,7 +122,7 @@ namespace AlgorithmLab.Graphs
 		/// <param name="edges">辺のリスト。</param>
 		/// <param name="directed">有向グラフかどうかを示す値。</param>
 		/// <returns>アルゴリズムを実行するためのオブジェクト。</returns>
-		public WeightedListMapSpp<TVertex> ForWeighted(Edge<TVertex>[] edges, bool directed)
+		public WeightedListMapSpp<TVertex> ForWeightedMap(Edge<TVertex>[] edges, bool directed)
 		{
 			var map = CreateListMap<Edge<TVertex>>();
 			GraphConvert.WeightedEdgesToMap(map, edges, directed);
@@ -150,14 +150,14 @@ namespace AlgorithmLab.Graphs
 			return new IntListMap<TValue>(VertexesCount);
 		}
 
-		public UnweightedListMapSpp<int> ForUnweighted(int[][] edges, bool directed)
+		public UnweightedListMapSpp<int> ForUnweightedMap(int[][] edges, bool directed)
 		{
-			return ForUnweighted(Array.ConvertAll(edges, EdgeHelper.ToEdge), directed);
+			return ForUnweightedMap(Array.ConvertAll(edges, EdgeHelper.ToEdge), directed);
 		}
 
-		public WeightedListMapSpp<int> ForWeighted(int[][] edges, bool directed)
+		public WeightedListMapSpp<int> ForWeightedMap(int[][] edges, bool directed)
 		{
-			return ForWeighted(Array.ConvertAll(edges, EdgeHelper.ToEdge), directed);
+			return ForWeightedMap(Array.ConvertAll(edges, EdgeHelper.ToEdge), directed);
 		}
 	}
 

@@ -19,7 +19,7 @@ namespace OnlineTest.Graphs.SppTest
 			var s = GraphConsole.ReadEnclosedGrid(ref h, ref w);
 
 			var r = ShortestPath.ForGrid(h, w)
-				.ForUnweighted(v => Array.FindAll(v.Nexts(), nv => s.GetValue(nv) != '#'))
+				.ForUnweightedMap(v => Array.FindAll(v.Nexts(), nv => s.GetValue(nv) != '#'))
 				.Bfs(sv, ev);
 			return r[ev];
 		}
@@ -43,7 +43,7 @@ namespace OnlineTest.Graphs.SppTest
 				}
 
 			var r = ShortestPath.ForGrid(h, w)
-				.ForUnweighted(es.ToArray(), false)
+				.ForUnweightedMap(es.ToArray(), false)
 				.Bfs(sv, ev);
 			return r[ev];
 		}

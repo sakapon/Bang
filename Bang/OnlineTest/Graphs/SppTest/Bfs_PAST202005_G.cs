@@ -24,7 +24,7 @@ namespace OnlineTest.Graphs.SppTest
 				s.SetValue(p + d, true);
 
 			var r = ShortestPath.ForGrid(h, w)
-				.ForUnweighted(v =>
+				.ForUnweightedMap(v =>
 				{
 					var nvs = Array.ConvertAll(NextsByDelta, nd => v + nd);
 					nvs = Array.FindAll(nvs, nv => !s.GetValue(nv));

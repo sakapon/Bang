@@ -21,12 +21,12 @@ namespace AlgorithmLab.Graphs
 			return new Point(-1, -1);
 		}
 
-		public static Point FindValue(string[] s, char value)
+		public static Point FindValue(string[] s, char c)
 		{
 			var (h, w) = (s.Length, s[0].Length);
 			for (int i = 0; i < h; ++i)
 				for (int j = 0; j < w; ++j)
-					if (s[i][j] == value) return new Point(i, j);
+					if (s[i][j] == c) return new Point(i, j);
 			return new Point(-1, -1);
 		}
 

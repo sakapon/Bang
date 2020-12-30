@@ -15,7 +15,7 @@ namespace OnlineTest.Graphs.SppTest
 			var es = GraphConsole.ReadEdges(m);
 
 			var r = ShortestPath.ForInt(n + 1)
-				.ForWeighted(es, false)
+				.ForWeightedMap(es, false)
 				.Dijkstra(1, n);
 			if (!r.IsConnected(n)) { Console.WriteLine(-1); return; }
 

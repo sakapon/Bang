@@ -21,12 +21,12 @@ namespace AlgorithmLab.Graphs0
 			return (-1, -1);
 		}
 
-		public static (int i, int j) FindValue(string[] s, char value)
+		public static (int i, int j) FindValue(string[] s, char c)
 		{
 			var (h, w) = (s.Length, s[0].Length);
 			for (int i = 0; i < h; ++i)
 				for (int j = 0; j < w; ++j)
-					if (s[i][j] == value) return (i, j);
+					if (s[i][j] == c) return (i, j);
 			return (-1, -1);
 		}
 

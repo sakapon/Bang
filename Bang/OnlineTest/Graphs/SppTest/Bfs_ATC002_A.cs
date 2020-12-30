@@ -18,8 +18,8 @@ namespace OnlineTest.Graphs.SppTest
 			var ev = Read2();
 			var s = GraphConsole.ReadEnclosedGrid(ref h, ref w);
 
-			var r = ShortestPath.WithGrid(h, w)
-				.WithUnweighted(v => Array.FindAll(v.Nexts(), nv => s.GetValue(nv) != '#'))
+			var r = ShortestPath.ForGrid(h, w)
+				.ForUnweighted(v => Array.FindAll(v.Nexts(), nv => s.GetValue(nv) != '#'))
 				.Bfs(sv, ev);
 			return r[ev];
 		}
@@ -42,8 +42,8 @@ namespace OnlineTest.Graphs.SppTest
 					if (s.GetValue(nv = v + (0, -1)) != '#') es.Add(new Edge<Point>(v, nv));
 				}
 
-			var r = ShortestPath.WithGrid(h, w)
-				.WithUnweighted(es.ToArray(), false)
+			var r = ShortestPath.ForGrid(h, w)
+				.ForUnweighted(es.ToArray(), false)
 				.Bfs(sv, ev);
 			return r[ev];
 		}

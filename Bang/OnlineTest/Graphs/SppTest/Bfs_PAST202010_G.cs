@@ -18,8 +18,8 @@ namespace OnlineTest.Graphs.SppTest
 			GridHelper.EncloseGrid(ref h, ref w, ref s, Wall);
 
 			var count = 0;
-			var r = ShortestPath.WithGrid(h, w)
-				.WithUnweighted(v => Array.FindAll(v.Nexts(), nv => s.GetValue(nv) != '#'));
+			var r = ShortestPath.ForGrid(h, w)
+				.ForUnweighted(v => Array.FindAll(v.Nexts(), nv => s.GetValue(nv) != '#'));
 
 			for (int i = 1; i < h - 1; i++)
 				for (int j = 1; j < w - 1; j++)

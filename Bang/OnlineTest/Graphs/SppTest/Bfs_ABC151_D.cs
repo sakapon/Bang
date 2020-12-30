@@ -15,8 +15,8 @@ namespace OnlineTest.Graphs.SppTest
 			var s = GraphConsole.ReadEnclosedGrid(ref h, ref w);
 
 			var M = 0L;
-			var r = ShortestPath.WithGrid(h, w)
-				.WithUnweighted(v => Array.FindAll(v.Nexts(), nv => s.GetValue(nv) != '#'));
+			var r = ShortestPath.ForGrid(h, w)
+				.ForUnweighted(v => Array.FindAll(v.Nexts(), nv => s.GetValue(nv) != '#'));
 
 			for (int i = 0; i < h; i++)
 				for (int j = 0; j < w; j++)

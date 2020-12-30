@@ -18,8 +18,8 @@ namespace OnlineTest.Graphs.SppTest
 			var s = GraphConsole.ReadEnclosedGrid(ref h, ref w, delta: 2);
 
 			// Dijkstra でも AC。ただし、Edge<T>[] を静的に構築する方法では TLE。
-			var r = ShortestPath.WithGrid(h, w)
-				.WithWeighted(v =>
+			var r = ShortestPath.ForGrid(h, w)
+				.ForWeighted(v =>
 				{
 					var nes = new List<Edge<Point>>();
 

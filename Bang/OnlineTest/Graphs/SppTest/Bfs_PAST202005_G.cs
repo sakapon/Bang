@@ -23,8 +23,8 @@ namespace OnlineTest.Graphs.SppTest
 			foreach (var p in ps)
 				s.SetValue(p + d, true);
 
-			var r = ShortestPath.WithGrid(h, w)
-				.WithUnweighted(v =>
+			var r = ShortestPath.ForGrid(h, w)
+				.ForUnweighted(v =>
 				{
 					var nvs = Array.ConvertAll(NextsByDelta, nd => v + nd);
 					nvs = Array.FindAll(nvs, nv => !s.GetValue(nv));

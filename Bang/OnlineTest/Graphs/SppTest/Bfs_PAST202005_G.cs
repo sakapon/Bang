@@ -19,7 +19,7 @@ namespace OnlineTest.Graphs.SppTest
 			var ev = (x, y) + d;
 
 			var s = NewArray2<bool>(h, w);
-			GridHelper.EncloseGrid(ref h, ref w, ref s, true);
+			GridHelper.Enclose(ref h, ref w, ref s, true);
 			foreach (var p in ps)
 				s.SetValue(p + d, true);
 

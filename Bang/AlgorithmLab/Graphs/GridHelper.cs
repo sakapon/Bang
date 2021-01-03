@@ -35,28 +35,31 @@ namespace AlgorithmLab.Graphs
 		public static Func<Point, int> CreateToHash(int width) => p => p.i * width + p.j;
 		public static Func<int, Point> CreateFromHash(int width) => hash => new Point(hash / width, hash % width);
 
-		public static void EncloseGrid<T>(ref int height, ref int width, ref T[][] a, T value, int delta = 1)
+		// 負値を指定できます。
+		public static void Enclose<T>(ref int height, ref int width, ref T[][] a, T value, int delta = 1)
 		{
-			var h = height + 2 * delta;
-			var w = width + 2 * delta;
+			var (h, w) = (height + 2 * delta, width + 2 * delta);
+			var (li, ri) = (Math.Max(0, -delta), Math.Min(height, height + delta));
+			var (lj, rj) = (Math.Max(0, -delta), Math.Min(width, width + delta));
 
 			var t = Array.ConvertAll(new bool[h], _ => Array.ConvertAll(new bool[w], __ => value));
-			for (int i = 0; i < height; ++i)
-				for (int j = 0; j < width; ++j)
+			for (int i = li; i < ri; ++i)
+				for (int j = lj; j < rj; ++j)
 					t[delta + i][delta + j] = a[i][j];
 			(height, width, a) = (h, w, t);
 		}
 
-		public static void EncloseGrid(ref int height, ref int width, ref string[] s, char c = '#', int delta = 1)
+		// 負値を指定できます。
+		public static void Enclose(ref int height, ref int width, ref string[] s, char c = '#', int delta = 1)
 		{
-			var h = height + 2 * delta;
-			var w = width + 2 * delta;
+			var (h, w) = (height + 2 * delta, width + 2 * delta);
+			var (li, ri) = (Math.Max(0, -delta), Math.Min(height, height + delta));
 			var cw = new string(c, w);
-			var cd = new string(c, delta);
+			var cd = new string(c, Math.Max(0, delta));
 
 			var t = new string[h];
 			for (int i = 0; i < delta; ++i) t[delta + height + i] = t[i] = cw;
-			for (int i = 0; i < height; ++i) t[delta + i] = cd + s[i] + cd;
+			for (int i = li; i < ri; ++i) t[delta + i] = delta >= 0 ? cd + s[i] + cd : s[i][-delta..(width + delta)];
 			(height, width, s) = (h, w, t);
 		}
 

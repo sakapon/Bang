@@ -15,7 +15,7 @@ namespace OnlineTest.Graphs.SppTest
 		{
 			var (h, w) = Read2();
 			var s = GraphConsole.ReadGridAsChar(h);
-			GridHelper.EncloseGrid(ref h, ref w, ref s, Wall);
+			GridHelper.Enclose(ref h, ref w, ref s, Wall);
 
 			var count = 0;
 			var r = ShortestPath.ForGrid(h, w)

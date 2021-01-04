@@ -685,6 +685,17 @@ namespace AlgorithmLab.Graphs.Spp
 		public static void SetValue<T>(this T[][] a, Point p, T value) => a[p.i][p.j] = value;
 		public static char GetValue(this string[] s, Point p) => s[p.i][p.j];
 
+		public static Point[] GetPoints(int height, int width)
+		{
+			var ps = new List<Point>();
+			for (int i = 0, j = 0; i < height;)
+			{
+				ps.Add(new Point(i, j));
+				if (++j == width) { ++i; j = 0; }
+			}
+			return ps.ToArray();
+		}
+
 		public static Point FindValue<T>(T[][] a, T value)
 		{
 			var ec = EqualityComparer<T>.Default;

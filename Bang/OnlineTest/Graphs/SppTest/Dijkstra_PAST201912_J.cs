@@ -23,12 +23,8 @@ namespace OnlineTest.Graphs.SppTest
 			var r3 = Dijkstra((0, w - 1));
 
 			var m = long.MaxValue;
-			for (int i = 0; i < h; i++)
-				for (int j = 0; j < w; j++)
-				{
-					var v = (i, j);
-					m = Math.Min(m, r1[v] + r2[v] + r3[v] - 2 * a.GetValue(v));
-				}
+			foreach (var v in GridHelper.GetPoints(h, w))
+				m = Math.Min(m, r1[v] + r2[v] + r3[v] - 2 * a.GetValue(v));
 			Console.WriteLine(m);
 		}
 	}

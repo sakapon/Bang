@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace AlgorithmLab.Graphs0
 {
@@ -23,9 +24,64 @@ namespace AlgorithmLab.Graphs0
 			return new HashMap<TVertex, TValue>(VertexesCount, iv, ToHash);
 		}
 
-		public HashListMap<TVertex, TValue> CreateListMap<TValue>()
+		public UnweightedGraph<TVertex> CreateUnweightedGraph()
 		{
-			return new HashListMap<TVertex, TValue>(VertexesCount, ToHash);
+			return new UnweightedGraph<TVertex>(VertexesCount, ToHash);
+		}
+
+		public UnweightedResult<TVertex> Bfs(Func<TVertex, TVertex[]> getNextVertexes, TVertex startVertex, TVertex endVertex)
+		{
+			return ShortestPathCore2<TVertex>.Bfs(this, getNextVertexes, startVertex, endVertex);
+		}
+
+		public UnweightedResult<TVertex> Bfs(UnweightedGraph<TVertex> graph, TVertex startVertex, TVertex endVertex)
+		{
+			return ShortestPathCore2<TVertex>.Bfs(this, v => graph[v], startVertex, endVertex);
+		}
+	}
+
+	public class IntSpp : HashSppFactory<int>
+	{
+		public IntSpp(int vertexesCount) : base(vertexesCount, v => v, -1) { }
+	}
+
+	public class GridSpp : HashSppFactory<Point>
+	{
+		public GridSpp(int height, int width) : base(height * width, v => v.i * width + v.j, (-1, -1)) { }
+	}
+
+	public class UnweightedGraph<TVertex>
+	{
+		List<TVertex>[] map;
+		Func<TVertex, int> ToHash;
+		public UnweightedGraph(int count, Func<TVertex, int> toHash)
+		{
+			map = Array.ConvertAll(new bool[count], _ => new List<TVertex>());
+			ToHash = toHash;
+		}
+
+		public TVertex[] this[TVertex key] => map[ToHash(key)].ToArray();
+		void Add(TVertex key, TVertex value) => map[ToHash(key)].Add(value);
+
+		public void AddEdge(Edge<TVertex> edge, bool directed)
+		{
+			Add(edge.From, edge.To);
+			if (!directed) Add(edge.To, edge.From);
+		}
+
+		public void AddEdge(TVertex from, TVertex to, bool directed)
+		{
+			Add(from, to);
+			if (!directed) Add(to, from);
+		}
+
+		public void AddEdges(Edge<TVertex>[] edges, bool directed)
+		{
+			foreach (var e in edges)
+			{
+				Add(e.From, e.To);
+				if (!directed) Add(e.To, e.From);
+			}
 		}
 	}
 }

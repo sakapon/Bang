@@ -63,17 +63,4 @@ namespace AlgorithmLab.Graphs0
 		}
 		public TValue this[TKey key] { get => a[ToHash(key)]; set => a[ToHash(key)] = value; }
 	}
-
-	public class HashListMap<TKey, TValue>
-	{
-		List<TValue>[] map;
-		Func<TKey, int> ToHash;
-		public HashListMap(int count, Func<TKey, int> toHash)
-		{
-			map = Array.ConvertAll(new bool[count], _ => new List<TValue>());
-			ToHash = toHash;
-		}
-		public TValue[] this[TKey key] => map[ToHash(key)].ToArray();
-		public void Add(TKey key, TValue value) => map[ToHash(key)].Add(value);
-	}
 }

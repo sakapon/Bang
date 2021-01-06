@@ -50,6 +50,23 @@ namespace AlgorithmLab.Graphs0
 		public GridSpp(int height, int width) : base(height * width, v => v.i * width + v.j, (-1, -1)) { }
 	}
 
+	public class CompressionSpp : HashSppFactory<int>
+	{
+		public CompressionSpp(int[] a) : base(a.Length, CreateToHash(a), int.MinValue) { }
+
+		static Func<int, int> CreateToHash(int[] a)
+		{
+			var hs = new HashSet<int>();
+			foreach (var v in a) hs.Add(v);
+			var fromHash = new int[hs.Count];
+			hs.CopyTo(fromHash);
+			Array.Sort(fromHash);
+			var d = new Dictionary<int, int>();
+			for (int i = 0; i < fromHash.Length; i++) d[fromHash[i]] = i;
+			return v => d[v];
+		}
+	}
+
 	public class UnweightedGraph<TVertex>
 	{
 		List<TVertex>[] map;

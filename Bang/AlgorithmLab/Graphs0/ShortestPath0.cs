@@ -149,7 +149,7 @@ namespace AlgorithmLab.Graphs0
 				while (q.Count > 0)
 				{
 					var v = q.Dequeue();
-					if (v == endVertexId) break;
+					if (v == endVertexId) return (costs, inEdges);
 					if (costs[v] < c) continue;
 
 					foreach (var e in map[v])

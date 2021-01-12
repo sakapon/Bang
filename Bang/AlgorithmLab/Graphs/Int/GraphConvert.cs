@@ -31,7 +31,7 @@ namespace AlgorithmLab.Graphs.Int
 
 		public static List<Edge>[] WeightedEdgesToMap(int vertexesCount, int[][] edges, bool directed)
 		{
-			return WeightedEdgesToMap(vertexesCount, Array.ConvertAll(edges, e => new Edge(e)), directed);
+			return WeightedEdgesToMap(vertexesCount, Array.ConvertAll(edges, e => (Edge)e), directed);
 		}
 	}
 }

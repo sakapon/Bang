@@ -5,14 +5,20 @@ namespace AlgorithmLab.Graphs.Int
 {
 	public class UnweightedMap
 	{
+		public int VertexesCount { get; }
 		List<int>[] map;
 		public List<int>[] RawMap => map;
 		public int[] this[int vertex] => map[vertex].ToArray();
 
-		public UnweightedMap(List<int>[] map) { this.map = map; }
+		public UnweightedMap(int vertexesCount, List<int>[] map)
+		{
+			VertexesCount = vertexesCount;
+			this.map = map;
+		}
 
 		public UnweightedMap(int vertexesCount)
 		{
+			VertexesCount = vertexesCount;
 			map = Array.ConvertAll(new bool[vertexesCount], _ => new List<int>());
 		}
 
@@ -46,6 +52,11 @@ namespace AlgorithmLab.Graphs.Int
 		public void AddEdges(int[][] edges, bool directed)
 		{
 			GraphConvert.UnweightedEdgesToMap(map, edges, directed);
+		}
+
+		public UnweightedResult Bfs(int startVertex, int endVertex = -1)
+		{
+			return ShortestPathCore.Bfs(VertexesCount, v => this[v], startVertex, endVertex);
 		}
 	}
 }

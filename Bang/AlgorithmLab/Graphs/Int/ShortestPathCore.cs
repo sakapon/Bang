@@ -107,45 +107,31 @@ namespace AlgorithmLab.Graphs.Int
 		public Edge Reverse() => new Edge(To, From, Cost);
 	}
 
-	public class UnweightedResult
+	public class CostResult
 	{
+		protected const int InvalidVertex = -1;
+
 		public long[] RawCosts { get; }
-		public int[] RawInVertexes { get; }
 		public long this[int vertex] => RawCosts[vertex];
 		public bool IsConnected(int vertex) => RawCosts[vertex] != long.MaxValue;
+		public long GetCost(int vertex, long invalid = -1) => IsConnected(vertex) ? RawCosts[vertex] : invalid;
 
-		public UnweightedResult(long[] costs, int[] inVertexes)
+		public CostResult(long[] costs) { RawCosts = costs; }
+	}
+
+	public class UnweightedResult : CostResult
+	{
+		public int[] RawInVertexes { get; }
+
+		public UnweightedResult(long[] costs, int[] inVertexes) : base(costs)
 		{
-			RawCosts = costs;
 			RawInVertexes = inVertexes;
 		}
 
 		public int[] GetPathVertexes(int endVertex)
 		{
 			var path = new Stack<int>();
-			for (var v = endVertex; v != -1; v = RawInVertexes[v])
-				path.Push(v);
-			return path.ToArray();
-		}
-	}
-
-	public class WeightedResult
-	{
-		public long[] RawCosts { get; }
-		public Edge[] RawInEdges { get; }
-		public long this[int vertex] => RawCosts[vertex];
-		public bool IsConnected(int vertex) => RawCosts[vertex] != long.MaxValue;
-
-		public WeightedResult(long[] costs, Edge[] inEdges)
-		{
-			RawCosts = costs;
-			RawInEdges = inEdges;
-		}
-
-		public int[] GetPathVertexes(int endVertex)
-		{
-			var path = new Stack<int>();
-			for (var v = endVertex; v != -1; v = RawInEdges[v].From)
+			for (var v = endVertex; v != InvalidVertex; v = RawInVertexes[v])
 				path.Push(v);
 			return path.ToArray();
 		}
@@ -153,7 +139,33 @@ namespace AlgorithmLab.Graphs.Int
 		public Edge[] GetPathEdges(int endVertex)
 		{
 			var path = new Stack<Edge>();
-			for (var e = RawInEdges[endVertex]; e.From != -1; e = RawInEdges[e.From])
+			for (var v = endVertex; RawInVertexes[v] != InvalidVertex; v = RawInVertexes[v])
+				path.Push(new Edge(RawInVertexes[v], v));
+			return path.ToArray();
+		}
+	}
+
+	public class WeightedResult : CostResult
+	{
+		public Edge[] RawInEdges { get; }
+
+		public WeightedResult(long[] costs, Edge[] inEdges) : base(costs)
+		{
+			RawInEdges = inEdges;
+		}
+
+		public int[] GetPathVertexes(int endVertex)
+		{
+			var path = new Stack<int>();
+			for (var v = endVertex; v != InvalidVertex; v = RawInEdges[v].From)
+				path.Push(v);
+			return path.ToArray();
+		}
+
+		public Edge[] GetPathEdges(int endVertex)
+		{
+			var path = new Stack<Edge>();
+			for (var e = RawInEdges[endVertex]; e.From != InvalidVertex; e = RawInEdges[e.From])
 				path.Push(e);
 			return path.ToArray();
 		}

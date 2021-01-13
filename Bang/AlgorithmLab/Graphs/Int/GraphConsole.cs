@@ -21,5 +21,16 @@ namespace AlgorithmLab.Graphs.Int
 			}
 			return map;
 		}
+
+		public static WeightedMap ReadWeightedMap(int vertexesCount, int edgesCount, bool directed)
+		{
+			var map = new WeightedMap(vertexesCount);
+			for (int i = 0; i < edgesCount; ++i)
+			{
+				var e = Read();
+				map.AddEdge(e[0], e[1], e[2], directed);
+			}
+			return map;
+		}
 	}
 }

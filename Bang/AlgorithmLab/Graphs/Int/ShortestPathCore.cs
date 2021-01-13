@@ -112,11 +112,11 @@ namespace AlgorithmLab.Graphs.Int
 		protected const int InvalidVertex = -1;
 
 		public long[] RawCosts { get; }
+		public CostResult(long[] costs) { RawCosts = costs; }
+
 		public long this[int vertex] => RawCosts[vertex];
 		public bool IsConnected(int vertex) => RawCosts[vertex] != long.MaxValue;
 		public long GetCost(int vertex, long invalid = -1) => IsConnected(vertex) ? RawCosts[vertex] : invalid;
-
-		public CostResult(long[] costs) { RawCosts = costs; }
 	}
 
 	public class UnweightedResult : CostResult

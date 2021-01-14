@@ -9,10 +9,10 @@ namespace OnlineTest.Graphs.Int.SppTest
 	class Dijkstra_YLC_SPP
 	{
 		static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
+		static (int, int, int, int) Read4() { var a = Read(); return (a[0], a[1], a[2], a[3]); }
 		static void Main()
 		{
-			var h = Read();
-			int n = h[0], m = h[1], s = h[2], t = h[3];
+			var (n, m, s, t) = Read4();
 			var map = GraphConsole.ReadWeightedMap(n, m, true);
 
 			var r = map.Dijkstra(s, t);

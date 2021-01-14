@@ -21,10 +21,11 @@ namespace OnlineTest.Graphs.Int.SppTest
 
 			long CostSum(Edge e) => rs.Sum(r =>
 			{
-				var (a, b) = (r.From, r.To);
+				var (a, b) = r;
+				var (x, y) = e;
 				var m = costMap[a][b];
-				m = Math.Min(m, costMap[a][e.From] + costMap[e.To][b]);
-				m = Math.Min(m, costMap[a][e.To] + costMap[e.From][b]);
+				m = Math.Min(m, costMap[a][x] + costMap[y][b]);
+				m = Math.Min(m, costMap[a][y] + costMap[x][b]);
 				return m;
 			});
 			Console.WriteLine(es.Min(CostSum));

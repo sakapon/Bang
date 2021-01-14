@@ -196,6 +196,8 @@ namespace AlgorithmLab.Graphs.Int.Spp
 		public long Cost { get; }
 
 		public Edge(int from, int to, long cost = 1) { From = from; To = to; Cost = cost; }
+		public void Deconstruct(out int from, out int to) { from = From; to = To; }
+		public void Deconstruct(out int from, out int to, out long cost) { from = From; to = To; cost = Cost; }
 		public override string ToString() => $"{From} {To} {Cost}";
 
 		public static implicit operator Edge(int[] e) => new Edge(e[0], e[1], e.Length > 2 ? e[2] : 1);

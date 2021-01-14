@@ -24,10 +24,20 @@ namespace AlgorithmLab.Graphs.Int
 
 		public UnweightedMap(int vertexesCount, Edge[] edges, bool directed) : this(vertexesCount)
 		{
-			GraphConvert.UnweightedEdgesToMap(map, edges, directed);
+			AddEdges(edges, directed);
 		}
 
 		public UnweightedMap(int vertexesCount, int[][] edges, bool directed) : this(vertexesCount)
+		{
+			AddEdges(edges, directed);
+		}
+
+		public void AddEdges(Edge[] edges, bool directed)
+		{
+			GraphConvert.UnweightedEdgesToMap(map, edges, directed);
+		}
+
+		public void AddEdges(int[][] edges, bool directed)
 		{
 			GraphConvert.UnweightedEdgesToMap(map, edges, directed);
 		}
@@ -42,16 +52,6 @@ namespace AlgorithmLab.Graphs.Int
 		{
 			map[from].Add(to);
 			if (!directed) map[to].Add(from);
-		}
-
-		public void AddEdges(Edge[] edges, bool directed)
-		{
-			GraphConvert.UnweightedEdgesToMap(map, edges, directed);
-		}
-
-		public void AddEdges(int[][] edges, bool directed)
-		{
-			GraphConvert.UnweightedEdgesToMap(map, edges, directed);
 		}
 
 		public UnweightedResult Bfs(int startVertex, int endVertex = -1)

@@ -24,10 +24,20 @@ namespace AlgorithmLab.Graphs.Int
 
 		public WeightedMap(int vertexesCount, Edge[] edges, bool directed) : this(vertexesCount)
 		{
-			GraphConvert.WeightedEdgesToMap(map, edges, directed);
+			AddEdges(edges, directed);
 		}
 
 		public WeightedMap(int vertexesCount, int[][] edges, bool directed) : this(vertexesCount)
+		{
+			AddEdges(edges, directed);
+		}
+
+		public void AddEdges(Edge[] edges, bool directed)
+		{
+			GraphConvert.WeightedEdgesToMap(map, edges, directed);
+		}
+
+		public void AddEdges(int[][] edges, bool directed)
 		{
 			GraphConvert.WeightedEdgesToMap(map, edges, directed);
 		}
@@ -42,16 +52,6 @@ namespace AlgorithmLab.Graphs.Int
 		{
 			map[from].Add(new Edge(from, to, cost));
 			if (!directed) map[to].Add(new Edge(to, from, cost));
-		}
-
-		public void AddEdges(Edge[] edges, bool directed)
-		{
-			GraphConvert.WeightedEdgesToMap(map, edges, directed);
-		}
-
-		public void AddEdges(int[][] edges, bool directed)
-		{
-			GraphConvert.WeightedEdgesToMap(map, edges, directed);
 		}
 
 		public WeightedResult Dijkstra(int startVertex, int endVertex = -1)

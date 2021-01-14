@@ -13,24 +13,12 @@ namespace AlgorithmLab.Graphs.Int
 
 		public static UnweightedMap ReadUnweightedMap(int vertexesCount, int edgesCount, bool directed)
 		{
-			var map = new UnweightedMap(vertexesCount);
-			for (int i = 0; i < edgesCount; ++i)
-			{
-				var e = Read();
-				map.AddEdge(e[0], e[1], directed);
-			}
-			return map;
+			return new UnweightedMap(vertexesCount, ReadEdges(edgesCount), directed);
 		}
 
 		public static WeightedMap ReadWeightedMap(int vertexesCount, int edgesCount, bool directed)
 		{
-			var map = new WeightedMap(vertexesCount);
-			for (int i = 0; i < edgesCount; ++i)
-			{
-				var e = Read();
-				map.AddEdge(e[0], e[1], e[2], directed);
-			}
-			return map;
+			return new WeightedMap(vertexesCount, ReadEdges(edgesCount), directed);
 		}
 	}
 }

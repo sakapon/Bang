@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace AlgorithmLab.Graphs.Spp.Int
+namespace AlgorithmLab.Graphs.Int.Spp
 {
 	public static class GraphConsole
 	{

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using AlgorithmLab.Graphs.Int;
 
-namespace OnlineTest.Graphs.SppTest.Int
+namespace OnlineTest.Graphs.Int.SppTest
 {
 	// Test: https://codeforces.com/contest/1433/problem/G
 	class Dijkstra_CFR677_G

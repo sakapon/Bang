@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using AlgorithmLab.Graphs.Int;
 
-namespace OnlineTest.Graphs.SppTest.Int
+namespace OnlineTest.Graphs.Int.SppTest
 {
 	// Test: https://atcoder.jp/contests/past202012-open/tasks/past202012_i
 	class Bfs_PAST202012_I

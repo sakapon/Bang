@@ -3,190 +3,6 @@ using System.Collections.Generic;
 
 namespace AlgorithmLab.Graphs.Int.Spp
 {
-	public static class GraphConsole
-	{
-		static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-
-		public static Edge[] ReadEdges(int count)
-		{
-			return Array.ConvertAll(new bool[count], _ => (Edge)Read());
-		}
-
-		public static UnweightedMap ReadUnweightedMap(int vertexesCount, int edgesCount, bool directed)
-		{
-			var map = new UnweightedMap(vertexesCount);
-			for (int i = 0; i < edgesCount; ++i)
-			{
-				var e = Read();
-				map.AddEdge(e[0], e[1], directed);
-			}
-			return map;
-		}
-
-		public static WeightedMap ReadWeightedMap(int vertexesCount, int edgesCount, bool directed)
-		{
-			var map = new WeightedMap(vertexesCount);
-			for (int i = 0; i < edgesCount; ++i)
-			{
-				var e = Read();
-				map.AddEdge(e[0], e[1], e[2], directed);
-			}
-			return map;
-		}
-	}
-
-	public static class GraphConvert
-	{
-		public static void UnweightedEdgesToMap(List<int>[] map, Edge[] edges, bool directed)
-		{
-			foreach (var e in edges)
-			{
-				map[e.From].Add(e.To);
-				if (!directed) map[e.To].Add(e.From);
-			}
-		}
-
-		public static void UnweightedEdgesToMap(List<int>[] map, int[][] edges, bool directed)
-		{
-			foreach (var e in edges)
-			{
-				map[e[0]].Add(e[1]);
-				if (!directed) map[e[1]].Add(e[0]);
-			}
-		}
-
-		public static void WeightedEdgesToMap(List<Edge>[] map, Edge[] edges, bool directed)
-		{
-			foreach (var e in edges)
-			{
-				map[e.From].Add(e);
-				if (!directed) map[e.To].Add(e.Reverse());
-			}
-		}
-
-		public static void WeightedEdgesToMap(List<Edge>[] map, int[][] edges, bool directed)
-		{
-			foreach (var e0 in edges)
-			{
-				Edge e = e0;
-				map[e.From].Add(e);
-				if (!directed) map[e.To].Add(e.Reverse());
-			}
-		}
-
-		public static List<int>[] UnweightedEdgesToMap(int vertexesCount, Edge[] edges, bool directed)
-		{
-			var map = Array.ConvertAll(new bool[vertexesCount], _ => new List<int>());
-			UnweightedEdgesToMap(map, edges, directed);
-			return map;
-		}
-
-		public static List<int>[] UnweightedEdgesToMap(int vertexesCount, int[][] edges, bool directed)
-		{
-			var map = Array.ConvertAll(new bool[vertexesCount], _ => new List<int>());
-			UnweightedEdgesToMap(map, edges, directed);
-			return map;
-		}
-
-		public static List<Edge>[] WeightedEdgesToMap(int vertexesCount, Edge[] edges, bool directed)
-		{
-			var map = Array.ConvertAll(new bool[vertexesCount], _ => new List<Edge>());
-			WeightedEdgesToMap(map, edges, directed);
-			return map;
-		}
-
-		public static List<Edge>[] WeightedEdgesToMap(int vertexesCount, int[][] edges, bool directed)
-		{
-			var map = Array.ConvertAll(new bool[vertexesCount], _ => new List<Edge>());
-			WeightedEdgesToMap(map, edges, directed);
-			return map;
-		}
-	}
-
-	/// <summary>
-	/// 最短経路アルゴリズムの核となる機能を提供します。
-	/// ここでは整数型の ID を使用します。
-	/// </summary>
-	public static class ShortestPathCore
-	{
-		/// <summary>
-		/// 幅優先探索により、始点から各頂点への最短経路を求めます。
-		/// </summary>
-		/// <param name="vertexesCount">頂点の個数。これ未満の値を ID として使用できます。</param>
-		/// <param name="getNextVertexes">指定された頂点からの行先を取得するための関数。</param>
-		/// <param name="startVertex">始点。</param>
-		/// <param name="endVertex">終点。終点を指定しない場合、-1。</param>
-		/// <returns>探索結果を表す <see cref="UnweightedResult"/> オブジェクト。</returns>
-		/// <remarks>
-		/// グラフの有向性、連結性、多重性、開閉を問いません。したがって、1-indexed でも利用できます。<br/>
-		/// 辺のコストはすべて 1 として扱われます。
-		/// </remarks>
-		public static UnweightedResult Bfs(int vertexesCount, Func<int, int[]> getNextVertexes, int startVertex, int endVertex = -1)
-		{
-			var costs = Array.ConvertAll(new bool[vertexesCount], _ => long.MaxValue);
-			var inVertexes = Array.ConvertAll(costs, _ => -1);
-			var q = new Queue<int>();
-			costs[startVertex] = 0;
-			q.Enqueue(startVertex);
-
-			while (q.Count > 0)
-			{
-				var v = q.Dequeue();
-				var nc = costs[v] + 1;
-
-				// IEnumerable<T>, List<T>, T[] の順に高速になります。
-				foreach (var nv in getNextVertexes(v))
-				{
-					if (costs[nv] <= nc) continue;
-					costs[nv] = nc;
-					inVertexes[nv] = v;
-					if (nv == endVertex) return new UnweightedResult(costs, inVertexes);
-					q.Enqueue(nv);
-				}
-			}
-			return new UnweightedResult(costs, inVertexes);
-		}
-
-		/// <summary>
-		/// Dijkstra 法により、始点から各頂点への最短経路を求めます。
-		/// </summary>
-		/// <param name="vertexesCount">頂点の個数。これ未満の値を ID として使用できます。</param>
-		/// <param name="getNextEdges">指定された頂点からの出辺を取得するための関数。</param>
-		/// <param name="startVertex">始点。</param>
-		/// <param name="endVertex">終点。終点を指定しない場合、-1。</param>
-		/// <returns>探索結果を表す <see cref="WeightedResult"/> オブジェクト。</returns>
-		/// <remarks>
-		/// グラフの有向性、連結性、多重性、開閉を問いません。したがって、1-indexed でも利用できます。<br/>
-		/// 辺のコストは非負でなければなりません。
-		/// </remarks>
-		public static WeightedResult Dijkstra(int vertexesCount, Func<int, Edge[]> getNextEdges, int startVertex, int endVertex = -1)
-		{
-			var costs = Array.ConvertAll(new bool[vertexesCount], _ => long.MaxValue);
-			var inEdges = Array.ConvertAll(costs, _ => Edge.Invalid);
-			var q = PriorityQueue<int>.CreateWithKey(v => costs[v]);
-			costs[startVertex] = 0;
-			q.Push(startVertex);
-
-			while (q.Any)
-			{
-				var (v, c) = q.Pop();
-				if (v == endVertex) break;
-				if (costs[v] < c) continue;
-
-				// IEnumerable<T>, List<T>, T[] の順に高速になります。
-				foreach (var e in getNextEdges(v))
-				{
-					var (nv, nc) = (e.To, c + e.Cost);
-					if (costs[nv] <= nc) continue;
-					costs[nv] = nc;
-					inEdges[nv] = e;
-					q.Push(nv);
-				}
-			}
-			return new WeightedResult(costs, inEdges);
-		}
-	}
-
 	public struct Edge
 	{
 		public static Edge Invalid { get; } = new Edge(-1, -1, long.MinValue);
@@ -272,6 +88,222 @@ namespace AlgorithmLab.Graphs.Int.Spp
 		}
 	}
 
+	public static class GraphConsole
+	{
+		static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
+
+		public static Edge[] ReadEdges(int count)
+		{
+			return Array.ConvertAll(new bool[count], _ => (Edge)Read());
+		}
+
+		public static UnweightedMap ReadUnweightedMap(int vertexesCount, int edgesCount, bool directed)
+		{
+			return new UnweightedMap(vertexesCount, ReadEdges(edgesCount), directed);
+		}
+
+		public static WeightedMap ReadWeightedMap(int vertexesCount, int edgesCount, bool directed)
+		{
+			return new WeightedMap(vertexesCount, ReadEdges(edgesCount), directed);
+		}
+	}
+
+	public static class GraphConvert
+	{
+		public static void UnweightedEdgesToMap(List<int>[] map, Edge[] edges, bool directed)
+		{
+			foreach (var e in edges)
+			{
+				map[e.From].Add(e.To);
+				if (!directed) map[e.To].Add(e.From);
+			}
+		}
+
+		public static void UnweightedEdgesToMap(List<int>[] map, int[][] edges, bool directed)
+		{
+			foreach (var e in edges)
+			{
+				map[e[0]].Add(e[1]);
+				if (!directed) map[e[1]].Add(e[0]);
+			}
+		}
+
+		public static void WeightedEdgesToMap(List<Edge>[] map, Edge[] edges, bool directed)
+		{
+			foreach (var e in edges)
+			{
+				map[e.From].Add(e);
+				if (!directed) map[e.To].Add(e.Reverse());
+			}
+		}
+
+		public static void WeightedEdgesToMap(List<Edge>[] map, int[][] edges, bool directed)
+		{
+			foreach (var e0 in edges)
+			{
+				Edge e = e0;
+				map[e.From].Add(e);
+				if (!directed) map[e.To].Add(e.Reverse());
+			}
+		}
+
+		public static List<int>[] UnweightedEdgesToMap(int vertexesCount, Edge[] edges, bool directed)
+		{
+			var map = Array.ConvertAll(new bool[vertexesCount], _ => new List<int>());
+			UnweightedEdgesToMap(map, edges, directed);
+			return map;
+		}
+
+		public static List<int>[] UnweightedEdgesToMap(int vertexesCount, int[][] edges, bool directed)
+		{
+			var map = Array.ConvertAll(new bool[vertexesCount], _ => new List<int>());
+			UnweightedEdgesToMap(map, edges, directed);
+			return map;
+		}
+
+		public static List<Edge>[] WeightedEdgesToMap(int vertexesCount, Edge[] edges, bool directed)
+		{
+			var map = Array.ConvertAll(new bool[vertexesCount], _ => new List<Edge>());
+			WeightedEdgesToMap(map, edges, directed);
+			return map;
+		}
+
+		public static List<Edge>[] WeightedEdgesToMap(int vertexesCount, int[][] edges, bool directed)
+		{
+			var map = Array.ConvertAll(new bool[vertexesCount], _ => new List<Edge>());
+			WeightedEdgesToMap(map, edges, directed);
+			return map;
+		}
+	}
+
+	/// <summary>
+	/// 最短経路アルゴリズムの核となる機能を提供します。
+	/// ここでは整数型の ID を使用します。
+	/// </summary>
+	public static class ShortestPathCore
+	{
+		/// <summary>
+		/// 幅優先探索により、始点から各頂点への最短経路を求めます。<br/>
+		/// 辺のコストはすべて 1 として扱われます。
+		/// </summary>
+		/// <param name="vertexesCount">頂点の個数。これ未満の値を ID として使用できます。</param>
+		/// <param name="getNextVertexes">指定された頂点からの行先を取得するための関数。</param>
+		/// <param name="startVertex">始点。</param>
+		/// <param name="endVertex">終点。終点を指定しない場合、-1。</param>
+		/// <returns>探索結果を表す <see cref="UnweightedResult"/> オブジェクト。</returns>
+		/// <remarks>
+		/// グラフの有向性、連結性、多重性、開閉を問いません。
+		/// </remarks>
+		public static UnweightedResult Bfs(int vertexesCount, Func<int, int[]> getNextVertexes, int startVertex, int endVertex = -1)
+		{
+			var costs = Array.ConvertAll(new bool[vertexesCount], _ => long.MaxValue);
+			var inVertexes = Array.ConvertAll(costs, _ => -1);
+			var q = new Queue<int>();
+			costs[startVertex] = 0;
+			q.Enqueue(startVertex);
+
+			while (q.Count > 0)
+			{
+				var v = q.Dequeue();
+				var nc = costs[v] + 1;
+
+				// IEnumerable<T>, List<T>, T[] の順に高速になります。
+				foreach (var nv in getNextVertexes(v))
+				{
+					if (costs[nv] <= nc) continue;
+					costs[nv] = nc;
+					inVertexes[nv] = v;
+					if (nv == endVertex) return new UnweightedResult(costs, inVertexes);
+					q.Enqueue(nv);
+				}
+			}
+			return new UnweightedResult(costs, inVertexes);
+		}
+
+		/// <summary>
+		/// Dijkstra 法により、始点から各頂点への最短経路を求めます。<br/>
+		/// 辺のコストは非負でなければなりません。
+		/// </summary>
+		/// <param name="vertexesCount">頂点の個数。これ未満の値を ID として使用できます。</param>
+		/// <param name="getNextEdges">指定された頂点からの出辺を取得するための関数。</param>
+		/// <param name="startVertex">始点。</param>
+		/// <param name="endVertex">終点。終点を指定しない場合、-1。</param>
+		/// <returns>探索結果を表す <see cref="WeightedResult"/> オブジェクト。</returns>
+		/// <remarks>
+		/// グラフの有向性、連結性、多重性、開閉を問いません。
+		/// </remarks>
+		public static WeightedResult Dijkstra(int vertexesCount, Func<int, Edge[]> getNextEdges, int startVertex, int endVertex = -1)
+		{
+			var costs = Array.ConvertAll(new bool[vertexesCount], _ => long.MaxValue);
+			var inEdges = Array.ConvertAll(costs, _ => Edge.Invalid);
+			var q = PriorityQueue<int>.CreateWithKey(v => costs[v]);
+			costs[startVertex] = 0;
+			q.Push(startVertex);
+
+			while (q.Any)
+			{
+				var (v, c) = q.Pop();
+				if (v == endVertex) break;
+				if (costs[v] < c) continue;
+
+				// IEnumerable<T>, List<T>, T[] の順に高速になります。
+				foreach (var e in getNextEdges(v))
+				{
+					var (nv, nc) = (e.To, c + e.Cost);
+					if (costs[nv] <= nc) continue;
+					costs[nv] = nc;
+					inEdges[nv] = e;
+					q.Push(nv);
+				}
+			}
+			return new WeightedResult(costs, inEdges);
+		}
+
+		/// <summary>
+		/// 幅優先探索の拡張により、始点から各頂点への最短経路を求めます。<br/>
+		/// 例えば <paramref name="m"/> = 3 のとき、012-BFS を表します。<br/>
+		/// 辺のコストの範囲は [0, <paramref name="m"/>) です。
+		/// </summary>
+		/// <param name="m">辺のコストの候補となる数。</param>
+		/// <param name="vertexesCount">頂点の個数。これ未満の値を ID として使用できます。</param>
+		/// <param name="getNextEdges">指定された頂点からの出辺を取得するための関数。</param>
+		/// <param name="startVertex">始点。</param>
+		/// <param name="endVertex">終点。終点を指定しない場合、-1。</param>
+		/// <returns>探索結果を表す <see cref="WeightedResult"/> オブジェクト。</returns>
+		/// <remarks>
+		/// グラフの有向性、連結性、多重性、開閉を問いません。
+		/// </remarks>
+		public static WeightedResult BfsMod(int m, int vertexesCount, Func<int, Edge[]> getNextEdges, int startVertex, int endVertex = -1)
+		{
+			var costs = Array.ConvertAll(new bool[vertexesCount], _ => long.MaxValue);
+			var inEdges = Array.ConvertAll(costs, _ => Edge.Invalid);
+			var qs = Array.ConvertAll(new bool[m], _ => new Queue<int>());
+			costs[startVertex] = 0;
+			qs[0].Enqueue(startVertex);
+
+			for (long c = 0; Array.Exists(qs, q => q.Count > 0); ++c)
+			{
+				var q = qs[c % m];
+				while (q.Count > 0)
+				{
+					var v = q.Dequeue();
+					if (v == endVertex) return new WeightedResult(costs, inEdges);
+					if (costs[v] < c) continue;
+
+					foreach (var e in getNextEdges(v))
+					{
+						var (nv, nc) = (e.To, c + e.Cost);
+						if (costs[nv] <= nc) continue;
+						costs[nv] = nc;
+						inEdges[nv] = e;
+						qs[nc % m].Enqueue(nv);
+					}
+				}
+			}
+			return new WeightedResult(costs, inEdges);
+		}
+	}
+
 	public class UnweightedMap
 	{
 		public int VertexesCount { get; }
@@ -293,10 +325,20 @@ namespace AlgorithmLab.Graphs.Int.Spp
 
 		public UnweightedMap(int vertexesCount, Edge[] edges, bool directed) : this(vertexesCount)
 		{
-			GraphConvert.UnweightedEdgesToMap(map, edges, directed);
+			AddEdges(edges, directed);
 		}
 
 		public UnweightedMap(int vertexesCount, int[][] edges, bool directed) : this(vertexesCount)
+		{
+			AddEdges(edges, directed);
+		}
+
+		public void AddEdges(Edge[] edges, bool directed)
+		{
+			GraphConvert.UnweightedEdgesToMap(map, edges, directed);
+		}
+
+		public void AddEdges(int[][] edges, bool directed)
 		{
 			GraphConvert.UnweightedEdgesToMap(map, edges, directed);
 		}
@@ -311,16 +353,6 @@ namespace AlgorithmLab.Graphs.Int.Spp
 		{
 			map[from].Add(to);
 			if (!directed) map[to].Add(from);
-		}
-
-		public void AddEdges(Edge[] edges, bool directed)
-		{
-			GraphConvert.UnweightedEdgesToMap(map, edges, directed);
-		}
-
-		public void AddEdges(int[][] edges, bool directed)
-		{
-			GraphConvert.UnweightedEdgesToMap(map, edges, directed);
 		}
 
 		public UnweightedResult Bfs(int startVertex, int endVertex = -1)
@@ -350,10 +382,20 @@ namespace AlgorithmLab.Graphs.Int.Spp
 
 		public WeightedMap(int vertexesCount, Edge[] edges, bool directed) : this(vertexesCount)
 		{
-			GraphConvert.WeightedEdgesToMap(map, edges, directed);
+			AddEdges(edges, directed);
 		}
 
 		public WeightedMap(int vertexesCount, int[][] edges, bool directed) : this(vertexesCount)
+		{
+			AddEdges(edges, directed);
+		}
+
+		public void AddEdges(Edge[] edges, bool directed)
+		{
+			GraphConvert.WeightedEdgesToMap(map, edges, directed);
+		}
+
+		public void AddEdges(int[][] edges, bool directed)
 		{
 			GraphConvert.WeightedEdgesToMap(map, edges, directed);
 		}
@@ -370,19 +412,14 @@ namespace AlgorithmLab.Graphs.Int.Spp
 			if (!directed) map[to].Add(new Edge(to, from, cost));
 		}
 
-		public void AddEdges(Edge[] edges, bool directed)
-		{
-			GraphConvert.WeightedEdgesToMap(map, edges, directed);
-		}
-
-		public void AddEdges(int[][] edges, bool directed)
-		{
-			GraphConvert.WeightedEdgesToMap(map, edges, directed);
-		}
-
 		public WeightedResult Dijkstra(int startVertex, int endVertex = -1)
 		{
 			return ShortestPathCore.Dijkstra(VertexesCount, v => this[v], startVertex, endVertex);
+		}
+
+		public WeightedResult BfsMod(int m, int startVertex, int endVertex = -1)
+		{
+			return ShortestPathCore.BfsMod(m, VertexesCount, v => this[v], startVertex, endVertex);
 		}
 	}
 

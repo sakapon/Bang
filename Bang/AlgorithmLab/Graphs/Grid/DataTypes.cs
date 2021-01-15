@@ -3,6 +3,12 @@ using System.Collections.Generic;
 
 namespace AlgorithmLab.Graphs.Grid
 {
+	public static class GridMap
+	{
+		public static GridMap<TValue> Create<TValue>(int height, int width, TValue iv) => new JaggedGridMap<TValue>(height, width, iv);
+		public static GridMap<TValue> Create<TValue>(int height, int width, Func<TValue> getIV) => new JaggedGridMap<TValue>(height, width, getIV);
+	}
+
 	public abstract class GridMap<TValue>
 	{
 		public abstract TValue this[Point key] { get; set; }

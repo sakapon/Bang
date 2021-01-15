@@ -26,7 +26,7 @@ namespace OnlineTest.Graphs.Int.SppTest
 
 			Console.SetOut(new System.IO.StreamWriter(Console.OpenStandardOutput()) { AutoFlush = false });
 			for (int v = 1; v <= n; v++)
-				Console.WriteLine(r.IsConnected(v) ? r[v] - 1 : -1);
+				Console.WriteLine(r.GetCost(v, 0) - 1);
 			Console.Out.Flush();
 		}
 	}

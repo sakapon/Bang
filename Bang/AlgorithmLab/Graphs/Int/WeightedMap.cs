@@ -58,5 +58,10 @@ namespace AlgorithmLab.Graphs.Int
 		{
 			return ShortestPathCore.Dijkstra(VertexesCount, v => this[v], startVertex, endVertex);
 		}
+
+		public WeightedResult BfsMod(int m, int startVertex, int endVertex = -1)
+		{
+			return ShortestPathCore.BfsMod(m, VertexesCount, v => this[v], startVertex, endVertex);
+		}
 	}
 }

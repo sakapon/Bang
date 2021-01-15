@@ -3,6 +3,37 @@ using System.Collections.Generic;
 
 namespace AlgorithmLab.Graphs.Grid
 {
+	public struct Point : IEquatable<Point>
+	{
+		public int i, j;
+		public Point(int i, int j) { this.i = i; this.j = j; }
+		public void Deconstruct(out int i, out int j) { i = this.i; j = this.j; }
+		public override string ToString() => $"{i} {j}";
+		public static Point Parse(string s) => Array.ConvertAll(s.Split(), int.Parse);
+
+		public static implicit operator Point(int[] v) => (v[0], v[1]);
+		public static explicit operator int[](Point v) => new[] { v.i, v.j };
+		public static implicit operator Point((int i, int j) v) => new Point(v.i, v.j);
+		public static explicit operator (int, int)(Point v) => (v.i, v.j);
+
+		public bool Equals(Point other) => i == other.i && j == other.j;
+		public static bool operator ==(Point v1, Point v2) => v1.Equals(v2);
+		public static bool operator !=(Point v1, Point v2) => !v1.Equals(v2);
+		public override bool Equals(object obj) => obj is Point v && Equals(v);
+		public override int GetHashCode() => (i, j).GetHashCode();
+
+		public static Point operator -(Point v) => new Point(-v.i, -v.j);
+		public static Point operator +(Point v1, Point v2) => new Point(v1.i + v2.i, v1.j + v2.j);
+		public static Point operator -(Point v1, Point v2) => new Point(v1.i - v2.i, v1.j - v2.j);
+
+		public bool IsInRange(int height, int width) => 0 <= i && i < height && 0 <= j && j < width;
+		public Point[] Nexts() => new[] { new Point(i - 1, j), new Point(i + 1, j), new Point(i, j - 1), new Point(i, j + 1) };
+		public static Point[] NextsByDelta { get; } = new[] { new Point(-1, 0), new Point(1, 0), new Point(0, -1), new Point(0, 1) };
+
+		public int NormL1 => Math.Abs(i) + Math.Abs(j);
+		public double Norm => Math.Sqrt(i * i + j * j);
+	}
+
 	public static class GridMap
 	{
 		public static GridMap<TValue> Create<TValue>(int height, int width, TValue iv) => new JaggedGridMap<TValue>(height, width, iv);
@@ -11,6 +42,8 @@ namespace AlgorithmLab.Graphs.Grid
 
 	public abstract class GridMap<TValue>
 	{
+		public abstract int Height { get; }
+		public abstract int Width { get; }
 		public abstract TValue this[Point key] { get; set; }
 		public abstract TValue this[int i, int j] { get; set; }
 	}
@@ -18,6 +51,9 @@ namespace AlgorithmLab.Graphs.Grid
 	public class JaggedGridMap<TValue> : GridMap<TValue>
 	{
 		TValue[][] a;
+		public override int Height => a.Length;
+		public override int Width => a[0].Length;
+		public JaggedGridMap(TValue[][] a) { this.a = a; }
 		public JaggedGridMap(int height, int width, TValue iv)
 		{
 			a = Array.ConvertAll(new bool[height], _ => Array.ConvertAll(new bool[width], __ => iv));
@@ -33,6 +69,9 @@ namespace AlgorithmLab.Graphs.Grid
 	public class RectGridMap<TValue> : GridMap<TValue>
 	{
 		TValue[,] a;
+		public override int Height => a.GetLength(0);
+		public override int Width => a.GetLength(1);
+		public RectGridMap(TValue[,] a) { this.a = a; }
 		public RectGridMap(int height, int width, TValue iv)
 		{
 			a = new TValue[height, width];

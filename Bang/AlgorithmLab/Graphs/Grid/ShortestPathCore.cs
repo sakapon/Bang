@@ -6,7 +6,7 @@ namespace AlgorithmLab.Graphs.Grid
 {
 	/// <summary>
 	/// 最短経路アルゴリズムの核となる機能を提供します。
-	/// ここでは整数型の ID を使用します。
+	/// ここでは <see cref="Point"/> 型の ID を使用します。
 	/// </summary>
 	public static class ShortestPathCore
 	{

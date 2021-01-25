@@ -117,6 +117,7 @@ namespace AlgorithmLab.Graphs.Grid
 		public CostResult(GridMap<long> costs) { RawCosts = costs; }
 
 		public long this[Point vertex] => RawCosts[vertex];
+		public long this[int i, int j] => RawCosts[i, j];
 		public bool IsConnected(Point vertex) => RawCosts[vertex] != long.MaxValue;
 		public long GetCost(Point vertex, long invalid = -1) => IsConnected(vertex) ? RawCosts[vertex] : invalid;
 	}

@@ -14,24 +14,29 @@ namespace AlgorithmLab.Graphs.Grid
 			return Point.Parse(Console.ReadLine());
 		}
 
-		public static GridMap<char> ReadGrid(int height)
-		{
-			return new JaggedGridMap<char>(Array.ConvertAll(new bool[height], _ => Console.ReadLine().ToCharArray()));
-		}
-
 		public static string[] ReadGridAsString(int height)
 		{
 			return Array.ConvertAll(new bool[height], _ => Console.ReadLine());
 		}
 
-		public static char[][] ReadGridAsChar(int height)
+		public static char[][] ReadGridAsCharArray(int height)
 		{
 			return Array.ConvertAll(new bool[height], _ => Console.ReadLine().ToCharArray());
 		}
 
-		public static int[][] ReadGridAsInt(int height)
+		public static int[][] ReadGridAsIntArray(int height)
 		{
 			return Array.ConvertAll(new bool[height], _ => Read());
+		}
+
+		public static GridMap<char> ReadGrid(int height)
+		{
+			return new JaggedGridMap<char>(ReadGridAsCharArray(height));
+		}
+
+		public static GridMap<int> ReadIntGrid(int height)
+		{
+			return new JaggedGridMap<int>(ReadGridAsIntArray(height));
 		}
 
 		public static GridMap<char> ReadEnclosedGrid(ref int height, ref int width, char c = '#', int delta = 1)
@@ -42,10 +47,10 @@ namespace AlgorithmLab.Graphs.Grid
 			var s = Array.ConvertAll(new bool[h], _ => Array.ConvertAll(new bool[w], __ => c));
 			for (int i = 0; i < height; ++i)
 			{
-				var di = delta + i;
+				var si = s[delta + i];
 				var l = Console.ReadLine();
 				for (int j = 0; j < width; ++j)
-					s[di][delta + j] = l[j];
+					si[delta + j] = l[j];
 			}
 
 			(height, width) = (h, w);

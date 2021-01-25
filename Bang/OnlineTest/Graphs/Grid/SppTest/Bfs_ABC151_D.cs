@@ -29,7 +29,7 @@ namespace OnlineTest.Graphs.Grid.SppTest
 						{
 							if (s[x, y] == '#') continue;
 
-							M = Math.Max(M, r[(x, y)]);
+							M = Math.Max(M, r[x, y]);
 						}
 				}
 			Console.WriteLine(M);

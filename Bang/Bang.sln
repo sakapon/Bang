@@ -1,15 +1,17 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30709.132
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32929.385
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bang", "Bang\Bang.csproj", "{D3957E20-A7CF-4453-A41E-1C63F5060CC3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bang", "Bang\Bang.csproj", "{D3957E20-A7CF-4453-A41E-1C63F5060CC3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlgorithmLab", "AlgorithmLab\AlgorithmLab.csproj", "{162F2CDE-96CA-423E-9CB0-B04C70666F48}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AlgorithmLab", "AlgorithmLab\AlgorithmLab.csproj", "{162F2CDE-96CA-423E-9CB0-B04C70666F48}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnlineTest", "OnlineTest\OnlineTest.csproj", "{BC5B8B17-B868-4E57-84A3-926CE87A820D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OnlineTest", "OnlineTest\OnlineTest.csproj", "{BC5B8B17-B868-4E57-84A3-926CE87A820D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTest", "UnitTest\UnitTest.csproj", "{4899FC0C-565E-4373-A58D-877E6D69B62F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTest", "UnitTest\UnitTest.csproj", "{4899FC0C-565E-4373-A58D-877E6D69B62F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OnlineTest2022", "OnlineTest2022\OnlineTest2022.csproj", "{216EBCE9-3F2D-4D1F-81DD-B5B467F03681}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{4899FC0C-565E-4373-A58D-877E6D69B62F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4899FC0C-565E-4373-A58D-877E6D69B62F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4899FC0C-565E-4373-A58D-877E6D69B62F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{216EBCE9-3F2D-4D1F-81DD-B5B467F03681}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{216EBCE9-3F2D-4D1F-81DD-B5B467F03681}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{216EBCE9-3F2D-4D1F-81DD-B5B467F03681}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{216EBCE9-3F2D-4D1F-81DD-B5B467F03681}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

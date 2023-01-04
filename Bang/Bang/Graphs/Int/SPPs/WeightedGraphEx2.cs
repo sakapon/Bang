@@ -12,7 +12,7 @@ namespace Bang.Graphs.Int.SPPs
 			return vs;
 		}
 
-		public static Vertex[] Dijkstra(this WeightedGraph graph, int sv, int ev = -1)
+		public static Vertex[] DijkstraTree(this WeightedGraph graph, int sv, int ev = -1)
 		{
 			var vs = CreateVertexes(graph.VertexesCount);
 			vs[sv].Cost = 0;
@@ -40,7 +40,7 @@ namespace Bang.Graphs.Int.SPPs
 		}
 
 		// Dijkstra 法の特別な場合です。
-		public static Vertex[] ShortestByModBFS(this WeightedGraph graph, int mod, int sv, int ev = -1)
+		public static Vertex[] ModBFSTree(this WeightedGraph graph, int mod, int sv, int ev = -1)
 		{
 			var vs = CreateVertexes(graph.VertexesCount);
 			vs[sv].Cost = 0;

@@ -40,7 +40,7 @@ namespace Bang.Graphs.Int.SPPs
 
 		// 最短経路とは限りません。
 		// 連結性のみを判定する場合は、DFS、BFS または Union-Find を利用します。
-		public static Vertex[] ConnectivityByDFS(this UnweightedGraph graph, int sv, int ev = -1)
+		public static Vertex[] DFSTree(this UnweightedGraph graph, int sv, int ev = -1)
 		{
 			var vs = graph.CreateVertexes();
 			vs[sv].Cost = 0;
@@ -64,7 +64,7 @@ namespace Bang.Graphs.Int.SPPs
 			}
 		}
 
-		public static Vertex[] ShortestByBFS(this UnweightedGraph graph, int sv, int ev = -1)
+		public static Vertex[] BFSTree(this UnweightedGraph graph, int sv, int ev = -1)
 		{
 			var vs = graph.CreateVertexes();
 			vs[sv].Cost = 0;

@@ -3,6 +3,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <StartupObject>OnlineTest2022.Program</StartupObject>
   </PropertyGroup>
 
   <ItemGroup>

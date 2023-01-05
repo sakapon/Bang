@@ -5,16 +5,10 @@ namespace Bang.Graphs.Int.SPPs
 {
 	public static class WeightedPath2
 	{
-		static Vertex[] CreateVertexes(this WeightedGraph graph)
+		public static PathResult DijkstraTree(this WeightedGraph graph, int sv, int ev = -1)
 		{
-			var vs = new Vertex[graph.VertexesCount];
-			for (int v = 0; v < vs.Length; ++v) vs[v] = new Vertex(v);
-			return vs;
-		}
-
-		public static Vertex[] DijkstraTree(this WeightedGraph graph, int sv, int ev = -1)
-		{
-			var vs = graph.CreateVertexes();
+			var r = new PathResult(graph.VertexesCount);
+			var vs = r.Vertexes;
 			vs[sv].Cost = 0;
 			var q = new SortedSet<(long, int)> { (0, sv) };
 
@@ -22,7 +16,7 @@ namespace Bang.Graphs.Int.SPPs
 			{
 				var (c, v) = q.Min;
 				q.Remove((c, v));
-				if (v == ev) return vs;
+				if (v == ev) return r;
 				var vo = vs[v];
 
 				foreach (var (nv, cost) in graph.GetEdges(v))
@@ -36,13 +30,14 @@ namespace Bang.Graphs.Int.SPPs
 					nvo.Parent = vo;
 				}
 			}
-			return vs;
+			return r;
 		}
 
 		// Dijkstra 法の特別な場合です。
-		public static Vertex[] ModBFSTree(this WeightedGraph graph, int mod, int sv, int ev = -1)
+		public static PathResult ModBFSTree(this WeightedGraph graph, int mod, int sv, int ev = -1)
 		{
-			var vs = graph.CreateVertexes();
+			var r = new PathResult(graph.VertexesCount);
+			var vs = r.Vertexes;
 			vs[sv].Cost = 0;
 			var qs = Array.ConvertAll(new bool[mod], _ => new Queue<int>());
 			qs[0].Enqueue(sv);
@@ -55,7 +50,7 @@ namespace Bang.Graphs.Int.SPPs
 				{
 					var v = q.Dequeue();
 					--qc;
-					if (v == ev) return vs;
+					if (v == ev) return r;
 					var vo = vs[v];
 					if (vo.Cost < c) continue;
 
@@ -71,7 +66,7 @@ namespace Bang.Graphs.Int.SPPs
 					}
 				}
 			}
-			return vs;
+			return r;
 		}
 	}
 }

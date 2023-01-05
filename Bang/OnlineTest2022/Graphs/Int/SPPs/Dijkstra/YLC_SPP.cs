@@ -23,7 +23,7 @@ namespace OnlineTest2022.Graphs.Int.SPPs.Dijkstra
 			if (!r[t].IsConnected) return -1;
 
 			var path = r[t].GetPathEdges();
-			return $"{r[t].Cost} {path.Length}\n" + string.Join("\n", path.Select(e => $"{e.Item1} {e.Item2}"));
+			return $"{r[t].Cost} {path.Length}\n" + string.Join("\n", path.Select(e => $"{e.from} {e.to}"));
 		}
 	}
 }

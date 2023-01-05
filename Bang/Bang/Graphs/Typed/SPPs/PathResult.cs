@@ -23,7 +23,7 @@ namespace Bang.Graphs.Typed.SPPs
 				return path.ToArray();
 			}
 
-			public (T, T)[] GetPathEdges()
+			public (T from, T to)[] GetPathEdges()
 			{
 				var path = new Stack<(T, T)>();
 				for (var v = this; v.Parent != null; v = v.Parent)

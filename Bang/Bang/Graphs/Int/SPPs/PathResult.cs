@@ -23,7 +23,7 @@ namespace Bang.Graphs.Int.SPPs
 				return path.ToArray();
 			}
 
-			public (int, int)[] GetPathEdges()
+			public (int from, int to)[] GetPathEdges()
 			{
 				var path = new Stack<(int, int)>();
 				for (var v = this; v.Parent != null; v = v.Parent)

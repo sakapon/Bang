@@ -39,11 +39,8 @@ namespace Bang.Graphs.Typed
 		{
 			if (!map.TryGetValue(from, out var edges)) map[from] = edges = new List<T>();
 			edges.Add(to);
-			if (twoWay)
-			{
-				if (!map.TryGetValue(to, out edges)) map[to] = edges = new List<T>();
-				edges.Add(from);
-			}
+			if (!map.TryGetValue(to, out edges)) map[to] = edges = new List<T>();
+			if (twoWay) edges.Add(from);
 		}
 	}
 }

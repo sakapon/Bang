@@ -43,11 +43,8 @@ namespace Bang.Graphs.Typed
 		{
 			if (!map.TryGetValue(from, out var edges)) map[from] = edges = new List<(T to, long cost)>();
 			edges.Add((to, cost));
-			if (twoWay)
-			{
-				if (!map.TryGetValue(to, out edges)) map[to] = edges = new List<(T to, long cost)>();
-				edges.Add((from, cost));
-			}
+			if (!map.TryGetValue(to, out edges)) map[to] = edges = new List<(T to, long cost)>();
+			if (twoWay) edges.Add((from, cost));
 		}
 	}
 }

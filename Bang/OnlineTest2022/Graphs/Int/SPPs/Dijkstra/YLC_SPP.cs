@@ -4,6 +4,7 @@ using System.Linq;
 using Bang.Graphs.Int;
 using Bang.Graphs.Int.SPPs;
 
+// Int, Typed
 namespace OnlineTest2022.Graphs.Int.SPPs.Dijkstra
 {
 	// Test: https://judge.yosupo.jp/problem/shortest_path

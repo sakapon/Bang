@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Bang.Graphs.Int.SPPs
 {
-	public static class UnweightedPath
+	public static class UnweightedPath1
 	{
 		// 最短経路とは限りません。
 		// 連結性のみを判定する場合は、DFS、BFS または Union-Find を利用します。

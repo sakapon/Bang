@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Bang.Graphs.Int.SPPs
 {
-	public static class WeightedPath
+	public static class WeightedPath1
 	{
 		public static long[] Dijkstra(this WeightedGraph graph, int sv, int ev = -1)
 		{

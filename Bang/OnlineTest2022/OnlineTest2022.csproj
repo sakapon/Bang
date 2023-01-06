@@ -7,7 +7,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="..\..\downloads\Bang.Graphs.Int.SPPs.Unweighted-1.0.2.cs" Link="SingleFiles\Bang.Graphs.Int.SPPs.Unweighted-1.0.2.cs" />
+    <Compile Include="..\..\downloads\Bang.Graphs.Int.SPPs.Weighted-1.0.2.cs" Link="SingleFiles\Bang.Graphs.Int.SPPs.Weighted-1.0.2.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Bang\Bang.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="SingleFiles\" />
   </ItemGroup>
 
 </Project>

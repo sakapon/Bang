@@ -74,6 +74,26 @@ namespace Bang.Graphs.Int
 			}
 			return l;
 		}
+
+		public virtual ListWeightedGraph ToListGraph()
+		{
+			var g = new ListWeightedGraph(n);
+			for (int i = 0; i < h; ++i)
+				for (int j = 1; j < w; ++j)
+				{
+					var v = w * i + j;
+					g.AddEdge(v, v - 1, false, s[i][j - 1]);
+					g.AddEdge(v - 1, v, false, s[i][j]);
+				}
+			for (int j = 0; j < w; ++j)
+				for (int i = 1; i < h; ++i)
+				{
+					var v = w * i + j;
+					g.AddEdge(v, v - w, false, s[i - 1][j]);
+					g.AddEdge(v - w, v, false, s[i][j]);
+				}
+			return g;
+		}
 	}
 
 	public class CharWeightedGrid : WeightedGrid
@@ -114,6 +134,29 @@ namespace Bang.Graphs.Int
 				if (0 <= ni && ni < h && 0 <= nj && nj < w && s[ni][nj] != wall) l.Add((w * ni + nj, s[ni][nj] - '0'));
 			}
 			return l;
+		}
+
+		// 1 桁の整数が設定されている場合
+		public virtual ListWeightedGraph ToListGraph()
+		{
+			var g = new ListWeightedGraph(n);
+			for (int i = 0; i < h; ++i)
+				for (int j = 1; j < w; ++j)
+				{
+					if (s[i][j] == wall || s[i][j - 1] == wall) continue;
+					var v = w * i + j;
+					g.AddEdge(v, v - 1, false, s[i][j - 1] - '0');
+					g.AddEdge(v - 1, v, false, s[i][j] - '0');
+				}
+			for (int j = 0; j < w; ++j)
+				for (int i = 1; i < h; ++i)
+				{
+					if (s[i][j] == wall || s[i - 1][j] == wall) continue;
+					var v = w * i + j;
+					g.AddEdge(v, v - w, false, s[i - 1][j] - '0');
+					g.AddEdge(v - w, v, false, s[i][j] - '0');
+				}
+			return g;
 		}
 	}
 }

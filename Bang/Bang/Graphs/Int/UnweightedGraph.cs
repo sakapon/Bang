@@ -62,6 +62,24 @@ namespace Bang.Graphs.Int
 			}
 			return l;
 		}
+
+		public virtual ListUnweightedGraph ToListGraph()
+		{
+			var g = new ListUnweightedGraph(n);
+			for (int i = 0; i < h; ++i)
+				for (int j = 1; j < w; ++j)
+				{
+					var v = w * i + j;
+					g.AddEdge(v, v - 1, true);
+				}
+			for (int j = 0; j < w; ++j)
+				for (int i = 1; i < h; ++i)
+				{
+					var v = w * i + j;
+					g.AddEdge(v, v - w, true);
+				}
+			return g;
+		}
 	}
 
 	public class CharUnweightedGrid : UnweightedGrid
@@ -101,6 +119,26 @@ namespace Bang.Graphs.Int
 				if (0 <= ni && ni < h && 0 <= nj && nj < w && s[ni][nj] != wall) l.Add(w * ni + nj);
 			}
 			return l;
+		}
+
+		public override ListUnweightedGraph ToListGraph()
+		{
+			var g = new ListUnweightedGraph(n);
+			for (int i = 0; i < h; ++i)
+				for (int j = 1; j < w; ++j)
+				{
+					if (s[i][j] == wall || s[i][j - 1] == wall) continue;
+					var v = w * i + j;
+					g.AddEdge(v, v - 1, true);
+				}
+			for (int j = 0; j < w; ++j)
+				for (int i = 1; i < h; ++i)
+				{
+					if (s[i][j] == wall || s[i - 1][j] == wall) continue;
+					var v = w * i + j;
+					g.AddEdge(v, v - w, true);
+				}
+			return g;
 		}
 	}
 }

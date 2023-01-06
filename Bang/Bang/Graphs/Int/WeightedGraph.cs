@@ -42,7 +42,7 @@ namespace Bang.Graphs.Int
 		}
 	}
 
-	public abstract class WeightedGrid : WeightedGraph
+	public class WeightedGrid : WeightedGraph
 	{
 		protected readonly int h, w;
 		public int Height => h;
@@ -54,6 +54,38 @@ namespace Bang.Graphs.Int
 
 		public static (int di, int dj)[] NextsDelta { get; } = new[] { (0, -1), (0, 1), (-1, 0), (1, 0) };
 		public static (int di, int dj)[] NextsDelta8 { get; } = new[] { (0, -1), (0, 1), (-1, 0), (1, 0), (-1, -1), (-1, 1), (1, -1), (1, 1) };
+
+		// コスト 1 の辺を設定します。
+		public override List<(int to, long cost)> GetEdges(int v)
+		{
+			var (i, j) = (v / w, v % w);
+			var l = new List<(int, long)>();
+			foreach (var (di, dj) in NextsDelta)
+			{
+				var (ni, nj) = (i + di, j + dj);
+				if (0 <= ni && ni < h && 0 <= nj && nj < w) l.Add((w * ni + nj, 1));
+			}
+			return l;
+		}
+
+		// コスト 1 の辺を設定します。
+		public virtual ListWeightedGraph ToListGraph()
+		{
+			var g = new ListWeightedGraph(n);
+			for (int i = 0; i < h; ++i)
+				for (int j = 1; j < w; ++j)
+				{
+					var v = w * i + j;
+					g.AddEdge(v, v - 1, true, 1);
+				}
+			for (int j = 0; j < w; ++j)
+				for (int i = 1; i < h; ++i)
+				{
+					var v = w * i + j;
+					g.AddEdge(v, v - w, true, 1);
+				}
+			return g;
+		}
 	}
 
 	public class IntWeightedGrid : WeightedGrid
@@ -75,7 +107,7 @@ namespace Bang.Graphs.Int
 			return l;
 		}
 
-		public virtual ListWeightedGraph ToListGraph()
+		public override ListWeightedGraph ToListGraph()
 		{
 			var g = new ListWeightedGraph(n);
 			for (int i = 0; i < h; ++i)
@@ -137,7 +169,7 @@ namespace Bang.Graphs.Int
 		}
 
 		// 1 桁の整数が設定されている場合
-		public virtual ListWeightedGraph ToListGraph()
+		public override ListWeightedGraph ToListGraph()
 		{
 			var g = new ListWeightedGraph(n);
 			for (int i = 0; i < h; ++i)

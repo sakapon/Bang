@@ -5,7 +5,7 @@ using Bang.Graphs.Int;
 using Bang.Graphs.Int.SPPs;
 
 // Grid, ListGraph
-// ConnectivityByDFS, ShortestByBFS, DFSTree, BFSTree
+// ShortestByBFS, ConnectivityByDFS, BFSTree, DFSTree
 namespace OnlineTest2022.Graphs.Int.SPPs.DFS
 {
 	// Test: https://atcoder.jp/contests/atc001/tasks/dfs_a

@@ -64,8 +64,7 @@ namespace OnlineTest2022.Graphs.Int.SPPs.Dijkstra
 			var g = NewArray2(h, w, '.');
 			foreach (var v in path[1..^1])
 			{
-				var (i, j) = FromVertexId(v);
-				g[i][j] = '#';
+				g[v / w][v % w] = '#';
 			}
 
 			Console.WriteLine(r[n + 1].Cost);
@@ -73,9 +72,6 @@ namespace OnlineTest2022.Graphs.Int.SPPs.Dijkstra
 			{
 				Console.WriteLine(new string(cs));
 			}
-
-			int ToVertexId(int i, int j) => w * i + j;
-			(int i, int j) FromVertexId(int v) => (v / w, v % w);
 		}
 
 		static T[][] NewArray2<T>(int n1, int n2, T v = default) => Array.ConvertAll(new bool[n1], _ => Array.ConvertAll(new bool[n2], __ => v));

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
+// https://github.com/sakapon/Bang
 namespace Bang.Graphs.Typed.SPPs.Weighted.v1_0_2
 {
 	[System.Diagnostics.DebuggerDisplay(@"VertexesCount = {VertexesCount}")]

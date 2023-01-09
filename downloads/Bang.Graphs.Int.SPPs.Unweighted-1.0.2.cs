@@ -78,6 +78,20 @@ namespace Bang.Graphs.Int.SPPs.Unweighted.v1_0_2
 				}
 			return g;
 		}
+
+		// 8-adjacency
+		public virtual ListUnweightedGraph ToListGraph8()
+		{
+			var g = ToListGraph();
+			for (int i = 1; i < h; ++i)
+				for (int j = 1; j < w; ++j)
+				{
+					var v = w * i + j;
+					g.AddEdge(v, v - w - 1, true);
+					g.AddEdge(v - w, v - 1, true);
+				}
+			return g;
+		}
 	}
 
 	public class CharUnweightedGrid : UnweightedGrid
@@ -135,6 +149,22 @@ namespace Bang.Graphs.Int.SPPs.Unweighted.v1_0_2
 					if (s[i][j] == wall || s[i - 1][j] == wall) continue;
 					var v = w * i + j;
 					g.AddEdge(v, v - w, true);
+				}
+			return g;
+		}
+
+		// 8-adjacency
+		public override ListUnweightedGraph ToListGraph8()
+		{
+			var g = ToListGraph();
+			for (int i = 1; i < h; ++i)
+				for (int j = 1; j < w; ++j)
+				{
+					var v = w * i + j;
+					if (s[i][j] != wall && s[i - 1][j - 1] != wall)
+						g.AddEdge(v, v - w - 1, true);
+					if (s[i - 1][j] != wall && s[i][j - 1] != wall)
+						g.AddEdge(v - w, v - 1, true);
 				}
 			return g;
 		}

@@ -84,6 +84,20 @@ namespace Bang.Graphs.Int.SPPs.Weighted.v1_0_2
 				}
 			return g;
 		}
+
+		// 8-adjacency
+		public virtual ListWeightedGraph ToListGraph8()
+		{
+			var g = ToListGraph();
+			for (int i = 1; i < h; ++i)
+				for (int j = 1; j < w; ++j)
+				{
+					var v = w * i + j;
+					g.AddEdge(v, v - w - 1, true, 1);
+					g.AddEdge(v - w, v - 1, true, 1);
+				}
+			return g;
+		}
 	}
 
 	public class IntWeightedGrid : WeightedGrid
@@ -121,6 +135,22 @@ namespace Bang.Graphs.Int.SPPs.Weighted.v1_0_2
 					var v = w * i + j;
 					g.AddEdge(v, v - w, false, s[i - 1][j]);
 					g.AddEdge(v - w, v, false, s[i][j]);
+				}
+			return g;
+		}
+
+		// 8-adjacency
+		public override ListWeightedGraph ToListGraph8()
+		{
+			var g = ToListGraph();
+			for (int i = 1; i < h; ++i)
+				for (int j = 1; j < w; ++j)
+				{
+					var v = w * i + j;
+					g.AddEdge(v, v - w - 1, false, s[i - 1][j - 1]);
+					g.AddEdge(v - w - 1, v, false, s[i][j]);
+					g.AddEdge(v - w, v - 1, false, s[i][j - 1]);
+					g.AddEdge(v - 1, v - w, false, s[i - 1][j]);
 				}
 			return g;
 		}
@@ -185,6 +215,28 @@ namespace Bang.Graphs.Int.SPPs.Weighted.v1_0_2
 					var v = w * i + j;
 					g.AddEdge(v, v - w, false, s[i - 1][j] - '0');
 					g.AddEdge(v - w, v, false, s[i][j] - '0');
+				}
+			return g;
+		}
+
+		// 8-adjacency
+		public override ListWeightedGraph ToListGraph8()
+		{
+			var g = ToListGraph();
+			for (int i = 1; i < h; ++i)
+				for (int j = 1; j < w; ++j)
+				{
+					var v = w * i + j;
+					if (s[i][j] != wall && s[i - 1][j - 1] != wall)
+					{
+						g.AddEdge(v, v - w - 1, false, s[i - 1][j - 1] - '0');
+						g.AddEdge(v - w - 1, v, false, s[i][j] - '0');
+					}
+					if (s[i - 1][j] != wall && s[i][j - 1] != wall)
+					{
+						g.AddEdge(v - w, v - 1, false, s[i][j - 1] - '0');
+						g.AddEdge(v - 1, v - w, false, s[i - 1][j] - '0');
+					}
 				}
 			return g;
 		}

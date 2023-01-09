@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>net5.0;netstandard2.1</TargetFrameworks>
-    <Version>1.0.1</Version>
+    <Version>1.0.2</Version>
     <Title>Bang</Title>
     <AssemblyTitle>Bang</AssemblyTitle>
     <Product>KLibrary</Product>
@@ -11,8 +11,9 @@
     <Copyright>© 2020 Keiho Sakapon</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/sakapon/Bang</PackageProjectUrl>
-    <PackageTags>Algorithms Math Mathematics</PackageTags>
-    <PackageReleaseNotes>The first release.</PackageReleaseNotes>
+    <PackageTags>Algorithms Math Mathematics Graphs</PackageTags>
+    <PackageReleaseNotes>The first release.
+- Shortest path problem</PackageReleaseNotes>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

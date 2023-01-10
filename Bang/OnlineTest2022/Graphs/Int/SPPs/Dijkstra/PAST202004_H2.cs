@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using Bang.Graphs.Int;
-using Bang.Graphs.Int.SPPs;
 
 namespace OnlineTest2022.Graphs.Int.SPPs.Dijkstra
 {
 	// Test: https://atcoder.jp/contests/past202004-open/tasks/past202004_h
-	class PAST202004_H
+	class PAST202004_H2
 	{
 		static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
 		static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
@@ -36,10 +35,36 @@ namespace OnlineTest2022.Graphs.Int.SPPs.Dijkstra
 					foreach (var q in map[c + 1])
 						g.AddEdge(grid.ToVertexId(p.i, p.j), grid.ToVertexId(q.i, q.j), false, Distance(p, q));
 
-			var r = g.Dijkstra(sv, ev);
+			var r = g.ShortestByBFS(sv, ev);
 			return r[ev] != long.MaxValue ? r[ev] : -1;
 		}
 
 		static int Distance((int i, int j) p, (int i, int j) q) => Math.Abs(p.i - q.i) + Math.Abs(p.j - q.j);
+	}
+
+	public static class WeightedPath_H2
+	{
+		// 木など、BFS の訪問順でよい場合
+		public static long[] ShortestByBFS(this WeightedGraph graph, int sv, int ev = -1)
+		{
+			var costs = Array.ConvertAll(new bool[graph.VertexesCount], _ => long.MaxValue);
+			costs[sv] = 0;
+			var q = new Queue<int>();
+			q.Enqueue(sv);
+
+			while (q.Count > 0)
+			{
+				var v = q.Dequeue();
+				if (v == ev) return costs;
+
+				foreach (var (nv, cost) in graph.GetEdges(v))
+				{
+					var nc = costs[v] + cost;
+					if (costs[nv] == long.MaxValue) q.Enqueue(nv);
+					if (costs[nv] > nc) costs[nv] = nc;
+				}
+			}
+			return costs;
+		}
 	}
 }

@@ -98,8 +98,8 @@ namespace Bang.Graphs.Int
 
 	public class CharUnweightedGrid : UnweightedGrid
 	{
-		readonly char[][] s;
-		readonly char wall;
+		protected readonly char[][] s;
+		protected readonly char wall;
 		public char[][] Cells => s;
 		public char[] this[int i] => s[i];
 		public CharUnweightedGrid(char[][] s, char wall = '#') : base(s.Length, s[0].Length) { this.s = s; this.wall = wall; }

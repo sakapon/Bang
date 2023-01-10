@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Bang.Graphs.Int;
 using Bang.Graphs.Int.SPPs;
 
-namespace OnlineTest2022.Graphs.Int.SPPs.BFS
+namespace OnlineTest2022.Graphs.Int.SPPs.DFS
 {
 	// Test: https://atcoder.jp/contests/past202012-open/tasks/past202012_h
 	class PAST202012_H

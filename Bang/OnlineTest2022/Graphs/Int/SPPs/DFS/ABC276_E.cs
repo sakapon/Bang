@@ -6,6 +6,7 @@ using Bang.Graphs.Int.SPPs;
 
 namespace OnlineTest2022.Graphs.Int.SPPs.DFS
 {
+	// Test: https://atcoder.jp/contests/abc276/tasks/abc276_e
 	class ABC276_E
 	{
 		static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);

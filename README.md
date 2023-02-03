@@ -3,7 +3,7 @@
 [![NuGet](https://img.shields.io/nuget/v/Bang.svg)](https://www.nuget.org/packages/Bang/)
 [![NuGet](https://img.shields.io/nuget/dt/Bang.svg)](https://www.nuget.org/packages/Bang/)
 
-A library for algorithms.
+A library of algorithms.
 
 ## Target Frameworks
 - .NET 5

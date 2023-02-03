@@ -2,11 +2,11 @@
 
   <PropertyGroup>
     <TargetFrameworks>net5.0;netstandard2.1</TargetFrameworks>
-    <Version>1.0.2</Version>
+    <Version>1.0.3</Version>
     <Title>Bang</Title>
     <AssemblyTitle>Bang</AssemblyTitle>
     <Product>KLibrary</Product>
-    <Description>A library for algorithms.</Description>
+    <Description>A library of algorithms.</Description>
     <Authors>Keiho Sakapon</Authors>
     <Copyright>© 2020 Keiho Sakapon</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>

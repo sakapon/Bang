@@ -4,6 +4,10 @@ using System.Linq;
 // 501
 namespace Bang.Data.Int
 {
+	/// <summary>
+	/// データ拡張された素集合データ構造を表します。
+	/// </summary>
+	[System.Diagnostics.DebuggerDisplay(@"ItemsCount = {ItemsCount}, SetsCount = {SetsCount}")]
 	public class UnionFindMap<TValue>
 	{
 		readonly int[] parents, sizes;
@@ -27,6 +31,8 @@ namespace Bang.Data.Int
 
 		public int ItemsCount => parents.Length;
 		public int SetsCount => setsCount;
+
+		// path compression
 		public int Find(int x) => parents[x] == -1 ? x : parents[x] = Find(parents[x]);
 		public bool AreSame(int x, int y) => Find(x) == Find(y);
 		public int GetSize(int x) => sizes[Find(x)];
@@ -44,7 +50,10 @@ namespace Bang.Data.Int
 			// 左右の順序を保って値をマージします。
 			var v = mergeValues(values[x], values[y]);
 
+			// union by size
 			if (sizes[x] < sizes[y]) (x, y) = (y, x);
+
+			// x を根とします。
 			parents[y] = x;
 			sizes[x] += sizes[y];
 			--setsCount;
@@ -52,6 +61,6 @@ namespace Bang.Data.Int
 			return true;
 		}
 
-		public ILookup<int, int> ToGroups() => Enumerable.Range(0, parents.Length).ToLookup(Find);
+		public ILookup<int, int> ToSets() => Enumerable.Range(0, parents.Length).ToLookup(Find);
 	}
 }
